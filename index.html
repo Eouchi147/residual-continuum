@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Residual Continuum</title>
+<meta name="description" content="A chronological reconstruction of deep human history through climatic data, archaeology, and consistent ancient patterns.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --glass: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --text: #e8e6e1;
+  --text-muted: #8f8b84;
+  --accent: #c2a46a;
+  --climate: #7a9bb5;
+  --parallel: #9b8bb5;
+  --radius: 14px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.5; min-height: 100dvh; }
+.glass { background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--border); border-radius: var(--radius); }
+.topbar { position: fixed; top:0; left:0; right:0; z-index:100; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; background: rgba(10,12,16,0.78); backdrop-filter: blur(14px); border-bottom:1px solid var(--border); }
+.logo { font-family: 'Newsreader', Georgia, serif; font-size:1.15rem; color: var(--text); text-decoration:none; }
+.main { padding-top:58px; padding-bottom: calc(80px + var(--safe-bottom)); }
+.intro { padding:24px 18px 18px; }
+.intro-label { font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color: var(--accent); margin-bottom:8px; }
+.intro h1 { font-family: 'Newsreader', Georgia, serif; font-size:1.7rem; font-weight:500; line-height:1.2; margin-bottom:10px; }
+.intro p { font-size:0.9rem; color: var(--text-muted); }
+.filters { display:flex; gap:8px; padding:0 18px 16px; overflow-x:auto; }
+.filter-chip { flex-shrink:0; font-size:0.72rem; padding:6px 13px; border-radius:100px; border:1px solid var(--border); background: var(--glass); color: var(--text-muted); cursor:pointer; }
+.filter-chip.active { background: rgba(194,164,106,0.15); border-color: rgba(194,164,106,0.4); color: var(--accent); }
+.timeline { position:relative; padding:0 18px; }
+.timeline-line { position:absolute; left:32px; top:0; bottom:0; width:1.5px; background: linear-gradient(to bottom, transparent, var(--border) 8%, var(--border) 92%, transparent); }
+.era { position:relative; padding:0 0 28px 52px; }
+.era-marker { position:absolute; left:24px; top:4px; width:17px; height:17px; border-radius:50%; background: var(--bg); border:2px solid var(--accent); z-index:2; }
+.era-card { padding:14px 15px; cursor:pointer; }
+.era-year { font-size:0.68rem; color: var(--accent); margin-bottom:3px; }
+.era-title { font-family: 'Newsreader', Georgia, serif; font-size:1.15rem; font-weight:500; margin-bottom:5px; }
+.era-summary { font-size:0.82rem; color: var(--text-muted); }
+.era-detail { max-height:0; overflow:hidden; transition: max-height 0.4s ease; }
+.era-detail.open { max-height:500px; }
+.detail-content { font-size:0.84rem; color: var(--text-muted); padding-top:10px; border-top:1px solid var(--border); }
+.bottombar { position:fixed; bottom:0; left:0; right:0; z-index:100; padding:10px 16px calc(10px + var(--safe-bottom)); background: rgba(10,12,16,0.82); backdrop-filter: blur(16px); border-top:1px solid var(--border); display:flex; justify-content:space-around; }
+.bnav { display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; color: #6b6760; font-size:0.62rem; padding:5px 10px; border-radius:10px; }
+.bnav.active { color: var(--accent); }
+</style>
+</head>
+<body>
+<header class="topbar"><a href="#" class="logo">Residual Continuum</a></header>
+<main class="main">
+<section class="intro">
+<div class="intro-label">Chronological Reconstruction</div>
+<h1>The Human Story Was Never Linear</h1>
+<p>A coherent sequence assembled from climatic records, anomalous archaeology, global myth patterns, and the most consistent ancient textual lineages.</p>
+</section>
+<div class="filters">
+<button class="filter-chip active" data-filter="all">All</button>
+<button class="filter-chip" data-filter="climate">Climate</button>
+<button class="filter-chip" data-filter="builders">Builders</button>
+<button class="filter-chip" data-filter="pillars">Pillars</button>
+<button class="filter-chip" data-filter="parallel">Parallel</button>
+</div>
+<div class="timeline">
+<div class="timeline-line"></div>
+<article class="era" data-tags="all residual"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">Deep Time</div><div class="era-title">Preparation of the World</div><div class="era-summary">Long geological and cosmic ages during which the earth is made habitable.</div></div></article>
+<article class="era" data-tags="all residual"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">Origin Horizon</div><div class="era-title">The First Ones</div><div class="era-summary">Sudden appearance of fully human beings of exceptional stature and longevity.</div></div></article>
+<article class="era" data-tags="all climate"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">~12.9 ka</div><div class="era-title">Younger Dryas Onset</div><div class="era-summary">Abrupt return to near-glacial conditions. One of the most clearly defined rapid climate shifts.</div></div></article>
+<article class="era" data-tags="all climate"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">~11.6 ka</div><div class="era-title">Termination & Flood Horizon</div><div class="era-summary">Rapid warming and major hydrological reorganisation coinciding with global flood traditions.</div></div></article>
+<article class="era" data-tags="all builders"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">~11.6–9.6 ka</div><div class="era-title">Monumental Aftermath</div><div class="era-summary">Göbekli Tepe and related sites appear with sophisticated T-pillar architecture.</div></div></article>
+<article class="era" data-tags="all pillars"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">Post-Reset</div><div class="era-title">Cities of Pillars</div><div class="era-summary">Textual traditions of lofty pillars and cities later buried by sand find archaeological correlates.</div></div></article>
+<article class="era" data-tags="all parallel"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">Parallel Horizon</div><div class="era-title">The Fire-Born</div><div class="era-summary">A second intelligent order accounting for global spirit and non-human intelligence traditions.</div></div></article>
+<article class="era" data-tags="all residual"><div class="era-marker"></div><div class="era-card glass"><div class="era-year">Later Ages</div><div class="era-title">Residual Knowledge</div><div class="era-summary">Early civilisations display technical knowledge that appears inherited rather than newly invented.</div></div></article>
+</div>
+</main>
+<nav class="bottombar"><a href="#" class="bnav active"><span>◈</span><span>Timeline</span></a></nav>
+<script>
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    const filter = chip.dataset.filter;
+    document.querySelectorAll('.era').forEach(era => {
+      const tags = era.dataset.tags || '';
+      era.style.display = (filter === 'all' || tags.includes(filter)) ? '' : 'none';
+    });
+  });
+});
+</script>
+</body>
+</html>
