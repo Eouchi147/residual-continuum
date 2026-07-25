@@ -7,79 +7,42 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f5f1eb;
-  --glass: rgba(255,255,255,0.62);
-  --border: rgba(0,0,0,0.07);
-  --text: #1a1815;
-  --muted: #6a645c;
-  --dim: #968f85;
-  --accent: #a87b4f;
-  --accent-soft: rgba(168,123,79,0.12);
-  --radius: 18px;
-  --safe: env(safe-area-inset-bottom, 0px);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:var(--bg); color:var(--text); font-family:'Inter',system-ui,sans-serif; line-height:1.6; min-height:100dvh; padding-bottom:calc(76px + var(--safe)); }
-.glass { background:var(--glass); backdrop-filter:blur(26px) saturate(1.45); -webkit-backdrop-filter:blur(26px) saturate(1.45); border:1px solid var(--border); border-radius:var(--radius); box-shadow:0 4px 28px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.8); }
-.topbar { position:fixed; top:0; left:0; right:0; z-index:100; padding:13px 18px; display:flex; justify-content:space-between; align-items:center; background:rgba(245,241,235,0.82); backdrop-filter:blur(22px); border-bottom:1px solid var(--border); }
-.logo { font-family:'Newsreader',Georgia,serif; font-size:1.2rem; font-weight:500; color:var(--text); text-decoration:none; }
-.page-header { padding:78px 18px 16px; }
-.page-header h1 { font-family:'Newsreader',serif; font-size:1.85rem; font-weight:500; margin-bottom:6px; }
-.page-header p { font-size:0.92rem; color:var(--muted); }
-.era { margin:0 14px 13px; }
-.era-card { overflow:hidden; cursor:pointer; }
-.era-head { padding:15px 15px 13px; }
-.era-year { font-size:0.68rem; letter-spacing:0.09em; color:var(--accent); margin-bottom:3px; font-weight:500; }
-.era-title { font-family:'Newsreader',serif; font-size:1.18rem; font-weight:500; margin-bottom:4px; }
-.era-summary { font-size:0.86rem; color:var(--muted); }
-.era-detail { max-height:0; overflow:hidden; opacity:0; transition:max-height 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.35s ease; }
-.era-detail.open { max-height:8000px; opacity:1; }
-.detail-body { padding:4px 15px 22px; border-top:1px solid var(--border); }
-.detail-body img { width:100%; border-radius:12px; margin:12px 0 6px; }
-.img-cap { font-size:0.72rem; color:var(--dim); margin-bottom:14px; }
-.detail-body h3 { font-family:'Newsreader',serif; font-size:1.08rem; font-weight:500; margin:18px 0 7px; }
-.detail-body p { font-size:0.9rem; color:var(--muted); line-height:1.68; margin-bottom:11px; }
-.tags { display:flex; flex-wrap:wrap; gap:5px; margin-top:12px; }
-.tag { font-size:0.66rem; padding:3px 8px; border-radius:5px; background:rgba(0,0,0,0.04); border:1px solid var(--border); color:var(--dim); }
-.src { font-size:0.76rem; color:var(--dim); margin-top:14px; padding-top:11px; border-top:1px solid var(--border); }
-.bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:100; display:flex; justify-content:space-around; padding:8px 4px calc(8px + var(--safe)); background:rgba(245,241,235,0.8); backdrop-filter:blur(26px); border-top:1px solid var(--border); }
-.nav-item { display:flex; flex-direction:column; align-items:center; gap:2px; text-decoration:none; color:var(--dim); font-size:0.58rem; padding:5px 6px; border-radius:12px; min-width:52px; font-weight:500; }
-.nav-item.active { color:var(--accent); background:var(--accent-soft); }
+:root{--bg:#f5f1eb;--glass:rgba(255,255,255,0.62);--border:rgba(0,0,0,0.07);--text:#1a1815;--muted:#6a645c;--dim:#968f85;--accent:#a87b4f;--accent-soft:rgba(168,123,79,0.12);--radius:18px;--safe:env(safe-area-inset-bottom,0px)}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.6;min-height:100dvh;padding-bottom:calc(76px + var(--safe))}
+.glass{background:var(--glass);backdrop-filter:blur(26px) saturate(1.45);-webkit-backdrop-filter:blur(26px) saturate(1.45);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 28px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,0.8)}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:13px 18px;display:flex;justify-content:space-between;align-items:center;background:rgba(245,241,235,0.82);backdrop-filter:blur(22px);border-bottom:1px solid var(--border)}
+.logo{font-family:Newsreader,Georgia,serif;font-size:1.2rem;font-weight:500;color:var(--text);text-decoration:none}
+.page-header{padding:78px 18px 16px}.page-header h1{font-family:Newsreader,serif;font-size:1.85rem;font-weight:500;margin-bottom:6px}.page-header p{font-size:0.92rem;color:var(--muted)}
+.era{margin:0 14px 13px}.era-card{overflow:hidden;cursor:pointer}.era-head{padding:15px 15px 13px}.era-year{font-size:0.68rem;letter-spacing:0.09em;color:var(--accent);margin-bottom:3px;font-weight:500}.era-title{font-family:Newsreader,serif;font-size:1.18rem;font-weight:500;margin-bottom:4px}.era-summary{font-size:0.86rem;color:var(--muted)}
+.era-detail{max-height:0;overflow:hidden;opacity:0;transition:max-height 0.6s cubic-bezier(0.16,1,0.3,1),opacity 0.35s ease}.era-detail.open{max-height:8000px;opacity:1}
+.detail-body{padding:4px 15px 22px;border-top:1px solid var(--border)}.detail-body img{width:100%;border-radius:12px;margin:12px 0 6px}.img-cap{font-size:0.72rem;color:var(--dim);margin-bottom:14px}.detail-body h3{font-family:Newsreader,serif;font-size:1.08rem;font-weight:500;margin:18px 0 7px}.detail-body p{font-size:0.9rem;color:var(--muted);line-height:1.68;margin-bottom:11px}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}.tag{font-size:0.66rem;padding:3px 8px;border-radius:5px;background:rgba(0,0,0,0.04);border:1px solid var(--border);color:var(--dim)}
+.src{font-size:0.76rem;color:var(--dim);margin-top:14px;padding-top:11px;border-top:1px solid var(--border)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;padding:8px 4px calc(8px + var(--safe));background:rgba(245,241,235,0.8);backdrop-filter:blur(26px);border-top:1px solid var(--border)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:var(--dim);font-size:0.58rem;padding:5px 6px;border-radius:12px;min-width:52px;font-weight:500}.nav-item.active{color:var(--accent);background:var(--accent-soft)}
 </style>
 </head>
 <body>
-<header class="topbar">
-  <a class="logo" href="#">Residual Continuum</a>
-  <div style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)">Timeline</div>
-</header>
-<div class="page-header">
-  <h1>Chronological Timeline</h1>
-  <p>Each era expands into a detailed academic treatment with visual material and source notes. Tap to open.</p>
-</div>
-<!-- Content abbreviated for update - full version in local artifacts -->
-<div class="era">
-  <div class="era-card glass" onclick="tog(this)">
-    <div class="era-head">
-      <div class="era-year">~12.9 ka</div>
-      <div class="era-title">Younger Dryas Onset</div>
-      <div class="era-summary">Abrupt return to near-glacial conditions.</div>
-    </div>
-    <div class="era-detail"><div class="detail-body">
-      <p>Full academic expansion available in the complete local build.</p>
-    </div></div>
-  </div>
-</div>
-<nav class="bottom-nav">
-  <a class="nav-item active" href="#"><span>◈</span><span>Timeline</span></a>
-</nav>
-<script>
-function tog(card){
-  const d = card.querySelector('.era-detail');
-  const open = d.classList.contains('open');
-  document.querySelectorAll('.era-detail.open').forEach(x => x.classList.remove('open'));
-  if(!open) d.classList.add('open');
-}
-</script>
+<header class="topbar"><a class="logo" href="#">Residual Continuum</a><div style="font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim)">Timeline</div></header>
+<div class="page-header"><h1>Chronological Timeline</h1><p>Each era expands into a detailed academic treatment with visual material and source notes. Tap to open.</p></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Deep Time</div><div class="era-title">Preparation of the World</div><div class="era-summary">The long geological and cosmic ages that establish the conditions for later life.</div></div><div class="era-detail"><div class="detail-body"><h3>Framing</h3><p>Any coherent reconstruction of deep human history must begin before the first humans. The earth itself is not a neutral stage. Climatic systems, continental configurations, and ecological scaffolding are the product of deep time. The strongest sequential ancient accounts treat these preparatory ages as real and ordered.</p><p>Modern geology and paleoclimatology supply the physical chronology. These data fill the sequential accounts with measurable detail.</p><div class="tags"><span class="tag">Geological readiness</span><span class="tag">Cosmic sequence</span></div><div class="src">Primary sequential accounts of successive ages; modern paleoclimatology.</div></div></div></div></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Origin Horizon</div><div class="era-title">The First Ones</div><div class="era-summary">Sudden appearance of fully human beings of exceptional stature and longevity. Knowledge present from the beginning.</div></div><div class="era-detail"><div class="detail-body"><h3>Special origin</h3><p>The most coherent ancient sequences present the first humans as a deliberate creation — fully human, language-bearing, morally responsible, and already in possession of knowledge that later generations only partially retain.</p><h3>Stature and longevity</h3><p>Independent cultural streams preserve the memory that the earliest people were of greater physical stature and lived far longer. Progressive diminution is a recurring pattern.</p><div class="tags"><span class="tag">Special origin</span><span class="tag">Stature</span><span class="tag">Longevity</span></div><div class="src">Sequential accounts of the first human pair; comparative mythic material on primordial stature.</div></div></div></div></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">~12.9 ka</div><div class="era-title">Younger Dryas Onset</div><div class="era-summary">Abrupt return to near-glacial conditions. One of the most clearly defined rapid climate shifts.</div></div><div class="era-detail"><div class="detail-body"><h3>The climatic event</h3><p>Approximately 12,900 years ago the Northern Hemisphere experienced sudden severe cooling. Temperatures that had been rising reversed sharply. The event is tightly dated by Greenland ice cores, lake sediments, speleothems and marine records.</p><p>The reality and rapidity of the cooling are not in serious dispute. The precise trigger remains debated.</p><h3>Place in the reconstruction</h3><p>The Younger Dryas supplies a physical, tightly dated horizon immediately before the earliest monumental architecture and the global proliferation of flood traditions.</p><div class="tags"><span class="tag">Ice-core data</span><span class="tag">Rapid onset</span><span class="tag">~12.9 ka</span></div><div class="src">NOAA/NCEI paleoclimatology; Greenland ice-core chronologies.</div></div></div></div></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">~11.6 ka</div><div class="era-title">Flood Horizon</div><div class="era-summary">Rapid warming, major hydrological reorganisation, and the global distribution of flood traditions.</div></div><div class="era-detail"><div class="detail-body"><h3>Climatic termination</h3><p>The end of the Younger Dryas brought rapid warming and large-scale meltwater release. Sea-level rise created widespread hydrological upheaval.</p><h3>Global flood narratives</h3><p>Across every major cultural region there exist traditions of a great flood. Mesopotamian, Levantine, Greek, Indian, Chinese, Mesoamerican, Andean, Aboriginal Australian and many other traditions preserve the motif. The chronological proximity to the Younger Dryas termination is treated as a coherent horizon.</p><div class="tags"><span class="tag">Meltwater pulses</span><span class="tag">Global flood myths</span><span class="tag">~11.6 ka</span></div><div class="src">Paleoclimatic literature; comparative mythology of flood narratives.</div></div></div></div></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">~11.6–9.6 ka</div><div class="era-title">Monumental Aftermath</div><div class="era-summary">Göbekli Tepe and related sites appear with sophisticated T-pillar architecture immediately after the disruption.</div></div><div class="era-detail"><div class="detail-body"><h3>The site</h3><p>Göbekli Tepe contains the oldest known monumental architecture. Circular enclosures formed by massive T-shaped limestone pillars were erected and later deliberately buried. Radiocarbon places the earliest phases immediately after the Younger Dryas.</p><p>The scale and complexity challenge gradualist models. In this reconstruction the site is read as residual knowledge expressed in stone.</p><div class="tags"><span class="tag">Radiocarbon</span><span class="tag">T-pillars</span><span class="tag">Deliberate burial</span></div><div class="src">German Archaeological Institute radiocarbon series; Dietrich & Schmidt publications.</div></div></div></div></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Post-Reset</div><div class="era-title">Cities of Pillars</div><div class="era-summary">Textual traditions of lofty pillars and cities later buried by sand find archaeological correlates.</div></div><div class="era-detail"><div class="detail-body"><h3>Textual motif and Shisr</h3><p>The strongest sequential accounts preserve memory of a people of unmatched lofty pillars later destroyed and buried. Excavations at Shisr (Oman) uncovered an octagonal structure with towers on a frankincense route, partially collapsed into a sinkhole. The combination forms a coherent cluster.</p><div class="tags"><span class="tag">Shisr / Ubar</span><span class="tag">Pillar traditions</span></div><div class="src">Nicholas Clapp expedition reports; sequential textual references.</div></div></div></div></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Parallel Horizon</div><div class="era-title">The Fire-Born</div><div class="era-summary">A second intelligent order accounts for persistent global traditions of spirits and non-human intelligences.</div></div><div class="era-detail"><div class="detail-body"><h3>The second creation</h3><p>The most stable ancient reports describe a creation from smokeless fire that precedes the human line. Three primary forms are recorded: flying, serpentine/canine, and travelling. These details map onto worldwide spirit, dragon and shapeshifter traditions with striking economy.</p><div class="tags"><span class="tag">Three forms</span><span class="tag">Fire origin</span><span class="tag">Spirit traditions</span></div><div class="src">Primary sequential accounts of the creation from fire; comparative spirit traditions.</div></div></div></div></div>
+
+<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Later Ages</div><div class="era-title">Residual Knowledge</div><div class="era-summary">Early civilisations display technical knowledge that appears inherited rather than newly invented.</div></div><div class="era-detail"><div class="detail-body"><h3>Sudden complexity</h3><p>Egypt, Sumer and other early centres appear with sophisticated astronomical alignments, advanced stone-working and complex systems. This material is read as residual transmission of knowledge carried through the disruption rather than pure de-novo invention.</p><div class="tags"><span class="tag">Astronomical alignments</span><span class="tag">Sudden complexity</span><span class="tag">Inheritance</span></div><div class="src">Archaeoastronomy literature; early dynastic technical records.</div></div></div></div></div>
+
+<nav class="bottom-nav"><a class="nav-item active" href="#"><span>◈</span><span>Timeline</span></a></nav>
+<script>function tog(card){const d=card.querySelector('.era-detail');const open=d.classList.contains('open');document.querySelectorAll('.era-detail.open').forEach(x=>x.classList.remove('open'));if(!open){d.classList.add('open');setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),40)}}</script>
 </body>
 </html>
