@@ -4,123 +4,187 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Residual Continuum</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#f5f1eb;--glass:rgba(255,255,255,0.65);--border:rgba(0,0,0,0.08);--text:#1a1815;--muted:#6a645c;--dim:#968f85;--accent:#a87b4f;--accent-soft:rgba(168,123,79,0.14);--radius:18px;--safe:env(safe-area-inset-bottom,0px)}
-*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;line-height:1.6;min-height:100dvh;padding-bottom:calc(80px + var(--safe))}
-.glass{background:var(--glass);backdrop-filter:blur(26px) saturate(1.4);-webkit-backdrop-filter:blur(26px) saturate(1.4);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 24px rgba(0,0,0,0.05),inset 0 1px 0 rgba(255,255,255,0.85)}
-.topbar{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;background:rgba(245,241,235,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.logo{font-family:Newsreader,Georgia,serif;font-size:1.22rem;font-weight:500;color:var(--text);text-decoration:none}
-.page{display:none}.page.active{display:block}
-.hero{min-height:90dvh;display:flex;flex-direction:column;justify-content:center;padding:100px 22px 60px}
-.hero-label{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;font-weight:500}
-.hero h1{font-family:Newsreader,Georgia,serif;font-size:clamp(2.4rem,8vw,3.3rem);font-weight:500;line-height:1.12;margin-bottom:18px;max-width:11ch}
-.hero-sub{font-size:1.05rem;color:var(--muted);max-width:32ch;margin-bottom:36px}
-.cta{display:inline-flex;padding:14px 26px;border-radius:100px;background:var(--text);color:var(--bg);font-size:0.92rem;font-weight:500;text-decoration:none}
-.section{padding:28px 18px 40px}.section-label{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
-.grid{display:grid;gap:12px}.card{display:block;padding:18px 16px;text-decoration:none;color:inherit}.card-num{font-family:Newsreader,serif;font-size:1.35rem;color:var(--accent);margin-bottom:5px}.card h2{font-size:1.1rem;font-weight:500;margin-bottom:5px}.card p{font-size:0.88rem;color:var(--muted)}
-.page-header{padding:82px 18px 18px}.page-header h1{font-family:Newsreader,serif;font-size:1.9rem;font-weight:500;margin-bottom:8px}.page-header p{font-size:0.95rem;color:var(--muted)}
-.era{margin:0 14px 14px}.era-card{overflow:hidden;cursor:pointer}.era-head{padding:16px}.era-year{font-size:0.7rem;letter-spacing:0.1em;color:var(--accent);margin-bottom:4px;font-weight:500}.era-title{font-family:Newsreader,serif;font-size:1.2rem;font-weight:500;margin-bottom:5px}.era-summary{font-size:0.88rem;color:var(--muted)}
-.era-detail{max-height:0;overflow:hidden;opacity:0;transition:max-height 0.55s ease,opacity 0.35s ease}.era-detail.open{max-height:5000px;opacity:1}
-.detail-body{padding:6px 16px 22px;border-top:1px solid var(--border)}.detail-body h3{font-family:Newsreader,serif;font-size:1.1rem;font-weight:500;margin:18px 0 8px}.detail-body p{font-size:0.92rem;color:var(--muted);line-height:1.7;margin-bottom:12px}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}.tag{font-size:0.68rem;padding:4px 9px;border-radius:6px;background:rgba(0,0,0,0.04);border:1px solid var(--border);color:var(--dim)}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;justify-content:space-around;padding:9px 4px calc(9px + var(--safe));background:rgba(245,241,235,0.88);backdrop-filter:blur(26px);border-top:1px solid var(--border)}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--dim);font-size:0.6rem;padding:6px 8px;border-radius:13px;min-width:56px;font-weight:500}.nav-item.active{color:var(--accent);background:var(--accent-soft)}.nav-icon{font-size:1.18rem}
-</style>
+<meta name="description" content="A premium interactive historical investigation platform reconstructing deep human history through chronology, evidence, sources, and interconnected ideas.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="topbar"><a class="logo" href="#" onclick="go('home')">Residual Continuum</a></header>
 
+<header class="topbar">
+  <a class="logo" href="#" onclick="go('home')">Residual Continuum</a>
+  <button class="search-btn" onclick="openSearch()" aria-label="Search">⌕</button>
+</header>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <button class="search-close" onclick="closeSearch()">×</button>
+  <input type="search" class="search-input" id="searchInput" placeholder="Search timeline, evidence, investigations…" oninput="runSearch(this.value)">
+  <div class="search-results" id="searchResults"></div>
+</div>
+
+<!-- HOME -->
 <div id="home" class="page active">
-<section class="hero">
-<div class="hero-label">Deep History Reconstruction</div>
-<h1>The Human Story Was Never Linear</h1>
-<p class="hero-sub">A coherent chronology assembled from climatic records, anomalous archaeology, global myth patterns, and the most consistent ancient textual sequences.</p>
-<a href="#" class="cta" onclick="go('timeline')">Enter the Timeline</a>
-</section>
-<section class="section">
-<div class="section-label">Explore</div>
-<div class="grid">
-<a href="#" class="card glass" onclick="go('timeline')"><div class="card-num">01</div><h2>Chronological Timeline</h2><p>Full sequence with expandable academic evidence.</p></a>
-<a href="#" class="card glass" onclick="go('articles')"><div class="card-num">02</div><h2>Investigations</h2><p>Long-form articles with primary data and citations.</p></a>
-<a href="#" class="card glass" onclick="go('data')"><div class="card-num">03</div><h2>Data Lens</h2><p>Evidence Weight meters and coherence tools.</p></a>
-<a href="#" class="card glass" onclick="go('method')"><div class="card-num">04</div><h2>Method & Sources</h2><p>Evidence hierarchy and evaluation standards.</p></a>
-</div>
-</section>
+  <section class="hero">
+    <div class="hero-label">Deep History Reconstruction</div>
+    <h1>The Human Story Was Never Linear</h1>
+    <p class="hero-sub">A coherent chronology assembled from climatic records, anomalous archaeology, global myth patterns, and the most consistent ancient textual sequences.</p>
+    <a href="#" class="cta" onclick="go('timeline')">Enter the Timeline</a>
+  </section>
+  <section class="section">
+    <div class="section-label">Explore Paths</div>
+    <div class="grid">
+      <a href="#" class="card glass" onclick="go('timeline')">
+        <div class="card-num">01</div>
+        <h2>Chronological Timeline</h2>
+        <p>Full sequence with expandable evidence and confidence fingerprints.</p>
+      </a>
+      <a href="#" class="card glass" onclick="go('articles')">
+        <div class="card-num">02</div>
+        <h2>Investigations</h2>
+        <p>Long-form research with primary data, counterpoints, and citations.</p>
+      </a>
+      <a href="#" class="card glass" onclick="go('data')">
+        <div class="card-num">03</div>
+        <h2>Data Lens</h2>
+        <p>Evidence Weight, Claim Inspector, and convergence tools.</p>
+      </a>
+      <a href="#" class="card glass" onclick="go('method')">
+        <div class="card-num">04</div>
+        <h2>Method & Sources</h2>
+        <p>Evidence hierarchy, evaluation standards, and transparency.</p>
+      </a>
+    </div>
+  </section>
+  <section class="section" style="padding-top:0">
+    <div class="section-label">Featured Investigation</div>
+    <a href="#" class="card glass" onclick="openArticle('001')">
+      <div class="card-num">001</div>
+      <h2>The Deluge Horizon</h2>
+      <p>Younger Dryas termination, hydrological reorganisation, and the global distribution of flood traditions.</p>
+    </a>
+  </section>
 </div>
 
+<!-- TIMELINE -->
 <div id="timeline" class="page">
-<div class="page-header"><h1>Chronological Timeline</h1><p>Tap any era to expand the full academic treatment.</p></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Deep Time</div><div class="era-title">Preparation of the World</div><div class="era-summary">Long geological and cosmic ages that establish the conditions for later life.</div></div><div class="era-detail"><div class="detail-body"><h3>Framing</h3><p>Any coherent reconstruction of deep human history must begin before the first humans. Climatic systems and ecological scaffolding are the product of deep time. The strongest sequential ancient accounts treat these preparatory ages as real and ordered.</p><div class="tags"><span class="tag">Geological readiness</span><span class="tag">Cosmic sequence</span></div></div></div></div></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Origin Horizon</div><div class="era-title">The First Ones</div><div class="era-summary">Sudden appearance of fully human beings of exceptional stature and longevity.</div></div><div class="era-detail"><div class="detail-body"><h3>Special origin</h3><p>The most coherent ancient sequences present the first humans as a deliberate creation — fully human, language-bearing, and already in possession of knowledge that later generations only partially retain.</p><div class="tags"><span class="tag">Special origin</span><span class="tag">Stature</span><span class="tag">Longevity</span></div></div></div></div></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">~12.9 ka</div><div class="era-title">Younger Dryas Onset</div><div class="era-summary">Abrupt return to near-glacial conditions. One of the most clearly defined rapid climate shifts.</div></div><div class="era-detail"><div class="detail-body"><h3>The climatic event</h3><p>Around 12,900 years ago the Northern Hemisphere experienced sudden severe cooling, tightly dated by multiple independent proxies. The reality of the event is not in serious dispute.</p><div class="tags"><span class="tag">Ice-core data</span><span class="tag">~12.9 ka</span></div></div></div></div></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">~11.6 ka</div><div class="era-title">Flood Horizon</div><div class="era-summary">Rapid warming, major hydrological reorganisation, and the global distribution of flood traditions.</div></div><div class="era-detail"><div class="detail-body"><h3>Termination and narratives</h3><p>The end of the Younger Dryas brought rapid warming. Flood traditions appear across every major cultural region. The chronological proximity is treated as a coherent horizon.</p><div class="tags"><span class="tag">Global flood myths</span><span class="tag">~11.6 ka</span></div></div></div></div></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">~11.6–9.6 ka</div><div class="era-title">Monumental Aftermath</div><div class="era-summary">Göbekli Tepe appears with sophisticated T-pillar architecture immediately after the disruption.</div></div><div class="era-detail"><div class="detail-body"><h3>Göbekli Tepe</h3><p>The oldest known monumental architecture. Radiocarbon places earliest phases immediately after the Younger Dryas. Read as residual knowledge expressed in stone.</p><div class="tags"><span class="tag">T-pillars</span><span class="tag">Radiocarbon</span></div></div></div></div></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Post-Reset</div><div class="era-title">Cities of Pillars</div><div class="era-summary">Textual traditions of lofty pillars later buried by sand find archaeological correlates.</div></div><div class="era-detail"><div class="detail-body"><h3>Shisr / Ubar</h3><p>Excavations at Shisr uncovered an octagonal structure with towers. The combination with textual memory forms a coherent cluster. Exact identification remains debated.</p><div class="tags"><span class="tag">Shisr</span><span class="tag">Pillar traditions</span></div></div></div></div></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Parallel Horizon</div><div class="era-title">The Fire-Born</div><div class="era-summary">A second intelligent order accounts for persistent global spirit and non-human intelligence traditions.</div></div><div class="era-detail"><div class="detail-body"><h3>The second creation</h3><p>Creation from smokeless fire preceding the human line. Three primary forms map onto worldwide spirit and dragon traditions with striking economy.</p><div class="tags"><span class="tag">Three forms</span><span class="tag">Fire origin</span></div></div></div></div></div>
-<div class="era"><div class="era-card glass" onclick="tog(this)"><div class="era-head"><div class="era-year">Later Ages</div><div class="era-title">Residual Knowledge</div><div class="era-summary">Early civilisations display technical knowledge that appears inherited rather than newly invented.</div></div><div class="era-detail"><div class="detail-body"><h3>Sudden complexity</h3><p>Egypt, Sumer and other early centres appear with sophisticated systems. Read as residual transmission rather than pure de-novo invention.</p><div class="tags"><span class="tag">Inheritance</span><span class="tag">Sudden complexity</span></div></div></div></div></div>
+  <div class="page-header">
+    <h1>Chronological Timeline</h1>
+    <p>Tap any era to expand evidence, fingerprints, and confidence notes.</p>
+  </div>
+  <div id="timelineContainer"><div class="loading">Loading timeline…</div></div>
 </div>
 
+<!-- ARTICLES LIST -->
 <div id="articles" class="page">
-<div class="page-header"><h1>Investigations</h1><p>Long-form research pages.</p></div>
-<div class="section"><div class="grid">
-<div class="card glass"><div class="card-num">I</div><h2>The Deluge Horizon</h2><p>Younger Dryas + global flood narratives with full citations.</p></div>
-<div class="card glass"><div class="card-num">II</div><h2>Monumental Aftermath</h2><p>Göbekli Tepe in detail.</p></div>
-<div class="card glass"><div class="card-num">III</div><h2>Cities of Pillars</h2><p>Shisr / Ubar and textual traditions.</p></div>
-<div class="card glass"><div class="card-num">IV</div><h2>Parallel Orders</h2><p>The Fire-Born and spirit traditions.</p></div>
-<div class="card glass"><div class="card-num">V</div><h2>Residual Knowledge</h2><p>Inherited technical sophistication.</p></div>
-</div></div>
+  <div class="page-header">
+    <h1>Investigations</h1>
+    <p>Dissertation-style long-form research with transparent methodology.</p>
+  </div>
+  <div class="section article-list" id="articlesList"><div class="loading">Loading investigations…</div></div>
 </div>
 
+<!-- DYNAMIC ARTICLE VIEW -->
+<div id="articleView" class="page">
+  <div id="articleContent"></div>
+</div>
+
+<!-- DATA LENS -->
 <div id="data" class="page">
-<div class="page-header"><h1>Data Lens</h1><p>Tools for examining the relative strength and coherence of the evidence. These are instruments of clarity, not of persuasion.</p></div>
-<div class="section">
-<div class="glass" style="padding:22px;margin-bottom:18px">
-<h2 style="font-family:Newsreader,serif;font-size:1.25rem;font-weight:500;margin-bottom:6px">Evidence Weight</h2>
-<p style="font-size:0.88rem;color:var(--muted);margin-bottom:22px">Relative confidence based on quantity, independence, and quality of data. Not statistical proofs.</p>
+  <div class="page-header">
+    <h1>Data Lens</h1>
+    <p>Instruments of clarity for examining relative strength, independence, and coherence of the evidence.</p>
+  </div>
+  <div class="section">
+    <div class="glass" style="padding:18px;margin-bottom:16px">
+      <h2 style="font-family:Newsreader,serif;font-size:1.2rem;font-weight:500;margin-bottom:6px">Evidence Weight</h2>
+      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:18px">Relative confidence based on quantity, independence, and quality of data. These are transparent statements, not statistical proofs.</p>
+      <div id="evidenceMeters"><div class="loading">Loading…</div></div>
+    </div>
 
-<div style="margin-bottom:22px"><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:0.92rem;font-weight:500">Younger Dryas climatic event</span><span style="font-size:0.75rem;color:var(--accent);font-weight:500">Very Strong</span></div><div style="height:9px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden"><div style="height:100%;width:93%;background:linear-gradient(90deg,#d4b48a,var(--accent));border-radius:100px"></div></div><p style="font-size:0.8rem;color:var(--dim);margin-top:7px">Multiple independent high-resolution proxies. Reality of the event is not in serious dispute.</p></div>
+    <div class="glass" style="padding:18px;margin-bottom:16px">
+      <h2 style="font-family:Newsreader,serif;font-size:1.15rem;font-weight:500;margin-bottom:10px">Claim Inspector</h2>
+      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:14px">Every major claim is broken into supporting evidence, counterpoints, remaining questions, and references.</p>
+      <div id="claimInspector"><div class="loading">Loading…</div></div>
+    </div>
 
-<div style="margin-bottom:22px"><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:0.92rem;font-weight:500">Global distribution of flood narratives</span><span style="font-size:0.75rem;color:var(--accent);font-weight:500">Strong</span></div><div style="height:9px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden"><div style="height:100%;width:84%;background:linear-gradient(90deg,#d4b48a,var(--accent));border-radius:100px"></div></div><p style="font-size:0.8rem;color:var(--dim);margin-top:7px">Motif appears across every major cultural region. Distribution itself is significant data.</p></div>
+    <div class="glass" style="padding:18px;margin-bottom:16px">
+      <h2 style="font-family:Newsreader,serif;font-size:1.15rem;font-weight:500;margin-bottom:10px">Convergence Explorer</h2>
+      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px">How independent fields connect into a coherent sequence.</p>
+      <div style="font-size:0.9rem;color:var(--muted);line-height:1.8;padding:8px 0">
+        <div>Climate proxies (ice cores, speleothems)</div>
+        <div style="padding-left:12px;color:var(--accent)">↓</div>
+        <div>Abrupt environmental disruption (~12.9–11.6 ka)</div>
+        <div style="padding-left:12px;color:var(--accent)">↓</div>
+        <div>Archaeological horizon (Göbekli Tepe Layer III)</div>
+        <div style="padding-left:12px;color:var(--accent)">↓</div>
+        <div>Global mythic memory (flood traditions)</div>
+        <div style="padding-left:12px;color:var(--accent)">↓</div>
+        <div>Interpretive reconstruction (residual knowledge)</div>
+      </div>
+    </div>
 
-<div style="margin-bottom:22px"><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:0.92rem;font-weight:500">Post-YD monumental architecture</span><span style="font-size:0.75rem;color:var(--accent);font-weight:500">Strong</span></div><div style="height:9px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden"><div style="height:100%;width:81%;background:linear-gradient(90deg,#d4b48a,var(--accent));border-radius:100px"></div></div><p style="font-size:0.8rem;color:var(--dim);margin-top:7px">Göbekli Tepe radiocarbon places earliest phases immediately after the climatic recovery.</p></div>
-
-<div style="margin-bottom:22px"><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:0.92rem;font-weight:500">Pillar-city textual ↔ archaeological match</span><span style="font-size:0.75rem;color:var(--dim);font-weight:500">Moderate</span></div><div style="height:9px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden"><div style="height:100%;width:57%;background:linear-gradient(90deg,#d4b48a,var(--accent));border-radius:100px"></div></div><p style="font-size:0.8rem;color:var(--dim);margin-top:7px">Alignment is coherent; exact one-to-one identification remains debated.</p></div>
-
-<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:7px"><span style="font-size:0.92rem;font-weight:500">Parallel non-human intelligence motifs</span><span style="font-size:0.75rem;color:var(--accent);font-weight:500">Consistent</span></div><div style="height:9px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden"><div style="height:100%;width:73%;background:linear-gradient(90deg,#d4b48a,var(--accent));border-radius:100px"></div></div><p style="font-size:0.8rem;color:var(--dim);margin-top:7px">Widespread and structurally similar. Explanatory power high; identification interpretive.</p></div>
+    <div class="glass" style="padding:18px">
+      <h2 style="font-family:Newsreader,serif;font-size:1.15rem;font-weight:500;margin-bottom:8px">How to read the meters</h2>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.65">High weight means multiple independent lines converge clearly. Moderate means alignment is coherent but alternative readings remain viable. The purpose is clarity, not persuasion. Future evidence may strengthen or weaken any individual link.</p>
+    </div>
+  </div>
 </div>
 
-<div class="glass" style="padding:20px;margin-bottom:18px">
-<h2 style="font-family:Newsreader,serif;font-size:1.15rem;font-weight:500;margin-bottom:10px">How to read the meters</h2>
-<p style="font-size:0.9rem;color:var(--muted);line-height:1.65;margin-bottom:12px">These are transparent statements of relative confidence. High weight means data converge clearly. Moderate means alignment is coherent but alternative readings remain viable. The purpose is clarity, not persuasion.</p>
-</div>
-
-<div class="glass" style="padding:20px">
-<h2 style="font-family:Newsreader,serif;font-size:1.15rem;font-weight:500;margin-bottom:10px">Coherence as the measure</h2>
-<p style="font-size:0.9rem;color:var(--muted);line-height:1.65">The reconstruction claims that the largest number of independent lines currently click into place when organised around special origin → disruption → residual re-expression. Future evidence may strengthen or weaken any individual link. The meters keep relative strength visible.</p>
-</div>
-</div>
-</div>
-
+<!-- METHOD -->
 <div id="method" class="page">
-<div class="page-header"><h1>Method & Sources</h1></div>
-<div class="section"><div class="glass" style="padding:20px">
-<p style="font-size:0.98rem;color:var(--muted);margin-bottom:14px;line-height:1.7">This reconstruction treats global myths, anomalous archaeology, and the most coherent ancient textual sequences as recoverable data.</p>
-<p style="font-size:0.98rem;color:var(--muted);line-height:1.7">No claim of final proof is made — only of coherence: the largest number of independent data points clicking into place.</p>
-</div></div>
+  <div class="page-header">
+    <h1>Method & Sources</h1>
+    <p>Transparent standards for evaluating evidence and building the chronology.</p>
+  </div>
+  <div class="section">
+    <div class="glass method-card">
+      <h3>Core Principle</h3>
+      <p>This reconstruction treats climatic records, anomalous archaeology, global myth patterns, and the most coherent ancient textual sequences as recoverable data. No claim of final proof is made — only of coherence: the largest number of independent data points currently clicking into place when organised around special origin → disruption → residual re-expression.</p>
+    </div>
+
+    <div class="glass method-card">
+      <h3>Evidence Hierarchy</h3>
+      <ul class="hierarchy-list">
+        <li><span class="rank">1</span> High-resolution climatic proxies (ice cores, speleothems, varves) with tight chronological control</li>
+        <li><span class="rank">2</span> Radiocarbon-dated archaeological contexts with clear stratigraphy</li>
+        <li><span class="rank">3</span> Independent multi-site geological or paleoenvironmental signals</li>
+        <li><span class="rank">4</span> Cross-cultural mythic motifs with structural consistency and wide distribution</li>
+        <li><span class="rank">5</span> Ancient textual sequences that preserve ordered chronological memory</li>
+        <li><span class="rank">6</span> Interpretive synthesis (always secondary and revisable)</li>
+      </ul>
+    </div>
+
+    <div class="glass method-card">
+      <h3>Evidence Categories Used</h3>
+      <p id="categoriesList">Archaeology · Paleoclimate · Geology · Genetics · Anthropology · Ancient texts · Comparative mythology · Astronomy · Historical records</p>
+    </div>
+
+    <div class="glass method-card">
+      <h3>Confidence Assignment</h3>
+      <p>Each timeline event and major claim receives a confidence statement based on: quantity of independent lines, quality of dating, degree of consensus on the raw data, and remaining uncertainty about interpretation. High confidence means the underlying data are robust; it does not mean every interpretive link is settled.</p>
+    </div>
+
+    <div class="glass method-card">
+      <h3>What This Platform Does Not Claim</h3>
+      <p>It does not assert that every traditional narrative is literal history. It does not dismiss mainstream archaeological frameworks. It does not treat coherence as proof. It simply organises the strongest available signals into a single chronological instrument and keeps the relative strength of each signal visible.</p>
+    </div>
+
+    <div class="glass method-card" id="sourcesRegistry">
+      <h3>Source Registry</h3>
+      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px">Central registry of key sources. Full citation engine coming in the next iteration.</p>
+      <div id="sourcesList"><div class="loading">Loading sources…</div></div>
+    </div>
+  </div>
 </div>
 
 <nav class="bottom-nav">
-<a href="#" class="nav-item active" onclick="go('home')"><span class="nav-icon">⌂</span><span>Home</span></a>
-<a href="#" class="nav-item" onclick="go('timeline')"><span class="nav-icon">◈</span><span>Timeline</span></a>
-<a href="#" class="nav-item" onclick="go('articles')"><span class="nav-icon">☰</span><span>Articles</span></a>
-<a href="#" class="nav-item" onclick="go('data')"><span class="nav-icon">◎</span><span>Data</span></a>
-<a href="#" class="nav-item" onclick="go('method')"><span class="nav-icon">ⓘ</span><span>Method</span></a>
+  <a href="#" class="nav-item active" onclick="go('home')"><span class="nav-icon">⌂</span><span>Home</span></a>
+  <a href="#" class="nav-item" onclick="go('timeline')"><span class="nav-icon">◈</span><span>Timeline</span></a>
+  <a href="#" class="nav-item" onclick="go('articles')"><span class="nav-icon">☰</span><span>Articles</span></a>
+  <a href="#" class="nav-item" onclick="go('data')"><span class="nav-icon">◎</span><span>Data</span></a>
+  <a href="#" class="nav-item" onclick="go('method')"><span class="nav-icon">ⓘ</span><span>Method</span></a>
 </nav>
 
-<script>
-function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const map={home:0,timeline:1,articles:2,data:3,method:4};const items=document.querySelectorAll('.nav-item');if(items[map[id]])items[map[id]].classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
-function tog(card){const d=card.querySelector('.era-detail');const open=d.classList.contains('open');document.querySelectorAll('.era-detail.open').forEach(x=>x.classList.remove('open'));if(!open){d.classList.add('open');setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'nearest'}),40)}}
-</script>
+<script src="app.js"></script>
 </body>
 </html>
