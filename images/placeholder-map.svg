@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+  <rect width="800" height="480" fill="#f5f1eb"/>
+  <text x="40" y="50" font-family="Georgia, serif" font-size="22" fill="#1a1815">Flood Traditions — Global Distribution</text>
+  <text x="40" y="80" font-family="system-ui" font-size="14" fill="#6a645c">Illustrative presence of flood / deluge motifs</text>
+  <circle cx="180" cy="200" r="8" fill="#a87b4f"/>
+  <circle cx="280" cy="180" r="8" fill="#a87b4f"/>
+  <circle cx="380" cy="210" r="8" fill="#a87b4f"/>
+  <circle cx="480" cy="190" r="8" fill="#a87b4f"/>
+  <circle cx="580" cy="220" r="8" fill="#a87b4f"/>
+  <circle cx="220" cy="280" r="8" fill="#a87b4f"/>
+  <circle cx="340" cy="300" r="8" fill="#a87b4f"/>
+  <circle cx="450" cy="270" r="8" fill="#a87b4f"/>
+  <circle cx="550" cy="310" r="8" fill="#a87b4f"/>
+  <circle cx="650" cy="250" r="8" fill="#a87b4f"/>
+  <text x="40" y="450" font-family="system-ui" font-size="12" fill="#968f85">Residual Continuum · conceptual · not a precise ethnographic map</text>
+</svg>
