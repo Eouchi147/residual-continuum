@@ -1,5 +1,5 @@
 {
-  "description": "Central source registry. Each entry can be referenced by ID from articles, timeline events, and evidence claims. Expand this file as the citation engine matures.",
+  "description": "Central source registry. Reference by ID from articles, timeline, and claims. Powers popups and auto-bibliographies.",
   "sources": [
     {
       "id": "rasmussen-2006",
@@ -9,27 +9,33 @@
       "publication": "Journal of Geophysical Research: Atmospheres",
       "field": "Paleoclimate",
       "summary": "Establishes the GICC05 timescale used for precise Younger Dryas onset and termination dating.",
-      "reliability": "High — ice-core layer counting with quantified uncertainty"
+      "reliability": "High — ice-core layer counting with quantified uncertainty",
+      "url": null,
+      "doi": "10.1029/2005JD006079"
     },
     {
       "id": "pnas-2020-yd",
-      "author": "Various (PNAS)",
+      "author": "Various (PNAS consortium)",
       "year": 2020,
       "title": "Timing and structure of the Younger Dryas event and its underlying climate dynamics",
       "publication": "Proceedings of the National Academy of Sciences",
       "field": "Paleoclimate",
       "summary": "Synthesises multi-proxy timing of YD onset (~12.87 ka) and termination across hemispheres.",
-      "reliability": "High"
+      "reliability": "High",
+      "url": null,
+      "doi": null
     },
     {
       "id": "dietrich-gobekli",
       "author": "Dietrich, O. et al.",
       "year": "2013–2024",
       "title": "Radiocarbon sequence and architectural phasing at Göbekli Tepe",
-      "publication": "Various (DAI / Tepe Telegrams / academic papers)",
+      "publication": "DAI / Tepe Telegrams / academic papers",
       "field": "Archaeology",
       "summary": "Primary radiocarbon and stratigraphic work placing Layer III in the mid-10th millennium cal BC.",
-      "reliability": "High for dates; interpretive elements remain open"
+      "reliability": "High for dates; interpretive elements remain open",
+      "url": null,
+      "doi": null
     },
     {
       "id": "schmidt-gobekli",
@@ -38,8 +44,46 @@
       "title": "Göbekli Tepe excavation reports and synthesis",
       "publication": "DAI publications and monographs",
       "field": "Archaeology",
-      "summary": "Foundational excavation data for the site.",
-      "reliability": "Primary data source"
+      "summary": "Foundational excavation data for the site, including architectural documentation of T-pillars and enclosures.",
+      "reliability": "Primary data source",
+      "url": null,
+      "doi": null
+    },
+    {
+      "id": "cheng-speleothem",
+      "author": "Cheng, H. et al.",
+      "year": "2009–2016",
+      "title": "Asian monsoon speleothem records and North Atlantic correlation",
+      "publication": "Science / various",
+      "field": "Paleoclimate",
+      "summary": "High-resolution speleothem δ¹⁸O series that tightly correlate with Greenland ice-core events including the Younger Dryas.",
+      "reliability": "High",
+      "url": null,
+      "doi": null
+    },
+    {
+      "id": "sweatman-calendar",
+      "author": "Sweatman, M.B.",
+      "year": 2024,
+      "title": "Göbekli Tepe’s carvings and proposed solar / comet calendar interpretations",
+      "publication": "Time and Mind / Sci.News coverage",
+      "field": "Archaeology / Archaeoastronomy",
+      "summary": "Interprets pillar iconography as recording a comet impact near the Younger Dryas onset. Contested but widely discussed.",
+      "reliability": "Interpretive — debated",
+      "url": null,
+      "doi": null
+    },
+    {
+      "id": "flood-myths-comparative",
+      "author": "Comparative collections (Frazer, Dundes, regional ethnographies)",
+      "year": "various",
+      "title": "Global flood and deluge narrative catalogues",
+      "publication": "Folklore and anthropology literature",
+      "field": "Comparative mythology",
+      "summary": "Document the worldwide distribution and structural parallels of flood traditions.",
+      "reliability": "Strong for distribution data; causation remains interpretive",
+      "url": null,
+      "doi": null
     }
   ]
 }
