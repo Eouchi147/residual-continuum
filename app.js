@@ -1,11 +1,12 @@
 /* Residual Continuum — app.js
-   Data-driven SPA. All content lives in /data/*.json
+   Data-driven SPA with Source & Citation Engine
 */
 
 let TIMELINE = [];
 let EVIDENCE = { meters: [], claims: [], categories: [] };
 let ARTICLES = [];
 let SOURCES = { sources: [] };
+let sourceMap = {}; // id → source object
 
 async function loadData() {
   try {
@@ -19,6 +20,8 @@ async function loadData() {
     EVIDENCE = ev;
     ARTICLES = ar;
     SOURCES = so;
+    sourceMap = {};
+    (SOURCES.sources || []).forEach(s => { sourceMap[s.id] = s; });
     renderAll();
   } catch (err) {
     console.error('Failed to load data:', err);
@@ -39,6 +42,50 @@ function renderAll() {
   }
 }
 
+/* ---------- Citation helpers ---------- */
+function processCitations(text) {
+  if (!text) return text;
+  return text.replace(/\[ref:([a-z0-9\-]+)\]/gi, (_, id) => {
+    const s = sourceMap[id];
+    if (!s) return `<span class="cite" title="Source not found">[?]</span>`;
+    const label = s.year || s.author.split(',')[0];
+    return `<span class="cite" onclick="showSource('${id}')" title="${s.author} (${s.year})">${label}</span>`;
+  });
+}
+
+function showSource(id) {
+  const s = sourceMap[id];
+  if (!s) return;
+  const popup = document.getElementById('citePopup');
+  const card = document.getElementById('citePopupCard');
+  card.innerHTML = `
+    <button class="close-btn" onclick="closeSource()">×</button>
+    <div class="field">${s.field || 'Source'}</div>
+    <h3>${s.title}</h3>
+    <div class="meta">${s.author} · ${s.year}<br>${s.publication}</div>
+    <div class="summary">${s.summary || ''}</div>
+    <div class="reliability">${s.reliability || ''}</div>
+    ${s.doi ? `<p style="font-size:0.8rem;color:var(--dim);margin-top:12px">DOI: ${s.doi}</p>` : ''}
+  `;
+  popup.classList.add('open');
+}
+
+function closeSource() {
+  document.getElementById('citePopup').classList.remove('open');
+}
+
+function buildBibliography(sourceIds) {
+  if (!sourceIds || !sourceIds.length) return '';
+  const unique = [...new Set(sourceIds)];
+  const items = unique.map(id => {
+    const s = sourceMap[id];
+    if (!s) return `<div class="bib-item"><span class="bib-id">[?]</span> Source ${id} not found</div>`;
+    return `<div class="bib-item"><span class="bib-id">[${s.year}]</span> ${s.author}. <em>${s.title}</em>. ${s.publication}.</div>`;
+  }).join('');
+  return `<div class="bibliography"><h2>Bibliography</h2>${items}</div>`;
+}
+
+/* ---------- Renderers ---------- */
 function renderTimeline() {
   const container = document.getElementById('timelineContainer');
   container.innerHTML = TIMELINE.map(e => {
@@ -46,7 +93,7 @@ function renderTimeline() {
       const color = k === 'climate' ? 'var(--climate)' : (k === 'archaeology' || k === 'geology') ? 'var(--arch)' : 'var(--text-cat)';
       return `<div class="fp-item">${k}<div class="fp-bar"><div class="fp-fill" style="width:${v}%;background:${color}"></div></div></div>`;
     }).join('');
-    const sections = (e.sections || []).map(s => `<h3>${s.h}</h3><p>${s.p}</p>`).join('');
+    const sections = (e.sections || []).map(s => `<h3>${s.h}</h3><p>${processCitations(s.p)}</p>`).join('');
     const tags = (e.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
     return `
       <div class="era">
@@ -85,7 +132,7 @@ function renderClaims() {
   document.getElementById('claimInspector').innerHTML = EVIDENCE.claims.map(c => `
     <div class="claim-card glass">
       <h3>${c.claim}</h3>
-      <div class="claim-section"><strong>Supporting evidence</strong><p>${c.support}</p></div>
+      <div class="claim-section"><strong>Supporting evidence</strong><p>${processCitations(c.support)}</p></div>
       <div class="claim-section"><strong>Counterpoints</strong><p>${c.counter}</p></div>
       <div class="claim-section"><strong>Remaining questions</strong><p>${c.questions}</p></div>
       <div class="claim-section"><strong>References</strong><p>${c.refs}</p></div>
@@ -108,7 +155,7 @@ function renderSources() {
     return;
   }
   list.innerHTML = SOURCES.sources.map(s => `
-    <div class="source-item">
+    <div class="source-item" style="cursor:pointer" onclick="showSource('${s.id}')">
       <strong>${s.author} (${s.year})</strong><br>
       ${s.title}<br>
       <span style="font-size:0.78rem">${s.publication} · ${s.field}</span>
@@ -134,7 +181,7 @@ function openArticle(id) {
   const sectionsHtml = a.sections.map(s => `
     <div class="article-section">
       <h2>${s.h2}</h2>
-      ${s.blocks.map(b => `<h3>${b.h3}</h3><p>${b.p}</p>`).join('')}
+      ${s.blocks.map(b => `<h3>${b.h3}</h3><p>${processCitations(b.p)}</p>`).join('')}
     </div>`).join('');
 
   const evidenceHtml = a.evidenceBlocks.map(eb => `
@@ -143,9 +190,13 @@ function openArticle(id) {
         <span class="eb-type">${eb.type}</span>
         <span class="eb-strength">${eb.strength}</span>
       </div>
-      <p>${eb.text}</p>
+      <p>${processCitations(eb.text)}</p>
       <p style="font-size:0.82rem;color:var(--dim)"><em>Dating:</em> ${eb.dating}</p>
       <div class="limitations"><strong>Limitations:</strong> ${eb.limitations}</div>
+      ${(eb.sourceIds || []).length ? `<div style="margin-top:8px;font-size:0.78rem">${(eb.sourceIds || []).map(sid => {
+        const s = sourceMap[sid];
+        return s ? `<span class="cite" onclick="showSource('${sid}')">${s.year || sid}</span>` : '';
+      }).join(' ')}</div>` : ''}
     </div>`).join('');
 
   const countersHtml = a.counters.map(c => `
@@ -154,7 +205,11 @@ function openArticle(id) {
       <p>${c.text}</p>
     </div>`).join('');
 
-  const bibHtml = a.sources.map(s => `<div class="bib-item">${s}</div>`).join('');
+  const bib = a.sourceIds && a.sourceIds.length
+    ? buildBibliography(a.sourceIds)
+    : (a.sources && a.sources.length
+        ? `<div class="bibliography"><h2>Selected Sources</h2>${a.sources.map(s => `<div class="bib-item">${s}</div>`).join('')}</div>`
+        : '');
 
   document.getElementById('articleContent').innerHTML = `
     <div class="article-hero">
@@ -187,10 +242,7 @@ function openArticle(id) {
       ${countersHtml}
     </div>
 
-    <div class="bibliography">
-      <h2>Selected Sources</h2>
-      ${bibHtml}
-    </div>`;
+    ${bib}`;
   go('articleView');
 }
 
@@ -248,6 +300,11 @@ function runSearch(q) {
   (EVIDENCE.meters || []).forEach(m => {
     if (m.label.toLowerCase().includes(q) || m.note.toLowerCase().includes(q)) {
       hits.push({ type: 'Evidence', title: m.label, sub: m.strength + ' — ' + m.note.slice(0, 70) + '…', action: () => { closeSearch(); go('data'); } });
+    }
+  });
+  (SOURCES.sources || []).forEach(s => {
+    if (s.title.toLowerCase().includes(q) || s.author.toLowerCase().includes(q) || (s.summary || '').toLowerCase().includes(q)) {
+      hits.push({ type: 'Source', title: s.title, sub: s.author + ' (' + s.year + ')', action: () => { closeSearch(); showSource(s.id); } });
     }
   });
 
