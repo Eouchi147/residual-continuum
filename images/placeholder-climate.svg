@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="480" viewBox="0 0 800 480">
+  <rect width="800" height="480" fill="#f5f1eb"/>
+  <text x="40" y="50" font-family="Georgia, serif" font-size="22" fill="#1a1815">Younger Dryas — Climate Proxy Schematic</text>
+  <text x="40" y="80" font-family="system-ui" font-size="14" fill="#6a645c">Conceptual δ¹⁸O / temperature recovery curve</text>
+  <polyline points="60,320 180,300 260,280 320,120 380,100 450,90 520,85 600,80 720,75" fill="none" stroke="#a87b4f" stroke-width="3"/>
+  <line x1="320" y1="100" x2="320" y2="360" stroke="#968f85" stroke-dasharray="4 4"/>
+  <text x="300" y="380" font-family="system-ui" font-size="12" fill="#968f85">~12.9 ka onset</text>
+  <line x1="520" y1="80" x2="520" y2="360" stroke="#968f85" stroke-dasharray="4 4"/>
+  <text x="500" y="400" font-family="system-ui" font-size="12" fill="#968f85">~11.6 ka recovery</text>
+  <text x="40" y="450" font-family="system-ui" font-size="12" fill="#968f85">Residual Continuum · schematic only</text>
+</svg>
