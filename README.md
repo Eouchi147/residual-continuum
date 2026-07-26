@@ -8,33 +8,36 @@ Live site deploys automatically from this repository via Vercel.
 
 ---
 
-## Current Status (V0.95)
-
-Clean multi-file structure with externalised data layer (Phase 3 foundation).
+## Current Status (V1-ready)
 
 ### File Structure
 ```
 /
-├── index.html          # Shell + navigation
-├── styles.css          # Design system
-├── app.js              # Logic + renderers
+├── index.html
+├── styles.css
+├── app.js
+├── manifest.json          # PWA
+├── robots.txt
+├── sitemap.xml
 ├── data/
-│   ├── timeline.json   # Chronological events + fingerprints
-│   ├── evidence.json   # Meters, claims, categories
-│   ├── articles.json   # Full investigations + outlines
-│   └── sources.json    # Central source registry
-└── README.md
+│   ├── timeline.json
+│   ├── evidence.json
+│   ├── articles.json
+│   ├── sources.json
+│   └── images.json
+└── images/                # Visual Archive assets
 ```
 
 ### Completed
-- **Design System** (Phase 0) — Soft bone, charcoal, warm stone, Newsreader + Inter, frosted glass.
-- **Navigation** — Home · Timeline · Articles · Data · Method.
-- **Data Lens** (Phase 1) — Evidence Weight, Claim Inspector, Convergence Explorer.
-- **Timeline Engine** — Data-driven with Evidence Fingerprints + confidence.
-- **Article Framework** (Phase 2) — Full structure for 001 & 002.
-- **Unified Data Layer** (Phase 3 start) — All content in JSON. One update propagates everywhere.
-- **Search** — Client-side across timeline, articles, evidence.
-- **Method + Source Registry**.
+- **Design System** (Phase 0)
+- **Data Lens** (Phase 1) — Evidence Weight, Claim Inspector, Convergence
+- **Timeline Engine** — data-driven + fingerprints + confidence
+- **Article Framework** (Phase 2) — full 001 & 002
+- **Unified Data Layer** (Phase 3)
+- **Source & Citation Engine** — `[ref:id]` → popups + auto-bibliography
+- **Visual Archive** (Phase 8 foundation) — registry + lightbox + schematics
+- **Search** across timeline, articles, evidence, sources
+- **SEO / PWA** — manifest, robots, sitemap, Open Graph, theme-color
 
 ### Investigations
 | ID  | Title                  | Status      |
@@ -45,25 +48,13 @@ Clean multi-file structure with externalised data layer (Phase 3 foundation).
 | 004 | Residual Knowledge     | Outline     |
 | 005 | Parallel Horizon       | Outline     |
 
-### Next toward stable V1
-1. Source & Citation Engine (popups, automatic bibliography).
-2. Image pipeline + Visual Archive.
-3. Performance, SEO, basic PWA.
-4. Public V1 launch with the two complete investigations.
-
-Later: Knowledge Graph, Geographic Atlas, research tools, community contributions.
+### Next (post-V1)
+- Knowledge Graph
+- Geographic Atlas
+- Advanced research tools
+- Community contributions
+- Multilingual (EN → FR → AR → ES)
 
 ---
-
-## Design Notes
-- Soft bone background · deep charcoal text · warm stone accent
-- Frosted glass panels · calm motion
-- Mobile-first · bottom navigation · safe-area aware
-
-## Technical
-- Pure vanilla HTML / CSS / JavaScript
-- No build step
-- Data externalised in `/data`
-- GitHub → Vercel
 
 *Residual Continuum is a living research environment: digital museum + investigative journal + historical research instrument.*
