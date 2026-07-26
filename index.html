@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Residual Continuum</title>
 <meta name="description" content="A premium interactive historical investigation platform reconstructing deep human history through chronology, evidence, sources, and interconnected ideas.">
+<meta name="theme-color" content="#a87b4f">
+<meta property="og:title" content="Residual Continuum">
+<meta property="og:description" content="A premium interactive historical investigation platform reconstructing deep human history through chronology, evidence, sources, and interconnected ideas.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -43,13 +49,18 @@
         <h2>Investigations</h2>
         <p>Long-form research with primary data, counterpoints, and citations.</p>
       </a>
-      <a href="#" class="card glass" onclick="go('data')">
+      <a href="#" class="card glass" onclick="go('archive')">
         <div class="card-num">03</div>
+        <h2>Visual Archive</h2>
+        <p>Image registry with captions, licenses, and timeline links.</p>
+      </a>
+      <a href="#" class="card glass" onclick="go('data')">
+        <div class="card-num">04</div>
         <h2>Data Lens</h2>
         <p>Evidence Weight, Claim Inspector, and convergence tools.</p>
       </a>
       <a href="#" class="card glass" onclick="go('method')">
-        <div class="card-num">04</div>
+        <div class="card-num">05</div>
         <h2>Method & Sources</h2>
         <p>Evidence hierarchy, evaluation standards, and transparency.</p>
       </a>
@@ -86,6 +97,15 @@
 <!-- DYNAMIC ARTICLE VIEW -->
 <div id="articleView" class="page">
   <div id="articleContent"></div>
+</div>
+
+<!-- ARCHIVE -->
+<div id="archive" class="page">
+  <div class="page-header">
+    <h1>Visual Archive</h1>
+    <p>Museum-quality image registry with captions, licenses, and links to timeline and investigations.</p>
+  </div>
+  <div class="section" id="archiveGrid"><div class="loading">Loading archive…</div></div>
 </div>
 
 <!-- DATA LENS -->
@@ -171,7 +191,7 @@
 
     <div class="glass method-card" id="sourcesRegistry">
       <h3>Source Registry</h3>
-      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px">Central registry of key sources. Full citation engine coming in the next iteration.</p>
+      <p style="font-size:0.86rem;color:var(--muted);margin-bottom:12px">Central registry of key sources. Click any entry for full details.</p>
       <div id="sourcesList"><div class="loading">Loading sources…</div></div>
     </div>
   </div>
@@ -181,6 +201,7 @@
   <a href="#" class="nav-item active" onclick="go('home')"><span class="nav-icon">⌂</span><span>Home</span></a>
   <a href="#" class="nav-item" onclick="go('timeline')"><span class="nav-icon">◈</span><span>Timeline</span></a>
   <a href="#" class="nav-item" onclick="go('articles')"><span class="nav-icon">☰</span><span>Articles</span></a>
+  <a href="#" class="nav-item" onclick="go('archive')"><span class="nav-icon">◫</span><span>Archive</span></a>
   <a href="#" class="nav-item" onclick="go('data')"><span class="nav-icon">◎</span><span>Data</span></a>
   <a href="#" class="nav-item" onclick="go('method')"><span class="nav-icon">ⓘ</span><span>Method</span></a>
 </nav>
