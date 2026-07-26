@@ -1,0 +1,206 @@
+[
+  {
+    "id": "001",
+    "num": "001",
+    "title": "The Deluge Horizon",
+    "subtitle": "Younger Dryas termination, hydrological reorganisation, and the global distribution of flood traditions",
+    "status": "Investigation",
+    "readingTime": "18 min",
+    "updated": "2026-07-25",
+    "exec": {
+      "known": "The Younger Dryas was a real, abrupt return to near-glacial conditions beginning ~12.9 ka and ending ~11.7–11.6 ka. Multiple independent proxies confirm the chronology. Flood and deluge motifs appear with structural consistency across every major cultural region of the world.",
+      "uncertain": "Whether any single geological or climatic event is the direct referent of the majority of flood traditions; the precise contribution of local riverine floods versus a shared memory of a broader horizon; the exact trigger of the Younger Dryas itself.",
+      "matters": "If a major climatic and hydrological disruption left recoverable traces in both the physical record and human cultural memory, then chronology, archaeology, and comparative mythology can be read as mutually constraining data rather than separate domains."
+    },
+    "sections": [
+      {
+        "h2": "The Climatic Sequence",
+        "blocks": [
+          {
+            "h3": "Onset",
+            "p": "High-resolution ice-core and speleothem records place the onset of the Younger Dryas near 12,870 ± 30 BP in the North Atlantic domain, with near-synchronous expression in the Asian monsoon region. The transition is measured in decades, not centuries."
+          },
+          {
+            "h3": "Duration and termination",
+            "p": "The cold interval lasted roughly 1,200 years. Termination is marked by a rapid rise in temperature and a reorganisation of atmospheric and oceanic circulation, centred between approximately 11,700 and 11,610 BP depending on the archive."
+          }
+        ]
+      },
+      {
+        "h2": "Hydrological Consequences",
+        "blocks": [
+          {
+            "h3": "Meltwater and drainage",
+            "p": "The end of the Younger Dryas involved large-scale melting and drainage reorganisation. In North America the final collapse of ice-sheet margins and proglacial lakes produced major freshwater pulses. Parallel changes in precipitation regimes affected the Near East, North Africa, and other regions."
+          },
+          {
+            "h3": "Local vs. global signals",
+            "p": "Not every flood tradition needs to remember the same lake outburst. The argument is that a sufficiently severe and widespread disruption can leave both physical traces and a cultural memory horizon that later localises into riverine or coastal flood stories."
+          }
+        ]
+      },
+      {
+        "h2": "The Mythic Distribution",
+        "blocks": [
+          {
+            "h3": "Geographic reach",
+            "p": "Flood or deluge narratives are documented from Mesopotamia, the Levant, Greece, India, China, Aboriginal Australia, the Americas, and many Pacific and African traditions. The motif is not confined to one river system or one literary culture."
+          },
+          {
+            "h3": "Structural features",
+            "p": "Recurrent elements include: a moral or cosmic rupture, a chosen survivor or remnant, a vessel or high ground, the destruction of a previous order, and the re-founding of human society. These parallels do not prove identity of event, but they raise the cost of purely independent invention explanations."
+          }
+        ]
+      }
+    ],
+    "evidenceBlocks": [
+      {
+        "type": "Paleoclimate",
+        "strength": "Very High",
+        "dating": "Ice-core layer counting + radiocarbon calibration",
+        "text": "Greenland GICC05 chronology and multiple Asian speleothem records independently constrain the Younger Dryas window.",
+        "limitations": "Trigger mechanism remains under active debate; Southern Hemisphere expression is more muted and differently timed."
+      },
+      {
+        "type": "Comparative Mythology",
+        "strength": "Strong (distribution) / Moderate (causation)",
+        "dating": "N/A — cultural transmission",
+        "text": "Global presence of structurally similar flood narratives is a robust ethnographic and textual fact.",
+        "limitations": "Motifs can travel, be reinterpreted, and attach to local events. Distribution alone does not identify a single geological cause."
+      }
+    ],
+    "counters": [
+      {
+        "title": "Local river floods are sufficient",
+        "text": "Many traditions can be explained by memorable local or regional floods without invoking a global or hemispheric event. This is the default position in much of comparative mythology and remains fully viable for a large subset of stories."
+      },
+      {
+        "title": "Myth is not history",
+        "text": "Structural parallels may reflect deep cognitive or narrative templates rather than shared memory of a real event. Coherence of motif does not automatically equal coherence of historical referent."
+      }
+    ],
+    "sources": [
+      "Rasmussen, S.O. et al. (2006). A new Greenland ice core chronology for the last glacial termination. JGR Atmospheres.",
+      "Cheng, H. et al. Speleothem records of Asian monsoon and correlation with North Atlantic.",
+      "PNAS (2020). Timing and structure of the Younger Dryas event.",
+      "Standard comparative collections of flood myths (Frazer, Dundes, and regional ethnographies)."
+    ]
+  },
+  {
+    "id": "002",
+    "num": "002",
+    "title": "Monumental Aftermath",
+    "subtitle": "Göbekli Tepe, early monumental architecture, and the Holocene transition",
+    "status": "Investigation",
+    "readingTime": "16 min",
+    "updated": "2026-07-25",
+    "exec": {
+      "known": "Göbekli Tepe’s Layer III circular enclosures with T-shaped pillars date to the mid-10th millennium cal BC, immediately after the Younger Dryas. The architecture is the earliest known of its scale and sophistication. The builders were still operating in a hunter-gatherer economic context.",
+      "uncertain": "How much earlier activity exists on the site; the full range of functions of the enclosures; the precise social organisation required; whether the knowledge embodied in the architecture is best described as residual, locally invented, or both.",
+      "matters": "If complex monumental construction appears so early and so suddenly after a major climatic disruption, then models of gradual, purely local accumulation of complexity need to be tested against the possibility of transmitted or recovered knowledge."
+    },
+    "sections": [
+      {
+        "h2": "Chronology of the Site",
+        "blocks": [
+          {
+            "h3": "Layer III",
+            "p": "The oldest architectural phase consists of large circular or oval enclosures built around two central T-shaped pillars, with further pillars set in the surrounding walls. Enclosure D has produced some of the earliest secure dates."
+          },
+          {
+            "h3": "Radiocarbon anchors",
+            "p": "Wall plaster from Enclosure D has been dated to 9984 ± 42 ¹⁴C BP (approximately 9745–9314 cal BC at 95 % confidence). Associated charcoal samples fall in the same general window. Later rectangular buildings of Layer II are younger."
+          }
+        ]
+      },
+      {
+        "h2": "Architectural Character",
+        "blocks": [
+          {
+            "h3": "Scale and skill",
+            "p": "Pillars weigh several tonnes. Surfaces are carved with animals, abstract symbols, and in some cases anthropomorphic features. The geometry of the enclosures and the consistency of the T-form indicate planning and specialised knowledge."
+          },
+          {
+            "h3": "Context",
+            "p": "No domestic architecture of comparable date has been found in the immediate vicinity at the same scale. The site appears specialised. Only a minority of the tell has been excavated; ground-penetrating radar indicates further large structures."
+          }
+        ]
+      },
+      {
+        "h2": "Interpretive Options",
+        "blocks": [
+          {
+            "h3": "Local emergence",
+            "p": "Symbolic behaviour and increasingly complex social gatherings are already visible in the preceding Epipaleolithic of the region. Göbekli Tepe can be read as the spectacular culmination of that trajectory once climatic conditions stabilised."
+          },
+          {
+            "h3": "Residual expression",
+            "p": "The residual-knowledge reading notes the absence of clear intermediate monumental steps at this scale and the chronological placement immediately after a major disruption. It treats the architecture as the re-expression of capabilities that predate the visible archaeological sequence."
+          }
+        ]
+      }
+    ],
+    "evidenceBlocks": [
+      {
+        "type": "Archaeology / Radiocarbon",
+        "strength": "High",
+        "dating": "AMS on plaster organic fraction and charcoal",
+        "text": "Multiple samples place the construction and use of the major Layer III enclosures in the centuries following the Younger Dryas termination.",
+        "limitations": "Backfill contexts can contain older material; the full occupational sequence is still incomplete."
+      },
+      {
+        "type": "Architectural analysis",
+        "strength": "Strong",
+        "dating": "Relative stratigraphy + absolute dates",
+        "text": "The T-pillar tradition and circular enclosure form are consistent and sophisticated from the earliest phases so far exposed.",
+        "limitations": "Function (ritual, social, calendrical, or mixed) remains interpretive."
+      }
+    ],
+    "counters": [
+      {
+        "title": "Missing intermediate steps are an excavation bias",
+        "text": "Because so little of the landscape and of the tell itself has been dug, apparent suddenness may simply reflect incomplete sampling. Future work could fill the gap with earlier monumental or proto-monumental sites."
+      },
+      {
+        "title": "Hunter-gatherers are capable of complexity",
+        "text": "Ethnographic and archaeological parallels show that non-agricultural societies can organise large collective projects. No special residual knowledge is required."
+      }
+    ],
+    "sources": [
+      "Dietrich, O. et al. Radiocarbon sequence work on Göbekli Tepe (various papers).",
+      "Schmidt, K. and subsequent DAI publications on the site.",
+      "Tepe Telegrams (DAI blog) dating summaries.",
+      "Sweatman, M. interpretations of pillar iconography (calendar hypothesis — contested)."
+    ]
+  },
+  {
+    "id": "003",
+    "num": "003",
+    "title": "Cities of Pillars",
+    "subtitle": "Ancient architecture, shared motifs, and cultural transmission",
+    "status": "Outline",
+    "readingTime": "—",
+    "updated": "2026-07-25",
+    "exec": null
+  },
+  {
+    "id": "004",
+    "num": "004",
+    "title": "Residual Knowledge",
+    "subtitle": "Preservation of knowledge across generations and early civilisations",
+    "status": "Outline",
+    "readingTime": "—",
+    "updated": "2026-07-25",
+    "exec": null
+  },
+  {
+    "id": "005",
+    "num": "005",
+    "title": "Parallel Horizon",
+    "subtitle": "Global traditions of non-human intelligence and comparative mythology",
+    "status": "Outline",
+    "readingTime": "—",
+    "updated": "2026-07-25",
+    "exec": null
+  }
+]
