@@ -318,3 +318,95 @@ body {
   font-size: 0.82rem; color: var(--accent); text-decoration: none; margin-bottom: 12px;
   cursor: pointer;
 }
+
+/* ========== Citation Engine ========== */
+.cite {
+  font-size: 0.72rem;
+  color: var(--accent);
+  vertical-align: super;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: none;
+  margin: 0 1px;
+}
+.cite:hover { text-decoration: underline; }
+
+.cite-popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(26,24,21,0.35);
+  backdrop-filter: blur(4px);
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+}
+.cite-popup.open {
+  display: flex;
+}
+.cite-popup-card {
+  width: 100%;
+  max-width: 480px;
+  max-height: 70dvh;
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 20px 20px 0 0;
+  padding: 22px 20px 28px;
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.12);
+  animation: slideUp 0.28s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.cite-popup-card .close-btn {
+  float: right;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: var(--dim);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0 8px 8px;
+}
+.cite-popup-card .field {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-bottom: 3px;
+}
+.cite-popup-card h3 {
+  font-family: Newsreader, serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  clear: both;
+}
+.cite-popup-card .meta {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.cite-popup-card .summary {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.cite-popup-card .reliability {
+  font-size: 0.82rem;
+  color: var(--accent);
+  background: var(--accent-soft);
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* Bibliography auto-list */
+.bib-item .bib-id {
+  font-size: 0.72rem;
+  color: var(--accent);
+  margin-right: 4px;
+}
