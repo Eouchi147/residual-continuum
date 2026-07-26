@@ -1,0 +1,45 @@
+{
+  "description": "Central source registry. Each entry can be referenced by ID from articles, timeline events, and evidence claims. Expand this file as the citation engine matures.",
+  "sources": [
+    {
+      "id": "rasmussen-2006",
+      "author": "Rasmussen, S.O. et al.",
+      "year": 2006,
+      "title": "A new Greenland ice core chronology for the last glacial termination",
+      "publication": "Journal of Geophysical Research: Atmospheres",
+      "field": "Paleoclimate",
+      "summary": "Establishes the GICC05 timescale used for precise Younger Dryas onset and termination dating.",
+      "reliability": "High — ice-core layer counting with quantified uncertainty"
+    },
+    {
+      "id": "pnas-2020-yd",
+      "author": "Various (PNAS)",
+      "year": 2020,
+      "title": "Timing and structure of the Younger Dryas event and its underlying climate dynamics",
+      "publication": "Proceedings of the National Academy of Sciences",
+      "field": "Paleoclimate",
+      "summary": "Synthesises multi-proxy timing of YD onset (~12.87 ka) and termination across hemispheres.",
+      "reliability": "High"
+    },
+    {
+      "id": "dietrich-gobekli",
+      "author": "Dietrich, O. et al.",
+      "year": "2013–2024",
+      "title": "Radiocarbon sequence and architectural phasing at Göbekli Tepe",
+      "publication": "Various (DAI / Tepe Telegrams / academic papers)",
+      "field": "Archaeology",
+      "summary": "Primary radiocarbon and stratigraphic work placing Layer III in the mid-10th millennium cal BC.",
+      "reliability": "High for dates; interpretive elements remain open"
+    },
+    {
+      "id": "schmidt-gobekli",
+      "author": "Schmidt, K. and DAI team",
+      "year": "1995–present",
+      "title": "Göbekli Tepe excavation reports and synthesis",
+      "publication": "DAI publications and monographs",
+      "field": "Archaeology",
+      "summary": "Foundational excavation data for the site.",
+      "reliability": "Primary data source"
+    }
+  ]
+}
