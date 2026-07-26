@@ -1,25 +1,28 @@
 /* Residual Continuum — app.js
-   Data-driven SPA with Source & Citation Engine
+   Data-driven SPA with Source & Citation Engine + Visual Archive
 */
 
 let TIMELINE = [];
 let EVIDENCE = { meters: [], claims: [], categories: [] };
 let ARTICLES = [];
 let SOURCES = { sources: [] };
+let IMAGES = { images: [] };
 let sourceMap = {}; // id → source object
 
 async function loadData() {
   try {
-    const [tl, ev, ar, so] = await Promise.all([
+    const [tl, ev, ar, so, im] = await Promise.all([
       fetch('data/timeline.json').then(r => r.json()),
       fetch('data/evidence.json').then(r => r.json()),
       fetch('data/articles.json').then(r => r.json()),
-      fetch('data/sources.json').then(r => r.json())
+      fetch('data/sources.json').then(r => r.json()),
+      fetch('data/images.json').then(r => r.json())
     ]);
     TIMELINE = tl;
     EVIDENCE = ev;
     ARTICLES = ar;
     SOURCES = so;
+    IMAGES = im;
     sourceMap = {};
     (SOURCES.sources || []).forEach(s => { sourceMap[s.id] = s; });
     renderAll();
@@ -37,6 +40,7 @@ function renderAll() {
   renderClaims();
   renderArticlesList();
   renderSources();
+  renderArchive();
   if (EVIDENCE.categories && EVIDENCE.categories.length) {
     document.getElementById('categoriesList').textContent = EVIDENCE.categories.join(' · ');
   }
@@ -162,6 +166,52 @@ function renderSources() {
     </div>`).join('');
 }
 
+function renderArchive() {
+  const grid = document.getElementById('archiveGrid');
+  if (!grid) return;
+  const imgs = IMAGES.images || [];
+  if (!imgs.length) {
+    grid.innerHTML = '<p style="color:var(--dim)">No images in the archive yet.</p>';
+    return;
+  }
+  grid.innerHTML = '<div class="archive-grid">' + imgs.map(img => `
+    <div class="archive-card glass" onclick="openLightbox('${img.id}')">
+      <img src="${img.src}" alt="${img.title}" loading="lazy">
+      <div class="meta">
+        <h3>${img.title}</h3>
+        <p>${img.caption.slice(0, 110)}${img.caption.length > 110 ? '…' : ''}</p>
+        <div class="tags">${(img.tags || []).slice(0,3).map(t => `<span class="tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>`).join('') + '</div>';
+}
+
+function openLightbox(id) {
+  const img = (IMAGES.images || []).find(i => i.id === id);
+  if (!img) return;
+  let lb = document.getElementById('lightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'lightbox';
+    lb.className = 'lightbox';
+    lb.onclick = (e) => { if (e.target === lb) closeLightbox(); };
+    lb.innerHTML = '<button class="lightbox-close" onclick="closeLightbox()">×</button><div class="lightbox-inner" id="lightboxInner"></div>';
+    document.body.appendChild(lb);
+  }
+  document.getElementById('lightboxInner').innerHTML = `
+    <img src="${img.src}" alt="${img.title}">
+    <h2>${img.title}</h2>
+    <p class="caption">${img.caption}</p>
+    <p class="credit">${img.credit || ''} · ${img.license || ''}${img.location ? ' · ' + img.location : ''}</p>
+    ${(img.tags || []).length ? '<div class="tags" style="margin-top:10px">' + img.tags.map(t => `<span class="tag">${t}</span>`).join('') + '</div>' : ''}
+  `;
+  lb.classList.add('open');
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  if (lb) lb.classList.remove('open');
+}
+
 function openArticle(id) {
   const a = ARTICLES.find(x => x.id === id);
   if (!a) return;
@@ -253,7 +303,7 @@ function go(id) {
   if (el) el.classList.add('active');
 
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const map = { home: 0, timeline: 1, articles: 2, data: 3, method: 4, articleView: 2 };
+  const map = { home: 0, timeline: 1, articles: 2, archive: 3, data: 4, method: 5, articleView: 2 };
   const items = document.querySelectorAll('.nav-item');
   if (items[map[id]] !== undefined) items[map[id]].classList.add('active');
 
