@@ -1,0 +1,61 @@
+{
+  "meters": [
+    {
+      "label": "Younger Dryas climatic event",
+      "score": 93,
+      "strength": "Very Strong",
+      "note": "Multiple independent high-resolution proxies (ice cores, speleothems). Reality of the event is not in serious dispute."
+    },
+    {
+      "label": "Global distribution of flood narratives",
+      "score": 84,
+      "strength": "Strong",
+      "note": "Motif appears across every major cultural region with structural parallels. Distribution itself is significant data."
+    },
+    {
+      "label": "Post-YD monumental architecture (Göbekli Tepe)",
+      "score": 88,
+      "strength": "Strong",
+      "note": "Radiocarbon places earliest Layer III phases immediately after climatic recovery. Stratigraphy and architecture are robust."
+    },
+    {
+      "label": "Pillar-city textual ↔ archaeological match",
+      "score": 57,
+      "strength": "Moderate",
+      "note": "Alignment is coherent; exact one-to-one identification of legendary sites remains debated."
+    },
+    {
+      "label": "Parallel non-human intelligence motifs",
+      "score": 73,
+      "strength": "Consistent",
+      "note": "Widespread and structurally similar. Explanatory power high; precise identification interpretive."
+    }
+  ],
+  "claims": [
+    {
+      "claim": "The Younger Dryas constitutes a major, abrupt climatic disruption tightly dated to ~12.9–11.6 ka.",
+      "support": "Greenland ice-core δ¹⁸O, Asian speleothem records, and multiple lake sequences show synchronous onset within decades and a clear termination window.",
+      "counter": "Trigger mechanism is still debated (meltwater pulse, volcanic, cosmic impact/airburst, or combination). Timing of the onset itself is high-confidence.",
+      "questions": "What was the dominant forcing? How globally uniform were the effects outside the North Atlantic–monsoon domain?",
+      "refs": "Rasmussen et al. GICC05; Cheng et al. speleothem syntheses; PNAS 2020 timing study."
+    },
+    {
+      "claim": "Göbekli Tepe’s earliest monumental phase sits immediately after the Younger Dryas termination and represents residual rather than de-novo complexity.",
+      "support": "Radiocarbon from Enclosure D wall plaster and associated charcoal cluster in the mid-10th millennium cal BC. Architecture is sophisticated and appears without clear local monumental predecessors.",
+      "counter": "Only a small percentage of the site is excavated. Gradual local development of symbolic behaviour in the preceding Epipaleolithic is documented elsewhere in the region.",
+      "questions": "How much earlier occupation exists beneath the current enclosures? What knowledge transmission mechanisms are actually required?",
+      "refs": "Dietrich & Schmidt radiocarbon work; Tepe Telegrams dating summaries; Sweatman calendar interpretations (debated)."
+    }
+  ],
+  "categories": [
+    "Archaeology",
+    "Paleoclimate",
+    "Geology",
+    "Genetics",
+    "Anthropology",
+    "Ancient texts",
+    "Comparative mythology",
+    "Astronomy",
+    "Historical records"
+  ]
+}
