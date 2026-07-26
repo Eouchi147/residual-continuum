@@ -1,0 +1,18 @@
+{
+  "name": "Residual Continuum",
+  "short_name": "Continuum",
+  "description": "Premium interactive historical investigation platform — chronology, evidence, sources, and interconnected ideas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f1eb",
+  "theme_color": "#a87b4f",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "images/placeholder-architecture.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
