@@ -1,0 +1,166 @@
+[
+  {
+    "id": "deep-time",
+    "year": "Deep Time",
+    "title": "Preparation of the World",
+    "summary": "Long geological and cosmic ages that establish the climatic and ecological conditions for later life.",
+    "confidence": "Contextual",
+    "fingerprint": {
+      "climate": 85,
+      "geology": 90,
+      "texts": 55
+    },
+    "sections": [
+      {
+        "h": "Framing",
+        "p": "Any coherent reconstruction of deep human history must begin before the first humans. Climatic systems, continental configurations, and ecological scaffolding are the product of deep time. The strongest sequential ancient accounts treat these preparatory ages as real and ordered rather than purely symbolic."
+      }
+    ],
+    "tags": ["Geological readiness", "Cosmic sequence"]
+  },
+  {
+    "id": "origin",
+    "year": "Origin Horizon",
+    "title": "The First Ones",
+    "summary": "Sudden appearance of fully human beings of exceptional stature and longevity in the most coherent ancient sequences.",
+    "confidence": "Interpretive",
+    "fingerprint": {
+      "texts": 70,
+      "anthro": 40,
+      "genetics": 30
+    },
+    "sections": [
+      {
+        "h": "Special origin",
+        "p": "The most coherent ancient sequences present the first humans as a deliberate creation — fully human, language-bearing, and already in possession of knowledge that later generations only partially retain. This is treated as a data point of cultural memory rather than a settled biological claim."
+      }
+    ],
+    "tags": ["Special origin", "Stature", "Longevity"]
+  },
+  {
+    "id": "yd-onset",
+    "year": "~12.9 ka",
+    "title": "Younger Dryas Onset",
+    "summary": "Abrupt return to near-glacial conditions. One of the most clearly defined rapid climate shifts in the late Quaternary.",
+    "confidence": "Very High",
+    "fingerprint": {
+      "climate": 95,
+      "geology": 88,
+      "archaeology": 60
+    },
+    "sections": [
+      {
+        "h": "The climatic event",
+        "p": "Around 12,870–12,900 years before present the Northern Hemisphere experienced sudden severe cooling, tightly dated by multiple independent high-resolution proxies (Greenland ice cores, speleothems, lake sequences). The reality and abruptness of the event are not in serious dispute. Onset is essentially synchronous across North Atlantic and Asian monsoon regions within decades."
+      },
+      {
+        "h": "Uncertainty",
+        "p": "The precise trigger remains debated (freshwater forcing, volcanic, extraterrestrial airburst hypotheses, or combination). The chronological fact of the onset itself carries very high confidence."
+      }
+    ],
+    "tags": ["Ice-core data", "~12.9 ka", "Abrupt climate"]
+  },
+  {
+    "id": "flood",
+    "year": "~11.6 ka",
+    "title": "Flood Horizon",
+    "summary": "Rapid warming, major hydrological reorganisation, and the global distribution of flood traditions.",
+    "confidence": "High (climate) / Moderate–Strong (memory)",
+    "fingerprint": {
+      "climate": 92,
+      "archaeology": 65,
+      "texts": 78
+    },
+    "sections": [
+      {
+        "h": "Termination and narratives",
+        "p": "The end of the Younger Dryas brought rapid warming (termination centred ~11,700–11,610 BP). Large-scale hydrological reorganisation followed. Flood traditions appear across every major cultural region with structural similarities that exceed simple coincidence of local river floods. The chronological proximity of the climatic recovery and the density of the mythic memory is treated as a coherent horizon."
+      },
+      {
+        "h": "Caveat",
+        "p": "Global distribution of the motif is robust data. Direct one-to-one identification of any single geological event with any single narrative remains interpretive."
+      }
+    ],
+    "tags": ["Global flood myths", "~11.6 ka", "Hydrological change"]
+  },
+  {
+    "id": "monumental",
+    "year": "~11.6–9.6 ka",
+    "title": "Monumental Aftermath",
+    "summary": "Göbekli Tepe appears with sophisticated T-pillar architecture immediately after the climatic disruption.",
+    "confidence": "High",
+    "fingerprint": {
+      "archaeology": 90,
+      "climate": 75,
+      "texts": 45
+    },
+    "sections": [
+      {
+        "h": "Göbekli Tepe",
+        "p": "The oldest known monumental architecture. Radiocarbon places the earliest phases of Layer III (especially Enclosure D) in the mid-10th millennium cal BC — immediately after the Younger Dryas termination. Hunter-gatherer groups erected large circular enclosures with carved T-shaped pillars. The site is read here as residual knowledge expressed in stone rather than the first invention of complex architecture from a blank slate."
+      },
+      {
+        "h": "Dating notes",
+        "p": "Wall plaster from Enclosure D yields ~9984 ± 42 ¹⁴C BP (calibrated ~9745–9314 cal BC). Charcoal and other samples cluster in the same window. Only a fraction of the tell has been excavated."
+      }
+    ],
+    "tags": ["T-pillars", "Radiocarbon", "PPNA"]
+  },
+  {
+    "id": "pillars",
+    "year": "Post-Reset",
+    "title": "Cities of Pillars",
+    "summary": "Textual traditions of lofty pillars later buried by sand find archaeological correlates at sites such as Shisr.",
+    "confidence": "Moderate",
+    "fingerprint": {
+      "archaeology": 55,
+      "texts": 70,
+      "geology": 40
+    },
+    "sections": [
+      {
+        "h": "Shisr / Ubar cluster",
+        "p": "Excavations at Shisr (Oman) uncovered an octagonal structure with towers. The combination of textual memory of pillar cities swallowed by sand and the archaeological remains forms a coherent but still debated cluster. Exact identification of any single site with the legendary Ubar remains open."
+      }
+    ],
+    "tags": ["Shisr", "Pillar traditions", "Arabia"]
+  },
+  {
+    "id": "parallel",
+    "year": "Parallel Horizon",
+    "title": "The Fire-Born",
+    "summary": "A second intelligent order accounts for persistent global spirit and non-human intelligence traditions with striking economy.",
+    "confidence": "Consistent (motif) / Interpretive (identity)",
+    "fingerprint": {
+      "texts": 80,
+      "anthro": 65,
+      "archaeology": 25
+    },
+    "sections": [
+      {
+        "h": "The second creation",
+        "p": "Creation from smokeless fire preceding the human line appears in the most coherent sequential accounts. Three primary forms map onto worldwide spirit, jinn, and dragon traditions with notable structural economy. The motif is treated as cultural data requiring explanation; the precise ontological status remains outside the scope of chronological reconstruction."
+      }
+    ],
+    "tags": ["Three forms", "Fire origin", "Spirit traditions"]
+  },
+  {
+    "id": "residual",
+    "year": "Later Ages",
+    "title": "Residual Knowledge",
+    "summary": "Early civilisations display technical and organisational knowledge that appears inherited rather than newly invented from zero.",
+    "confidence": "Moderate–Strong",
+    "fingerprint": {
+      "archaeology": 75,
+      "texts": 70,
+      "anthro": 55
+    },
+    "sections": [
+      {
+        "h": "Sudden complexity",
+        "p": "Egypt, Sumer and other early centres appear with sophisticated systems of writing, measurement, astronomy, and monumental construction. The residual-knowledge reading treats this as transmission and recovery rather than pure de-novo invention after a hard reset. Alternative gradualist accounts remain viable and are kept in view."
+      }
+    ],
+    "tags": ["Inheritance", "Sudden complexity", "Early states"]
+  }
+]
