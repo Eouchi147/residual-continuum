@@ -1,0 +1,41 @@
+{
+  "description": "Visual Archive — museum-quality image registry with metadata, licenses, and links to timeline / articles.",
+  "images": [
+    {
+      "id": "yd-ice-core",
+      "title": "Greenland ice-core δ¹⁸O schematic (Younger Dryas)",
+      "caption": "Conceptual representation of the abrupt Younger Dryas cooling and recovery as recorded in high-resolution ice cores.",
+      "src": "images/placeholder-climate.svg",
+      "license": "Public domain / schematic",
+      "credit": "Residual Continuum",
+      "location": null,
+      "timelineIds": ["yd-onset", "flood"],
+      "articleIds": ["001"],
+      "tags": ["paleoclimate", "ice-core", "Younger Dryas"]
+    },
+    {
+      "id": "gobekli-overview",
+      "title": "Göbekli Tepe — Enclosure D (schematic)",
+      "caption": "T-pillar circular enclosure typical of Layer III. Radiocarbon places the earliest phases immediately after the Younger Dryas termination.",
+      "src": "images/placeholder-architecture.svg",
+      "license": "Public domain / schematic",
+      "credit": "Residual Continuum",
+      "location": "Şanlıurfa, Türkiye",
+      "timelineIds": ["monumental"],
+      "articleIds": ["002"],
+      "tags": ["archaeology", "Göbekli Tepe", "PPNA", "T-pillars"]
+    },
+    {
+      "id": "flood-motif",
+      "title": "Flood Traditions — Global Distribution",
+      "caption": "Flood and deluge motifs appear across every major cultural region. The map is illustrative of distribution, not of a single geological event.",
+      "src": "images/placeholder-map.svg",
+      "license": "Public domain / schematic",
+      "credit": "Residual Continuum",
+      "location": null,
+      "timelineIds": ["flood"],
+      "articleIds": ["001"],
+      "tags": ["mythology", "flood", "comparative"]
+    }
+  ]
+}
