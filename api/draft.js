@@ -57,10 +57,20 @@ const BEATS = [
    else — Direction C stays locked. */
 const ACCENTS = ["amber", "umber", "stone", "slate"];
 
+/* Defence in depth. CONTACT_EMAIL is only ever used server-side in CrossRef
+   URLs and is never rendered — but a model can echo an address it saw in a
+   prompt, an abstract, or an author field. Nothing matching an email pattern
+   reaches the page. */
+const stripEmails = (s) =>
+  String(s == null ? "" : s).replace(
+    /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, "[address removed]");
+
 const esc = (s) =>
   String(s == null ? "" : s)
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
+             "[address removed]");
 
 async function j(url, opts = {}) {
   const r = await fetch(url, opts);
@@ -157,6 +167,7 @@ async function findImage(terms) {
 }
 
 /* ------------------------------------------------------------------ model */
+/* The model is never shown any account address, and is told so. */
 const SYSTEM = `You write short dispatches for Residual Continuum, an
 independent chronological reconstruction reading climate data, archaeology
 and memory traditions as one sequence.
@@ -178,6 +189,9 @@ SOURCING — absolute:
   checked against CrossRef after you write, and unverifiable references are
   deleted from your draft.
 - Do not attribute a claim to a paper whose abstract does not support it.
+
+PRIVACY — absolute:
+- Never write an email address, personal name of the site owner, account handle, or any contact detail. If a source contains one, omit it. The site is published without a personal byline.
 
 FORBIDDEN VOCABULARY — the site deliberately keeps a comparative register:
 never write Islam, Islamic, Muslim, Quran, Quranic, hadith, jinn, djinn,
@@ -263,7 +277,7 @@ function render(post, refs, image, dateISO, accession) {
     `<h2>${esc(post.title)}</h2>` +
     `<p class="dp-stand">${esc(post.standfirst)}</p>` +
     fig +
-    `<div class="dp-body">${post.body.join("")}` +
+    `<div class="dp-body">${stripEmails(post.body.join(""))}` +
     (post.relates_to
       ? `<p><strong>Bearing on the reconstruction:</strong> ` +
         `${esc(post.relates_to)}</p>` : "") +

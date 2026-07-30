@@ -648,6 +648,95 @@ h1,h2,h3,.era-title,.cl-name{text-wrap:balance}
 @media print{.sc-stage{position:static}.sc-steps{gap:var(--sp-4);padding:0}
   .sc-step p{opacity:1}}
 @media(min-width:900px){#page-passages{max-width:1120px}}
+
+/* ============ assistant ========================================== */
+.ask-launch{position:fixed;right:max(16px,env(safe-area-inset-right));
+  bottom:calc(78px + env(safe-area-inset-bottom));z-index:55;
+  display:flex;align-items:center;gap:8px;padding:9px 15px 9px 11px;
+  border-radius:99px;border:1px solid var(--border);cursor:pointer;
+  background:var(--glass2);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  font-family:inherit;font-size:var(--step--2);letter-spacing:.07em;
+  text-transform:uppercase;color:var(--text);font-weight:500;
+  box-shadow:0 1px 2px -1px rgba(26,24,21,.12),
+             0 10px 24px -10px rgba(26,24,21,.14),
+             inset 0 1px 0 rgba(255,255,255,.85);
+  transition:transform var(--dur-ui) var(--ease-quiet),
+             box-shadow var(--dur-ui) var(--ease-quiet)}
+.ask-launch:hover{transform:translateY(-1px);
+  box-shadow:0 2px 4px -2px rgba(26,24,21,.14),
+             0 16px 32px -12px rgba(26,24,21,.16),
+             inset 0 1px 0 rgba(255,255,255,.9)}
+.ask-mark{display:grid;place-items:center;width:20px;height:20px;
+  border-radius:50%;background:var(--accent);color:var(--bg);
+  font-size:12px;font-weight:600;letter-spacing:0}
+.ask-scrim{position:fixed;inset:0;z-index:60;background:rgba(26,24,21,.28);
+  backdrop-filter:blur(2px)}
+.ask-panel{position:fixed;z-index:61;
+  left:50%;transform:translateX(-50%);
+  bottom:calc(12px + env(safe-area-inset-bottom));
+  width:min(560px,calc(100vw - 24px));
+  max-height:min(78vh,720px);overflow-y:auto;
+  background:var(--glass);
+  backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid var(--border);border-radius:22px;padding:var(--sp-5);
+  box-shadow:0 2px 6px -2px rgba(26,24,21,.14),
+             0 28px 64px -20px rgba(26,24,21,.22),
+             inset 0 1px 0 rgba(255,255,255,.85)}
+.ask-panel[hidden],.ask-scrim[hidden]{display:none}
+.ask-head{display:flex;justify-content:space-between;align-items:flex-start;
+  gap:var(--sp-4);margin-bottom:var(--sp-3)}
+.ask-kicker{font-size:var(--step--2);letter-spacing:.1em;
+  text-transform:uppercase;color:#6d4a1e;font-weight:600}
+.ask-h{font-family:Newsreader,Georgia,serif;font-size:var(--step-2);
+  font-weight:500;margin:2px 0 0}
+.ask-x{background:none;border:0;font-size:22px;line-height:1;cursor:pointer;
+  color:var(--muted);padding:2px 6px;border-radius:8px;font-family:inherit}
+.ask-x:hover{color:var(--text);background:rgba(26,24,21,.05)}
+.ask-note,.ask-privacy{font-size:var(--step--2);line-height:1.55;
+  color:var(--muted);margin-bottom:var(--sp-4)}
+.ask-privacy{margin:var(--sp-3) 0 0;padding-top:var(--sp-3);
+  border-top:1px solid var(--border)}
+.ask-log{display:grid;gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.ask-log:empty{display:none}
+.ask-turn{font-size:var(--step--1);line-height:1.62}
+.ask-turn--you{color:var(--text);font-weight:500;
+  padding-left:var(--sp-3);border-left:2px solid var(--track)}
+.ask-turn--it{color:var(--ink-2);background:rgba(26,24,21,.035);
+  border-left:2px solid var(--accent);border-radius:0 12px 12px 0;
+  padding:11px 13px}
+.ask-turn--warn{border-left-color:#845011}
+.ask-src{display:block;margin-top:7px;font-size:10.5px;color:var(--muted)}
+.ask-jump{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.ask-jump button{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 10px;border-radius:99px;border:1px solid var(--border);
+  background:var(--bg);color:#6d4a1e;cursor:pointer;font-family:inherit;
+  min-height:26px}
+.ask-jump button:hover{background:var(--pill)}
+.ask-q,.ask-in{width:100%;font-family:inherit;font-size:var(--step--1);
+  line-height:1.5;color:var(--text);background:var(--bg);
+  border:1px solid var(--border);border-radius:12px;padding:10px 12px;
+  resize:vertical}
+.ask-q:focus-visible,.ask-in:focus-visible{outline:2px solid var(--accent);
+  outline-offset:1px}
+.ask-lbl{display:block;font-size:var(--step--2);color:var(--muted);
+  margin:var(--sp-3) 0 5px;font-weight:500}
+.ask-opt{font-weight:400;font-style:italic}
+.ask-actions{display:flex;gap:var(--sp-2);margin-top:var(--sp-3);
+  flex-wrap:wrap;align-items:center}
+.ask-send{font-family:inherit;font-size:var(--step--2);letter-spacing:.07em;
+  text-transform:uppercase;font-weight:500;padding:9px 18px;border-radius:99px;
+  border:1px solid var(--text);background:var(--text);color:var(--bg);
+  cursor:pointer;min-height:34px}
+.ask-send[disabled]{opacity:.5;cursor:default}
+.ask-alt{font-family:inherit;font-size:var(--step--2);letter-spacing:.07em;
+  text-transform:uppercase;padding:9px 14px;border-radius:99px;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;min-height:34px}
+.ask-alt:hover{color:var(--text);background:rgba(26,24,21,.04)}
+@media print{.ask-launch,.ask-panel,.ask-scrim{display:none!important}}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
@@ -910,6 +999,7 @@ h1,h2,h3,.era-title,.cl-name{text-wrap:balance}
 </div>
 <div id="page-announcer" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px"></div>
 </div>
+<button type="button" class="ask-launch" id="ask-launch" aria-haspopup="dialog" aria-expanded="false" aria-controls="ask-panel"><span class="ask-mark" aria-hidden="true">?</span><span class="ask-launch-t">Ask</span></button><div class="ask-scrim" id="ask-scrim" hidden></div><div class="ask-panel" id="ask-panel" role="dialog" aria-modal="true" aria-labelledby="ask-h" hidden><div class="ask-head"><div><div class="ask-kicker">The record, questioned</div><h2 class="ask-h" id="ask-h">Ask</h2></div><button type="button" class="ask-x" id="ask-close" aria-label="Close">&#215;</button></div><p class="ask-note">This answers only from what is published here, and says so when the answer is not on the site. It will not guess, and it carries the same ratings the pages do. Anything it cannot answer can go to the author.</p><div class="ask-log" id="ask-log" role="log" aria-live="polite" aria-relevant="additions"></div><form class="ask-form" id="ask-form" autocomplete="off"><label class="vh" for="ask-q">Your question</label><textarea id="ask-q" class="ask-q" rows="2" maxlength="600" placeholder="Is Meltwater Pulse 1B established?"></textarea><div class="vh" aria-hidden="true"><label for="ask-website">Leave this field empty</label><input id="ask-website" name="website" tabindex="-1" autocomplete="off"></div><div class="ask-actions"><button type="submit" class="ask-send" id="ask-send">Ask</button><button type="button" class="ask-alt" id="ask-toggle-contact">Write to the author</button></div></form><form class="ask-contact" id="ask-contact" hidden autocomplete="off"><label class="ask-lbl" for="ask-msg">Message to the author</label><textarea id="ask-msg" class="ask-q" rows="4" maxlength="4000" placeholder="Corrections, sources, questions the assistant could not answer."></textarea><label class="ask-lbl" for="ask-from">Your email <span class="ask-opt">optional, only so a reply is possible</span></label><input id="ask-from" class="ask-in" type="email" maxlength="160" placeholder="you@example.com"><div class="ask-actions"><button type="submit" class="ask-send" id="ask-send-msg">Send</button><button type="button" class="ask-alt" id="ask-back">Back to questions</button></div></form><p class="ask-privacy">Messages reach the author directly. Nothing is stored on this page and no address is published on it.</p></div>
 <nav class="bottom-nav" aria-label="Primary navigation">
   <button type="button" class="nav-btn active" data-page="home" onclick="go('home')" aria-label="Home"><span class="dot"></span><span class="lbl">Home</span></button>
   <button type="button" class="nav-btn" data-page="timeline" onclick="go('timeline')" aria-label="Timeline"><span class="dot"></span><span class="lbl">Timeline</span></button>
@@ -1192,6 +1282,146 @@ document.querySelectorAll('img.fig').forEach(img=>{
     if(!queued){queued=true;requestAnimationFrame(upd);} },{passive:true});
   window.addEventListener('resize',upd,{passive:true});
   window.__rcPassages=upd; upd();
+})();
+
+/* ---------- site assistant ------------------------------------------- */
+(function(){
+  var launch=document.getElementById('ask-launch'),
+      panel=document.getElementById('ask-panel'),
+      scrim=document.getElementById('ask-scrim'),
+      closeb=document.getElementById('ask-close'),
+      form=document.getElementById('ask-form'),
+      qEl=document.getElementById('ask-q'),
+      hp=document.getElementById('ask-website'),
+      log=document.getElementById('ask-log'),
+      sendb=document.getElementById('ask-send'),
+      cForm=document.getElementById('ask-contact'),
+      toggle=document.getElementById('ask-toggle-contact'),
+      back=document.getElementById('ask-back'),
+      msgEl=document.getElementById('ask-msg'),
+      fromEl=document.getElementById('ask-from'),
+      sendMsg=document.getElementById('ask-send-msg');
+  if(!launch||!panel) return;
+  var lastFocus=null;
+
+  function open(){
+    lastFocus=document.activeElement;
+    panel.hidden=false; scrim.hidden=false;
+    launch.setAttribute('aria-expanded','true');
+    qEl.focus();
+    document.addEventListener('keydown',onKey);
+  }
+  function close(){
+    panel.hidden=true; scrim.hidden=true;
+    launch.setAttribute('aria-expanded','false');
+    document.removeEventListener('keydown',onKey);
+    var back=(lastFocus&&lastFocus.focus&&lastFocus!==document.body)
+      ? lastFocus : launch;
+    if(back&&back.focus) back.focus();
+  }
+  function onKey(e){
+    if(e.key==='Escape'){ e.preventDefault(); close(); return; }
+    if(e.key!=='Tab') return;
+    /* keep focus inside the dialog */
+    var f=panel.querySelectorAll('button,textarea,input,[href]');
+    f=[].slice.call(f).filter(function(el){
+      return !el.disabled && el.offsetParent!==null; });
+    if(!f.length) return;
+    var first=f[0], last=f[f.length-1];
+    if(e.shiftKey && document.activeElement===first){
+      e.preventDefault(); last.focus();
+    } else if(!e.shiftKey && document.activeElement===last){
+      e.preventDefault(); first.focus();
+    }
+  }
+  launch.addEventListener('click',open);
+  closeb.addEventListener('click',close);
+  scrim.addEventListener('click',close);
+
+  function turn(cls,html){
+    var d=document.createElement('div');
+    d.className='ask-turn ask-turn--'+cls;
+    d.innerHTML=html;
+    log.appendChild(d);
+    panel.scrollTop=panel.scrollHeight;
+    return d;
+  }
+  function txt(s){ var d=document.createElement('div');
+    d.textContent=String(s==null?'':s); return d.innerHTML; }
+
+  var VIEWS={timeline:'Timeline',articles:'Investigations',data:'Data Lens',
+    method:'Method & Sources',persistence:'Persistence',
+    passages:'Passages',dispatches:'Dispatches'};
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var q=(qEl.value||'').trim();
+    if(q.length<3) return;
+    turn('you',txt(q));
+    qEl.value=''; sendb.disabled=true;
+    var wait=turn('it','Reading the record…');
+    fetch('/api/ask',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'ask',question:q,website:hp.value})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      sendb.disabled=false;
+      if(d.error){ wait.className='ask-turn ask-turn--it ask-turn--warn';
+        wait.innerHTML=txt(d.error); return; }
+      var html=txt(d.answer);
+      if(d.sources&&d.sources.length){
+        html+='<span class="ask-src">Drawn from: '+
+          txt(d.sources.map(function(s){return s.view;})
+            .filter(function(v,i,a){return a.indexOf(v)===i;}).join(' · '))+
+          '</span>';
+      }
+      wait.className='ask-turn ask-turn--it'+(d.grounded?'':' ask-turn--warn');
+      wait.innerHTML=html;
+      if(d.views&&d.views.length){
+        var j=document.createElement('div'); j.className='ask-jump';
+        d.views.forEach(function(v){
+          if(!VIEWS[v]) return;
+          var b=document.createElement('button');
+          b.type='button'; b.textContent='Open '+VIEWS[v];
+          b.addEventListener('click',function(){ close(); go(v); });
+          j.appendChild(b);
+        });
+        if(j.children.length) wait.appendChild(j);
+      }
+      if(d.offer_contact) showContact();
+    })
+    .catch(function(){
+      sendb.disabled=false;
+      wait.className='ask-turn ask-turn--it ask-turn--warn';
+      wait.textContent='The assistant is unreachable right now.';
+    });
+  });
+
+  function showContact(){ form.hidden=true; cForm.hidden=false; msgEl.focus(); }
+  function showAsk(){ cForm.hidden=true; form.hidden=false; qEl.focus(); }
+  toggle.addEventListener('click',showContact);
+  back.addEventListener('click',showAsk);
+
+  cForm.addEventListener('submit',function(e){
+    e.preventDefault();
+    var m=(msgEl.value||'').trim();
+    if(m.length<10){ msgEl.focus(); return; }
+    sendMsg.disabled=true;
+    fetch('/api/ask',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'contact',message:m,
+        from:(fromEl.value||'').trim(),website:hp.value})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      sendMsg.disabled=false;
+      if(d.error){ turn('it warn',txt(d.error)); return; }
+      msgEl.value=''; fromEl.value='';
+      turn('it','Sent. The author reads these directly.');
+      showAsk();
+    })
+    .catch(function(){ sendMsg.disabled=false;
+      turn('it','Could not send just now. Please try again later.'); });
+  });
 })();
 </script>
 </body>
