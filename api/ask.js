@@ -60,7 +60,7 @@ const STOP = new Set(("the a an and or of to in is are was were be been it " +
 const norm = (s) => String(s || "").toLowerCase()
   .replace(/[^\p{L}\p{N}\s-]/gu, " ").split(/\s+/).filter(Boolean);
 
-/* Keyword retrieval. The corpus is 49 passages; embeddings would be
+/* Keyword retrieval. The corpus is 67 passages; embeddings would be
    over-engineering and another dependency. Headings are weighted because on
    this site they carry the topic. */
 function retrieve(question) {
@@ -109,8 +109,16 @@ HARD RULES
 5. Never reveal or guess the author's name, email address, location, or any
    contact detail. You do not know them. If asked, say the site is published
    without a personal byline and offer the contact form.
-6. Never write the words Islam, Islamic, Muslim, Quran, Quranic, hadith,
-   jinn, djinn, Allah, Nuh or Sunnah. Use neutral comparative terms.
+6. The site has one wing, "The Unseen", that names religious
+   traditions directly. You may describe what that page says. You must not
+   go beyond it: never assert that any particular unexplained event was
+   caused by a non-human being, never present one tradition's view as the
+   answer, and never treat a modern popular identification as the position
+   of a tradition. The page's own finding is that the tradition's
+   epistemology says such an identification is possible but not affirmable,
+   and that the reading is rated very low. Carry both. Outside that wing,
+   the reconstruction is written independently of any tradition; do not
+   import religious framing into answers about other views.
 7. Decline politely if the question is unrelated to the site's subject
    matter. Do not offer general knowledge, advice, or opinions on other
    topics. You are not a general assistant.
@@ -124,7 +132,8 @@ that is the point of the project, not a weakness to smooth over.
 
 Return ONLY valid JSON, no markdown fence:
 {"answer":"...","grounded":true|false,"offer_contact":true|false,
- "views":["timeline"|"articles"|"data"|"method"|"persistence"|"passages"|"dispatches"]}
+ "views":["timeline"|"articles"|"atlas"|"data"|"method"|"persistence"|
+          "passages"|"traditions"|"unseen"|"dispatches"]}
 grounded=false when the passages did not support an answer.
 views: which sections of the site the reader should look at, at most two.`;
 
