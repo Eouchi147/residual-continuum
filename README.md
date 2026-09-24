@@ -8,16 +8,18 @@ Live: https://residual-continuum.vercel.app
 
 | View | Contents |
 |---|---|
-| Journey | 16 stops from the Big Bang to 1500 CE: a scene, the numbers, the big debate, recent discoveries |
-| Case Files | 28 legends, miracles, lost cities and relics on trial, plus two long Deep Dives |
-| Human Tales | 26 real people known from bones, footprints, letters and complaints |
-| Library | 22 ancient texts, finds and keys, with oldest copies and a history check |
-| Marvels | 19 wonders with real numbers, how they were built, and the myth flipped |
+| Journey | 16 photo stops from the Big Bang to 1500 CE: a scene, the numbers, the big debate, recent discoveries |
+| Legends | 28 legends, miracles, lost cities and relics on trial, each with a rubber-stamp verdict, plus two long Deep Dives |
+| People | 26 real people known from bones, footprints, letters and complaints |
+| Books | 22 ancient texts, finds and keys, with oldest copies and a history check |
+| Wonders | 19 wonders with real numbers, how they were built, and the myth flipped |
 | World Map | 73 pins on an Equal Earth map |
 | Play | A shuffled 45-question quiz and a guess-the-year game |
 | Evidence Lab | Cosmic Calendar, world population, nine dating clocks, verdict scoreboard |
 | How We Know | The rules, the Receipt Meter, recent corrections, 500+ sources |
 | Blueprints, Passages, Persistence, Dispatches, Support | Carried over from the earlier edition |
+
+The bottom nav is Home, Journey, Legends, Play and Explore (a page of photo doors to every section). Every card opens as a full-screen story sheet with previous and next buttons; the browser Back button closes it.
 
 Deep links work: `#articles/case-troy`, `#people/person-otzi`, `#library/book-gilgamesh`.
 
