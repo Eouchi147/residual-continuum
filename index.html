@@ -2932,7 +2932,7 @@ function loadThumbs(page){
   var titles=[]; els.forEach(function(e){var t=e.getAttribute('data-img');if(titles.indexOf(t)<0)titles.push(t);});
   for(var i=0;i<titles.length;i+=40){
     (function(chunk){
-      commons(chunk,640).then(function(map){
+      commons(chunk,500).then(function(map){
         els.forEach(function(e){var r=map[e.getAttribute('data-img')]; if(r) putThumb(e,r);});
       }).catch(function(){});
     })(titles.slice(i,i+40));
@@ -2942,7 +2942,7 @@ function loadBig(el){
   if(!window.fetch||!el) return;
   var f=el.querySelector('figure.photo[data-img]'); if(!f||f.__asked) return; f.__asked=true;
   var t=f.getAttribute('data-img');
-  commons([t],1200).then(function(map){ if(map[t]) putBig(f,map[t]); }).catch(function(){});
+  commons([t],960).then(function(map){ if(map[t]) putBig(f,map[t]); }).catch(function(){});
 }
 hooks.push(loadThumbs);
 
