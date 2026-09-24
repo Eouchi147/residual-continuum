@@ -12,8 +12,8 @@ Live: https://residual-continuum.vercel.app
 | Legends | 28 legends, miracles, lost cities and relics on trial, each with a rubber-stamp verdict, plus two long Deep Dives |
 | People | 26 real people known from bones, footprints, letters and complaints |
 | Books | 22 ancient texts, finds and keys, with oldest copies and a history check |
-| Wonders | 19 wonders with real numbers, how they were built, and the myth flipped |
-| World Map | 73 pins on an Equal Earth map |
+| Wonders | 24 deep dives (about 54,000 words): how each wonder was built, 48 animated step-through drawings and measured sections, counters, timelines, data charts and rated debates, plus an at-a-glance hub (scale-off, 12,000-year timeline, pocket wonders, mystery meter, verdicts, survival) |
+| World Map | 78 pins on an Equal Earth map |
 | Play | A shuffled 45-question quiz and a guess-the-year game |
 | Evidence Lab | Cosmic Calendar, world population, nine dating clocks, verdict scoreboard |
 | How We Know | The rules, the Receipt Meter, recent corrections, 500+ sources |
