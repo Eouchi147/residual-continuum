@@ -1,6 +1,6 @@
 # Residual Continuum
 
-**The human story, with receipts.** An extremely fun way to learn history through real human tales and scientific data: how everything came about, from the Big Bang to 1500 CE, with every famous legend weighed against the evidence and given an honest verdict on the Receipt Meter (Busted, No receipts yet, Hot debate, Plausible, Strong, Rock solid).
+**History is older and stranger than you were taught.** A field guide to the human past built around one pattern: rises and collapses, drowned coastlines, and knowledge lost and found. Every open question gets what is solid, the mainstream story, the challengers' case at its strongest, what would settle it, and two meters: the weight of evidence and how confident the textbooks sound.
 
 Live: https://residual-continuum.vercel.app
 
@@ -8,25 +8,20 @@ Live: https://residual-continuum.vercel.app
 
 | View | Contents |
 |---|---|
-| Journey | 16 photo stops from the Big Bang to 1500 CE: a scene, the numbers, the big debate, recent discoveries |
-| Legends | 28 legends, miracles, lost cities and relics on trial, each with a rubber-stamp verdict, plus two long Deep Dives |
+| Cycles | 13 ages over 300,000 years (rise, fall, reset), an interactive chart with Greenland temperature and sea level, and a long read for each age |
+| Open Cases | 41 cases in four groups: the Lost Ice Age World, Impossible Megaliths, Peoples of the Sacred Texts, and Legends and Relics, plus two long reads |
+| Wonders | 24 deep dives with animated step-through drawings, counters, timelines and rated debates |
 | People | 26 real people known from bones, footprints, letters and complaints |
-| Books | 22 ancient texts, finds and keys, with oldest copies and a history check |
-| Wonders | 24 deep dives (about 54,000 words): how each wonder was built, 48 animated step-through drawings and measured sections, counters, timelines, data charts and rated debates, plus an at-a-glance hub (scale-off, 12,000-year timeline, pocket wonders, mystery meter, verdicts, survival) |
-| World Map | 78 pins on an Equal Earth map |
-| Play | A shuffled 45-question quiz and a guess-the-year game |
-| Evidence Lab | Cosmic Calendar, world population, nine dating clocks, verdict scoreboard |
-| How We Know | The rules, the Receipt Meter, recent corrections, 500+ sources |
-| Blueprints, Passages, Persistence, Dispatches, Support | Carried over from the earlier edition |
+| Witnesses | How ancient and sacred texts survived (Quran, Hebrew Bible, New Testament, Vedas, Homer, Gilgamesh and more), plus 22 texts and finds |
+| How we weigh evidence | The rules, the two meters, when the experts were wrong, when the challengers were wrong, and every source |
+| Map, Play, Lab | 91 map pins, a quiz and guess-the-year game, and interactive data |
 
-The bottom nav is Home, Journey, Legends, Play and Explore (a page of photo doors to every section). Every card opens as a full-screen story sheet with previous and next buttons; the browser Back button closes it.
+Weight of evidence: Established, Strong evidence, Plausible, Mixed record, Open question, Awaiting evidence, Ruled out.
 
-Deep links work: `#articles/case-troy`, `#people/person-otzi`, `#library/book-gilgamesh`.
+Bottom nav: Home, Cycles, Cases, Wonders, Explore. Every card opens as a full-screen story sheet; the browser Back button closes it. Deep links work: `#articles/case-lost-civilization`, `#timeline/age-05`, `#marvels/marvel-great-pyramid`.
 
 ## Deploy
 
-Single file, no build step. Replace `index.html` (and `api/` when the assistant changes), commit to `main`, and Vercel deploys automatically. Photographs load at runtime from Wikimedia Commons with their licence checked and credited; if Commons is unreachable, drawn emblems stay in place.
-
-Design system (Direction C) is unchanged: bg #f5f1eb, text #1a1815, muted #6a645c, accent #a87b4f, frosted glass, five-button bottom nav, footer phrase "Coherence is the measure, not final demonstration."
+Single file, no build step. Replace `index.html` (and `api/` when the assistant changes), commit to `main`, and Vercel deploys automatically. Photographs load at runtime from Wikimedia Commons with their licence checked and credited.
 
 Environment variables for the assistant and the daily drafter are listed in SETUP.md.
