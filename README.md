@@ -10,7 +10,7 @@ Live: https://residual-continuum.vercel.app
 |---|---|
 | Cycles | 13 ages over 300,000 years (rise, fall, reset), an interactive chart with Greenland temperature and sea level, and a long read for each age |
 | Open Cases | 57 cases in five groups: the Lost Ice Age World, Mysteries of the Earth, Impossible Megaliths, Peoples of the Sacred Texts, and Legends and Relics. Sacred-text cases also rate each text's own words line by line |
-| Faiths | Twelve religious traditions in their own words: their claims (faith kept apart from testable history), how their scriptures reached us with a five-part textual record, and where they meet: 14 shared themes, 20 shared figures and 14 lineages |
+| Faiths | Twelve religious traditions in their own words: their claims (faith kept apart from testable history), how their scriptures reached us with a six-part textual record that starts with how close each text stands to its founder and whether it keeps the founder's own language, and where they meet: 14 shared themes, 20 shared figures and 14 lineages |
 | Long reads | Two full, footnoted investigations (the flood horizon, Göbekli Tepe) in their own reading room with progress and contents |
 | Wonders | 24 deep dives with animated step-through drawings, counters, timelines and rated debates |
 | People | 26 real people known from bones, footprints, letters and complaints |
