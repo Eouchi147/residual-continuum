@@ -54,7 +54,10 @@ const FAMILY = [
 const EXCLUDE = /(safety|guard|moderation|embed|rerank|ocr|lyria|music|tts|whisper|coder|[-/]code|laguna|-fin\b|-fin:|-sante|-med\b|-med:|clip)/i;
 
 let cache = { at: 0, list: null };
+const served = [];          // recent successes: model and seconds taken
+const served_log = (id, ms) => { served.push(`${id} ${(ms / 1000).toFixed(1)}s`); if (served.length > 20) served.shift(); };
 const benched = new Map(); // id -> benched until (ms)
+const why = new Map();     // id -> last failure, for GET /api/ask
 
 const isFree = (m) => {
   const p = m.pricing || {};
@@ -122,12 +125,13 @@ export function modelStatus() {
   return {
     updated: cache.at ? new Date(cache.at).toISOString() : null,
     ranked: (cache.list || []).slice(0, 12),
-    benched: [...benched].filter(([, u]) => u > now).map(([id]) => id),
+    benched: [...benched].filter(([, u]) => u > now).map(([id]) => ({ id, why: why.get(id) || "" })),
+    served: [...served].slice(-8),
     last_resort: LAST_RESORT,
   };
 }
 
-const bench = (id, ms = BENCH_MS) => { if (id) benched.set(id, Date.now() + ms); };
+const bench = (id, ms = BENCH_MS, reason = "") => { if (id) { benched.set(id, Date.now() + ms); if (reason) why.set(id, String(reason).slice(0, 140)); } };
 
 /**
  * Run a chat completion on the best free model that returns usable output.
@@ -151,7 +155,7 @@ export async function chatFree({ messages, temperature = 0.2, max_tokens = 900, 
 
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), Math.min(perTryMs, left));
-    let served = pool[0];
+    let served = pool[0]; const t0 = Date.now();
     try {
       const r = await fetch(CHAT_URL, {
         method: "POST", signal: ctl.signal,
@@ -169,9 +173,10 @@ export async function chatFree({ messages, temperature = 0.2, max_tokens = 900, 
         }),
       });
       if (!r.ok) {
-        lastErr = `model ${r.status}`;
+        let msg = ""; try { const j = await r.json(); msg = j?.error?.message || ""; } catch (_) {}
+        lastErr = `model ${r.status} ${msg}`.trim();
         if (r.status === 401 || r.status === 402) throw Object.assign(new Error(lastErr), { fatal: true });
-        pool.forEach((id) => bench(id, r.status === 429 ? 5 * 60_000 : BENCH_MS));
+        pool.forEach((id) => bench(id, r.status === 429 ? 5 * 60_000 : BENCH_MS, lastErr));
         continue;
       }
       const out = await r.json();
@@ -179,15 +184,17 @@ export async function chatFree({ messages, temperature = 0.2, max_tokens = 900, 
       /* the other models in this batch were never reached: keep them in play */
       pool.filter((id) => id !== served).forEach((id) => tried.delete(id));
       tried.add(served);
-      if (out.error) { lastErr = `model error ${out.error.code || ""}`; bench(served); continue; }
+      if (out.error) { lastErr = `model error ${out.error.code || ""} ${out.error.message || ""}`.trim(); bench(served, BENCH_MS, lastErr); continue; }
       const text = (out.choices?.[0]?.message?.content || "").trim();
-      if (!text) { lastErr = "empty reply"; bench(served, 5 * 60_000); continue; }
-      const value = parse(text);
+      if (!text) { lastErr = "empty reply"; bench(served, 5 * 60_000, lastErr); continue; }
+      let value;
+      try { value = parse(text); } catch (pe) { lastErr = "unusable reply"; bench(served, BENCH_MS, lastErr); continue; }
+      served_log(served, Date.now() - t0);
       return { value, model: served };
     } catch (e) {
       if (e.fatal) throw e;
       lastErr = e.name === "AbortError" ? "timeout" : String(e.message || e).slice(0, 120);
-      bench(served, e.name === "AbortError" ? 5 * 60_000 : BENCH_MS);
+      bench(served, e.name === "AbortError" ? 5 * 60_000 : BENCH_MS, lastErr);
     } finally { clearTimeout(timer); }
   }
   throw new Error(lastErr);
