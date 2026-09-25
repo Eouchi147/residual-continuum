@@ -17,16 +17,18 @@
  * GITHUB_REPO e.g. "Eouchi147/residual-continuum"
  * CRON_SECRET any long random string; Vercel sends it back
  * Optional:
- * OPENROUTER_MODEL default "anthropic/claude-sonnet-4.5"
+ * FREE_MODELS_PREFER free model ids to try first (models are free only;
+ * the best available is chosen live, see _models.js)
  * CONTACT_EMAIL used for the CrossRef polite pool
  * GITHUB_BRANCH default "main"
  */
+
+import { chatFree, extractJSON } from "./_models.js";
 
 const GH = "https://api.github.com";
 const CROSSREF = "https://api.crossref.org";
 const COMMONS = "https://commons.wikimedia.org/w/api.php";
 
-const MODEL = process.env.OPENROUTER_MODEL || "anthropic/claude-sonnet-4.5";
 const MAILTO = process.env.CONTACT_EMAIL || "noreply@example.com";
 const BRANCH = process.env.GITHUB_BRANCH || "main";
 
@@ -215,10 +217,11 @@ async function draft(beat, candidates) {
  `[${i + 1}] DOI ${c.doi}\nTitle: ${c.title}\nVenue: ${c.container} ` +
  `${c.year}\nAuthors: ${c.authors.join("; ")}\nAbstract: ${c.abstract}`).join("\n\n");
 
- const body = {
- model: MODEL,
+ const { value } = await chatFree({
+ title: "Residual Continuum, dispatch drafter",
  temperature: 0.4,
- max_tokens: 2200,
+ max_tokens: 2600,
+ budgetMs: 50_000, perTryMs: 30_000,
  messages: [
  { role: "system", content: SYSTEM },
  { role: "user", content:
@@ -227,23 +230,13 @@ async function draft(beat, candidates) {
  `result for the reconstruction and write the dispatch. If none is ` +
  `genuinely relevant, return {"skip": true, "why": "..."}.` },
  ],
- };
-
- const r = await fetch("https://openrouter.ai/api/v1/chat/completions", {
- method: "POST",
- headers: {
- Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
- "Content-Type": "application/json",
- "HTTP-Referer": "https://residual-continuum.vercel.app",
- "X-Title": "Residual Continuum, dispatch drafter",
+ parse: (txt) => {
+ const o = extractJSON(txt);
+ if (!o.skip && (!o.title || !Array.isArray(o.body))) throw new Error("incomplete draft");
+ return o;
  },
- body: JSON.stringify(body),
  });
- if (!r.ok) throw new Error(`OpenRouter ${r.status}: ${await r.text()}`);
- const out = await r.json();
- const text = out.choices?.[0]?.message?.content?.trim() || "";
- const clean = text.replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
- return JSON.parse(clean);
+ return value;
 }
 
 /* ------------------------------------------------------------------ render */
