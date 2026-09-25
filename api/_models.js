@@ -128,7 +128,8 @@ function liveScore(x) {
   if (!p) return x.base;
   const slow = p.ms ? Math.max(0, (p.ms - 4000) / 1000) * 1.5 : 0;
   const rel = (p.ok + 1) / (p.ok + p.fail + 2);
-  return x.base - Math.min(20, slow) - (1 - rel) * 20;
+  const quick = p.ok >= 2 && p.ms && p.ms < 5000 ? 12 : 0;   /* proven fast and reliable here */
+  return x.base - Math.min(20, slow) - (1 - rel) * 20 + quick;
 }
 
 /** Ranked free model ids, best first, with benched models moved to the back. */
@@ -216,7 +217,7 @@ async function attempt(id, req, signal) {
  * Returns { value, model }.
  */
 export async function chatFree({ messages, temperature = 0.2, max_tokens = 900, parse, title,
-  budgetMs = 28_000, hedgeMs = 6_000, maxParallel = 3, effort = "minimal", json = true }) {
+  budgetMs = 28_000, hedgeMs = 4_000, maxParallel = 3, effort = "minimal", json = true }) {
   const req = { messages, temperature, max_tokens, parse, title, effort, json };
   const queue = [...(await freeModels()), LAST_RESORT];
   const start = Date.now();
@@ -257,7 +258,9 @@ export async function chatFree({ messages, temperature = 0.2, max_tokens = 900, 
           if (e.name === "AbortError") return;
           lastErr = String(e.message || e).slice(0, 160);
           if (e.status === 401 || e.status === 402) return finish(reject, e);   /* key problem: no model can help */
-          bench(id, e.status === 429 ? 3 * 60_000 : e.soft ? 10 * 60_000 : BENCH_MS, lastErr);
+          /* 403/404: not open to this kind of use (or gone), so leave it out for half a day */
+          const ms = e.status === 429 ? 3 * 60_000 : (e.status === 403 || e.status === 404) ? 12 * 3600_000 : e.soft ? 10 * 60_000 : BENCH_MS;
+          bench(id, ms, lastErr);
           launch();                                                            /* replace it at once */
         });
       if (Date.now() - start < budgetMs - 2000) hedgeTimer = setTimeout(launch, hedgeMs);
