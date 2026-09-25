@@ -221,7 +221,7 @@ async function draft(beat, candidates) {
  title: "Residual Continuum, dispatch drafter",
  temperature: 0.4,
  max_tokens: 2600,
- budgetMs: 50_000, perTryMs: 30_000,
+ budgetMs: 52_000, hedgeMs: 20_000, effort: "low",
  messages: [
  { role: "system", content: SYSTEM },
  { role: "user", content:
