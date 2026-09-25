@@ -1,16 +1,36 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
-    { "path": "/api/draft", "schedule": "0 7 * * *" }
+    {
+      "path": "/api/draft",
+      "schedule": "0 7 * * *"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/ask.js": {
+      "maxDuration": 45
+    },
+    "api/draft.js": {
+      "maxDuration": 60
+    }
+  }
 }

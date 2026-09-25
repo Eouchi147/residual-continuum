@@ -39,9 +39,9 @@ In Vercel → your project → Settings → Environment Variables, add for **Pro
 | `GITHUB_REPO` | `Eouchi147/residual-continuum` |
 | `CRON_SECRET` | any long random string — `openssl rand -hex 32` |
 | `CONTACT_EMAIL` | your email (CrossRef's polite pool; improves rate limits) |
-| `OPENROUTER_MODEL` | optional, defaults to `anthropic/claude-sonnet-4.5` |
+| `FREE_MODELS_PREFER` | optional. Models are free only: the best free model is picked live from OpenRouter's catalogue, with automatic fallback (see `api/_models.js`). List free model ids here to try them first |
 
-`CRON_SECRET` is what stops anyone on the internet from triggering drafts and spending your credits. Vercel sends it back automatically as a bearer token; the function rejects requests without it.
+`CRON_SECRET` is what stops anyone on the internet from triggering drafts and using up your daily free-model allowance. Vercel sends it back automatically as a bearer token; the function rejects requests without it.
 
 ## 4. Schedule
 
