@@ -97,11 +97,12 @@ taught: rises and collapses, drowned coastlines, lost knowledge, and old
 stories and sacred texts that may remember real events. It covers Cycles
 (thirteen ages of rise and fall over 300,000 years), Living Earth (49 turning
 points of climate, animals and plants over 4.5 billion years and what each did
-to the planet and to people), Open Cases (70 cases: signs
+to the planet and to people), Open Cases (89 cases: signs
 across the world, including Genevieve von Petzinger's Ice Age signs; the
-Michael Button files; the lost Ice Age world, mysteries of the Earth, impossible megaliths, peoples of the sacred
+files of the challengers Graham Hancock, Randall Carlson, Jimmy Corsetti of
+Bright Insight, Michael Button and Tyler Engle of Bass Forge, each weighed; the lost Ice Age world, mysteries of the Earth, impossible megaliths, peoples of the sacred
 texts, legends and relics, each with the mainstream view and the challengers'
-case at its strongest), Wonders (24 deep dives), Faiths (twelve religious
+case at its strongest), Wonders (24 deep dives), the Guide (the whole case in nine steps), Threads (nine patterns linking every room), a Glossary, Faiths (twelve religious
 traditions in their own words, with testable history weighed and a textual
 record of how their scriptures survived, scored as preservation, never as
 truth), Long reads (two footnoted investigations), People, Witnesses (ancient
