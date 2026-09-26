@@ -6701,14 +6701,14 @@ var U={
   txt:function(par,x,y,s,cls,anchor){var e=U.mk('text',{x:x,y:y,'class':cls||'','text-anchor':anchor||'start'},par);e.textContent=s;return e;},
   seg:function(p,i){return U.clamp(p-i,0,1);},   /* 0..1 progress into chapter i from chapter i-1... helper for drawers */
   /* bake a static group into one bitmap <image> so it is not re-rasterised on every frame (falls back to an SVG image) */
-  bake:function(root,grp,x,y,w,h,maxPx){
+  bake:function(root,grp,x,y,w,h,maxPx,png){
     try{
       var defs=root.querySelector('defs'), ser=new XMLSerializer();
       var src='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="'+x+' '+y+' '+w+' '+h+'">'+(defs?ser.serializeToString(defs):'')+ser.serializeToString(grp)+'</svg>';
       var url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(src), img=new Image();
       img.onload=function(){ var href=url;
         try{ var k=Math.min(1.5,(maxPx||2400)/Math.max(w,h)), c=document.createElement('canvas'); c.width=Math.max(1,Math.round(w*k)); c.height=Math.max(1,Math.round(h*k));
-          c.getContext('2d').drawImage(img,0,0,c.width,c.height); href=c.toDataURL('image/jpeg',.82); }catch(e){}
+          c.getContext('2d').drawImage(img,0,0,c.width,c.height); href=png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.82); }catch(e){}
         if(!grp.parentNode) return;
         var im=U.mk('image',{x:x,y:y,width:w,height:h,preserveAspectRatio:'none'}); im.setAttribute('href',href);
         grp.parentNode.replaceChild(im,grp); };
@@ -7747,7 +7747,7 @@ SY.add('stand',function(C){
     /* 3. the galaxy */
     g.gal=mk('g',{},svg); g.galR=mk('g',{},g.gal);
     var Rg=L.Rg, sp=spiral(g.galR,cx,cy,Rg,ph?420:760,7,1);
-    U.bake(svg,sp,cx-Rg*1.15,cy-Rg*1.15,Rg*2.3,Rg*2.3,1400);
+    U.bake(svg,sp,cx-Rg*1.15,cy-Rg*1.15,Rg*2.3,Rg*2.3,1400,true);
     mk('circle',{cx:cx,cy:cy,r:Rg*.56,fill:'none',stroke:'rgba(255,240,220,.28)','stroke-dasharray':'2 6'},g.gal);
     g.gSun=mk('circle',{r:4,fill:'#ffe08a'},g.gal); g.gT=U.txt(g.gal,0,0,'the Sun · one lap ≈ 230 million years','sy-t sy-halo','start');
     g.apex=mk('g',{},g.gal); g.apexL=mk('line',{stroke:'#ffd9a0','stroke-width':1.6},g.apex); g.apexH=mk('path',{fill:'#ffd9a0'},g.apex);
@@ -7762,7 +7762,7 @@ SY.add('stand',function(C){
     /* 5. Andromeda */
     g.and=mk('g',{},svg); g.andA=mk('g',{},g.and); g.andB=mk('g',{},g.and);
     var ra=Rg*.62, s1=spiral(g.andA,0,0,ra,ph?260:420,21,1), s2=spiral(g.andB,0,0,ra*1.1,ph?280:460,33,.42);
-    U.bake(svg,s1,-ra*1.15,-ra*1.15,ra*2.3,ra*2.3,900); U.bake(svg,s2,-ra*1.3,-ra*1.3,ra*2.6,ra*2.6,900);
+    U.bake(svg,s1,-ra*1.15,-ra*1.15,ra*2.3,ra*2.3,900,true); U.bake(svg,s2,-ra*1.3,-ra*1.3,ra*2.6,ra*2.6,900,true);
     g.andT1=U.txt(g.and,0,0,'Milky Way','sy-t sy-halo','middle'); g.andT2=U.txt(g.and,0,0,'Andromeda','sy-t sy-halo','middle');
     /* 6. the long dark and the edge of calculation */
     g.edge=mk('g',{},svg);
