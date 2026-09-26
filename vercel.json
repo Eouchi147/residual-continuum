@@ -3,7 +3,7 @@
   "crons": [
     {
       "path": "/api/draft",
-      "schedule": "0 7 * * *"
+      "schedule": "0 20 * * *"
     }
   ],
   "headers": [
