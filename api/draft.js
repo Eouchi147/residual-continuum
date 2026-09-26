@@ -115,17 +115,34 @@ async function verifyDoi(doi) {
 }
 
 /* The story page, reduced to its paragraphs, and any DOIs printed in it. */
+const BROWSER = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 async function readStory(url) {
   try {
-    const html = await get(url, 9000);
+    let html = await get(url, 10000, "text", { "User-Agent": BROWSER, Accept: "text/html" });
+    /* keep the article body when the page marks it */
+    const body = html.match(/<div[^>]+id="(?:text|story_text)"[\s\S]*?<\/div>\s*<\/div>/i) || html.match(/<article[\s\S]*?<\/article>/i)
+      || html.match(/<div[^>]+class="[^"]*(?:entry-content|article-body|post-content|td-post-content)[^"]*"[\s\S]*?<\/div>/i);
+    const refs = html.match(/Journal Reference[\s\S]{0,1500}/i);
+    if (body && body[0].length > 1500) html = body[0] + (refs ? refs[0] : "");
     const dois = [...new Set((html.match(/10\.\d{4,9}\/[^\s"'<>&]+/g) || []).map((d) => d.replace(/[.,;)\]]+$/, "")))].slice(0, 4);
     const paras = (html.match(/<p[^>]*>[\s\S]*?<\/p>/gi) || []).map((p) => decode(p.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim())
       .filter((p) => p.length > 80 && !/cookie|subscribe|newsletter|all rights reserved|javascript/i.test(p));
     return { text: paras.join("\n").slice(0, 7000), dois };
   } catch (_) { return { text: "", dois: [] }; }
 }
+async function readStoryMeta(url) {
+  try {
+    const html = await get(url, 8000, "text", { "User-Agent": BROWSER, Accept: "text/html" });
+    const m = html.match(/<meta[^>]+(?:property|name)="(?:og:description|description)"[^>]+content="([^"]+)"/i);
+    return m ? decode(m[1]) : "";
+  } catch (_) { return ""; }
+}
 
-async function findImage(terms) {
+async function findImage(...tries) {
+  for (const t of tries.filter(Boolean)) { const im = await findImage1(t); if (im) return im; }
+  return null;
+}
+async function findImage1(terms) {
   try {
     const d = await get(`${COMMONS}?action=query&generator=search&gsrsearch=${encodeURIComponent(terms + " filetype:bitmap")}` +
       `&gsrnamespace=6&gsrlimit=8&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=1280&format=json&origin=*`, 7000, "json");
@@ -154,7 +171,10 @@ HONESTY, absolute: use only facts in the material supplied. Never invent a numbe
 quote or place. Attribute claims ("the team argues", "the study reports"). Never use proof
 language: no "proves", "proof", "undeniable", "definitely", "irrefutable". No em dashes. Treat
 every religion and culture with respect and never rate matters of faith. Plain text only, no
-HTML, no markdown. Never write any email address or personal contact detail.`;
+HTML, no markdown. Never write any email address or personal contact detail.
+If a detail is not in the material, simply leave it out: do not write about what the source
+fails to say. Keep all caveats for the "doesnt_show" field and at most one paragraph of the body.
+Write for a curious reader on a phone: every paragraph should make them want the next one.`;
 
 async function pick(cands) {
   const list = cands.map((c, i) => `[${i}] ${c.title} (${c.source}, ${c.date.slice(0, 10)})\n${c.summary.slice(0, 300)}`).join("\n\n");
@@ -162,7 +182,7 @@ async function pick(cands) {
     const { value } = await chatFree({
       title: "Residual Continuum, daily pick", temperature: 0.2, max_tokens: 200, budgetMs: 25_000, hedgeMs: 6_000,
       messages: [{ role: "system", content: VOICE },
-        { role: "user", content: `Candidates:\n\n${list}\n\nPick the ONE new discovery a curious reader of this site would find most fascinating and most relevant to the deep human past, ancient monuments, lost knowledge, cataclysms or old myths. Prefer real finds and new measurements over opinion pieces, museum news or dinosaur-only stories. Reply as JSON: {"i": <index>, "why": "<one sentence>"}` }],
+        { role: "user", content: `Candidates:\n\n${list}\n\nPick the ONE new discovery a curious reader of this site would find most fascinating and most relevant to the deep human past, ancient monuments, lost knowledge, cataclysms or old myths. Prefer real finds and new measurements over opinion pieces, museum news or dinosaur-only stories, and prefer stories backed by a journal paper. Reply as JSON: {"i": <index>, "why": "<one sentence>"}` }],
       parse: (t) => { const o = extractJSON(t); if (!(o.i >= 0 && o.i < cands.length)) throw new Error("bad index"); return o; },
     });
     return value.i;
@@ -204,12 +224,13 @@ Write the article. Return ONLY JSON:
  "settle": "1 sentence: what would settle it",
  "firm": "solid | strong | plausible | contested",
  "related": ["0-3 case ids from the list that this bears on"],
- "image_terms": "3-6 concrete words for an image search (place, object, site)"}` }],
+ "image_terms": "3-6 concrete words for an image search (place, object, site)",
+ "image_place": "1-3 words: the site or region name only, for a second image search"}` }],
     parse: (t) => {
       const o = extractJSON(t);
       if (!o.title || !Array.isArray(o.body) || o.body.length < 4) throw new Error("incomplete");
       const words = o.body.join(" ").split(/\s+/).length;
-      if (words < 330) throw new Error("too short");
+      if (words < (story.text.length > 1500 ? 420 : 300)) throw new Error("too short");
       const all = [o.title, o.dek, ...o.body].join(" ");
       const hits = BANNED.reduce((n, [re]) => n + (all.match(re) || []).length, 0);
       if (hits > 2) throw new Error("breaks the house rules");   /* let another model write it */
@@ -283,13 +304,14 @@ export default async function handler(req, res) {
 
     const item = cands[await pick(cands)];
     const story = item.doi ? { text: item.summary, dois: [item.doi] } : await readStory(item.link);
+    if (story.text.length < 600) story.text = [story.text, await readStoryMeta(item.link)].filter(Boolean).join("\n");
     const refs = (await Promise.all(story.dois.map(verifyDoi))).filter(Boolean);
 
     const d = await write(item, story, refs);
     const body = d.body.map(clean).filter((p) => p.length > 40);
     const ids = new Set(cases.map((c) => c[0]));
     const firm = ["solid", "strong", "plausible", "contested"].includes(d.firm) ? d.firm : "plausible";
-    const image = await findImage(tidy(d.image_terms || item.title).slice(0, 80));
+    const image = await findImage(tidy(d.image_terms || "").slice(0, 80), tidy(d.image_place || ""), tidy(item.title).split(/\s+/).filter((w) => w.length > 4).slice(0, 3).join(" "));
 
     const post = {
       id: today, date: today, title: clean(d.title).slice(0, 110), kicker: clean(d.kicker || "New find").slice(0, 40),
@@ -305,7 +327,7 @@ export default async function handler(req, res) {
       [`blog/posts/${post.id}.json`, JSON.stringify(post, null, 1) + "\n"],
       ["blog/index.json", JSON.stringify(next, null, 1) + "\n"],
     ], `Daily discovery ${today}: ${post.title}`);
-    return res.status(200).json({ ok: true, title: post.title, source: item.link, refs: refs.length, image: !!image, commit: sha });
+    return res.status(200).json({ ok: true, title: post.title, source: item.link, story_chars: story.text.length, refs: refs.length, image: !!image, commit: sha });
   } catch (e) {
     return res.status(500).json({ error: String(e.message || e).slice(0, 300) });
   }
