@@ -30,7 +30,8 @@
       "maxDuration": 45
     },
     "api/draft.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     }
-  }
+  },
+  "fluid": true
 }
