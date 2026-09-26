@@ -1,20 +1,20 @@
 {
  "id": "2026-09-26",
  "date": "2026-09-26",
- "title": "A Pyramid Tomb Carries Two Traditions of Death",
- "kicker": "Buried in Egypt",
- "dek": "A limestone pyramid-shaped tomb in Egypt’s New Valley combines Egyptian religious imagery with a 19-line Greek funerary poem.",
+ "title": "A pyramid tomb where two worlds said goodbye",
+ "kicker": "Dakhla Oasis",
+ "dek": "In Egypt's Western Desert, a small Roman-era pyramid tomb pairs hieroglyphic spells with a 19-line Greek poem for a man named Bisichthes.",
  "body": [
-  "A small monument rises from Egypt’s New Valley with a shape that immediately recalls the country’s famous pyramids. This one is limestone, and it was uncovered as a tomb. Its most unusual feature is not its form, but what was found inside: ancient Egyptian religious imagery alongside a funerary poem written in Greek.",
-  "The report describes the Greek text as 19 lines long. That detail matters because Egypt’s New Valley lies in a region shaped by long connections between Egyptian traditions and the wider Mediterranean. A monument can contain more than one inherited language of mourning without telling us whether its occupants shared one identity, practiced both religions, or simply occupied a cultural space where several traditions overlapped.",
-  "The find is especially notable because Egyptian religious imagery and a Greek poem were reportedly associated within the same funerary monument. The supplied account does not name the archaeologists, identify the tomb’s owner, or reproduce the poem. It also does not describe the imagery in enough detail to compare it securely with known scenes from Egyptian art or Greek funerary literature.",
-  "The headline places the tomb in the Roman era, but the material supplied does not explain how that date was established. It gives no excavation report, stratigraphic sequence, dating result, or other measurement. Without those details, the Roman-era attribution should be treated as the report’s current interpretation rather than an independently established chronology in the account provided.",
-  "What the discovery does show is the presence of a funerary structure with a mixed cultural repertoire, if the report is accurate. It does not yet reveal who commissioned the monument, who wrote or read the poem, how the Greek language arrived here, or whether the imagery and text were made at the same time. The tomb may preserve a local meeting point between traditions, but its wider significance remains open until the archaeological record is published.",
-  "The combination is coherent, but coherence is not final demonstration. A full excavation report could establish the monument’s construction date, the relationship between its contents, and the identities or cultural backgrounds of the people represented. It could also show whether the Egyptian imagery and Greek poem belong to one burial episode or were placed in the tomb at different times."
+  "Out in Egypt's Western Desert, at a site called Bir al-Shughala in the Dakhla Oasis, archaeologists have opened a tomb shaped like a small pyramid. On its stone door, a human figure stands surrounded by protective symbols. Inside, two ways of facing death sit side by side.",
+  "The mission belongs to Egypt's Supreme Council of Antiquities, which has been digging at the site since 2002, close to the ancient town of Mothis, beneath modern Mut.",
+  "The Egyptian half of the story is carved in stone. The entrance carries a panel of deeply cut hieroglyphs and protective spells, a winged sun disc, bundles of reeds, and a scene from the Amduat, the old royal guide to the sun god's journey through the underworld at night. Nearly three thousand years after the pyramids of Giza, those images were still what a family chose to guard its dead.",
+  "The other half is written in Greek: a funerary poem of 19 lines, raised for a man named Bisichthes. The team tentatively believes he served as a judge. The inscription dates to the late third or early fourth century AD, and a bronze coin found in the tomb shows the emperor Constantine, which points to the early fourth century.",
+  "Around the burial lay the kit of remembrance: a stone funerary stele with a geometric top, pottery vessels, a sandstone offering table and a basin for purification. Put together, they sketch a household that spoke Greek, lived under Rome, and still wanted the old Egyptian gods to carry its dead safely through the dark.",
+  "That is the quiet thread this site keeps following. Knowledge and belief do not vanish when empires change. They are carried, translated and mixed, sometimes for thousands of years, until a desert tomb shows us both at once."
  ],
- "doesnt_show": "",
- "settle": "A complete excavation report with stratigraphic context, dating results, artifact descriptions, and a published reading of the Greek poem would clarify the monument’s chronology and cultural setting.",
- "firm": "plausible",
+ "doesnt_show": "The announcement gives no full reading of the Greek poem yet, and the idea that Bisichthes was a judge is the team's tentative reading. A scientific publication has not been cited.",
+ "settle": "A published excavation report with the full Greek text and translation, the tomb's plan and the context of the coin.",
+ "firm": "strong",
  "related": [
   "lost-scripts"
  ],
@@ -26,5 +26,5 @@
  },
  "refs": [],
  "image": null,
- "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+ "drafted": "Written with a free AI model from the source above and corrected by hand on 26 September 2026 after the full story was read. Report an error and it will be corrected in place, with a note."
 }
