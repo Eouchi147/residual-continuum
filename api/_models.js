@@ -70,7 +70,10 @@ function baseScore(m, now) {
   const id = m.id;
   let s = 0;
   for (const [re, w] of FAMILY) if (re.test(id)) { s += w; break; }
-  const b = id.match(/(\d+(?:\.\d+)?)b(?![a-z0-9])/i);
+  /* size: from the id ("-550b-a55b", "-27b"), else from the description ("41B active ... 975B total") */
+  const b = id.match(/(\d+(?:\.\d+)?)b(?![a-z0-9])/i)
+    || String(m.description || "").match(/(?:out of|of)\s+(\d+(?:\.\d+)?)\s*B\s+total/i)
+    || String(m.description || "").match(/(\d+(?:\.\d+)?)\s*B(?:illion)?[- ]param/i);
   if (b) {
     const size = parseFloat(b[1]);
     if (size < 12) return -1;                     /* too small to follow the rules reliably */

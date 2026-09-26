@@ -97,12 +97,12 @@ taught: rises and collapses, drowned coastlines, lost knowledge, and old
 stories and sacred texts that may remember real events. It covers Cycles
 (thirteen ages of rise and fall over 300,000 years), Living Earth (49 turning
 points of climate, animals and plants over 4.5 billion years and what each did
-to the planet and to people), Open Cases (89 cases: signs
+to the planet and to people), Open Cases (99 cases: signs
 across the world, including Genevieve von Petzinger's Ice Age signs; the
 files of the challengers Graham Hancock, Randall Carlson, Jimmy Corsetti of
-Bright Insight, Michael Button and Tyler Engle of Bass Forge, each weighed; the lost Ice Age world, mysteries of the Earth, impossible megaliths, peoples of the sacred
+Bright Insight, Michael Button and Tyler Engle of Bass Forge, each weighed; Who Controls the Evidence (gatekeeping of sites, finds and data, above all in Egypt and Israel) and What Governments Did (MKUltra, Tuskegee, Stargate, Roswell, UAP), with on-record facts kept apart from off-record claims; the lost Ice Age world, mysteries of the Earth, impossible megaliths, peoples of the sacred
 texts, legends and relics, each with the mainstream view and the challengers'
-case at its strongest), Wonders (24 deep dives), the Guide (the whole case in nine steps), Threads (nine patterns linking every room), a Glossary, Faiths (twelve religious
+case at its strongest), Wonders (24 deep dives), the Guide (the whole case in eleven steps), Threads (ten patterns linking every room), Where we stand (our motion through space and the calculable future of the Earth, Sun and galaxy, with faith and philosophy set out side by side and not rated), the daily discovery (a new find every day), a Glossary, Faiths (twelve religious
 traditions in their own words, with testable history weighed and a textual
 record of how their scriptures survived, scored as preservation, never as
 truth), Long reads (two footnoted investigations), People, Witnesses (ancient
