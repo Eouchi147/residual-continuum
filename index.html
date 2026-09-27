@@ -8446,6 +8446,8 @@ SY.add('skyfell',function(C){
   var U=C.U, svg=C.svg, ST=C.states;
   var W=0,H=0,ph=false,g={},L={};
   function w(sc,c,span){ return U.clamp(1-Math.abs(sc-c)/(span||1),0,1); }
+  /* scenes never overlap: each one fades out to the dark ground before the next fades in (a quick dip, not a double exposure) */
+  function vis(sc,a,b){ if(b===undefined) b=a; var d=sc<a?a-sc:(sc>b?sc-b:0); return U.smooth(U.clamp((.46-d)/.24,0,1)); }
   function fade(el,op){ el.setAttribute('opacity',op.toFixed(3)); el.style.display=op<.005?'none':''; }
   function st(p){ var i=Math.floor(p), f=p-i, a=ST[Math.min(i,ST.length-1)]||{sc:0}, b=ST[Math.min(i+1,ST.length-1)]||a; return {sc:U.lerp(a.sc,b.sc,f)}; }
   var MAM='M4 -30C8 -44 26 -50 40 -46C50 -44 56 -38 58 -28C63 -25 65 -18 63 -10C61 -3 59 3 61 10L56 10C55 4 55 0 53 -5L51 0L51 12L44 12L44 -1C38 1 24 1 18 -1L18 12L11 12L11 -1C8 -3 6 -7 6 -11L6 12L0 12L0 -14C0 -22 2 -26 4 -30Z', TUSK='M59 -12C67 -8 71 -1 66 6';
@@ -8484,12 +8486,29 @@ SY.add('skyfell',function(C){
     mk('rect',{x:tx-5,y:t0,width:10,height:t1-t0,rx:5,fill:'rgba(255,255,255,.1)',stroke:'rgba(255,255,255,.35)'},g.th);
     g.thF=mk('rect',{x:tx-3,width:6,rx:3,fill:'#8fd0ff'},g.th); mk('circle',{cx:tx,cy:t1+8,r:9,fill:'#8fd0ff'},g.th);
     g.thT=U.txt(g.th,tx-14,t0-8,'Greenland','sy-ts sy-halo','end'); g.thV=U.txt(g.th,tx-14,t0+10,'','sy-t sy-halo','end'); L.th=[t0,t1];
-    /* B: the coast and the sea (chapters 1, 2) */
+    /* B: the coast in cross-section (chapters 1, 2): its own complete scene, never layered over the land view */
     g.B=mk('g',{},svg);
-    g.sea=mk('path',{fill:'rgba(60,120,160,.55)'},g.B);
-    g.shelf=mk('path',{fill:'#5a4d3a',stroke:'#7d6a4c'},g.B);
-    g.today=mk('path',{fill:'none',stroke:'rgba(255,255,255,.5)','stroke-dasharray':'4 4'},g.B);
-    g.seaT=U.txt(g.B,0,0,'','sy-t sy-halo','start'); g.todayT=U.txt(g.B,0,0,"today's sea level",'sy-ts sy-halo','start');
+    var bsky=mk('linearGradient',{id:'syy-bsky',x1:0,x2:0,y1:0,y2:1},defs); g.bStops=[mk('stop',{offset:'0','stop-color':'#0b1422'},bsky),mk('stop',{offset:'1','stop-color':'#3d5770'},bsky)];
+    mk('rect',{x:0,y:0,width:W,height:H,fill:'url(#syy-bsky)'},g.B);
+    var seaG=mk('linearGradient',{id:'syy-sea',x1:0,x2:0,y1:0,y2:1},defs); mk('stop',{offset:'0','stop-color':'#3f86ad'},seaG); mk('stop',{offset:'1','stop-color':'#0b2233'},seaG);
+    g.bStars=mk('g',{},g.B); for(var bs=0;bs<46;bs++) mk('circle',{cx:(U.rnd(bs+400)*W).toFixed(1),cy:(U.rnd(bs+460)*H*.34).toFixed(1),r:(.4+U.rnd(bs+520)*.9).toFixed(2),fill:'#fff',opacity:(.25+U.rnd(bs+580)*.5).toFixed(2)},g.bStars);
+    var sunG=mk('radialGradient',{id:'syy-sun'},defs); mk('stop',{offset:'0','stop-color':'#ffe2b0','stop-opacity':.95},sunG); mk('stop',{offset:'.25','stop-color':'#ffb46a','stop-opacity':.45},sunG); mk('stop',{offset:'1','stop-color':'#ff9a50','stop-opacity':0},sunG);
+    g.sun=mk('circle',{fill:'url(#syy-sun)'},g.B);
+    g.sea=mk('path',{fill:'url(#syy-sea)'},g.B);
+    g.surf=mk('path',{fill:'none',stroke:'rgba(210,240,255,.75)','stroke-width':1.6},g.B);
+    var landG=mk('linearGradient',{id:'syy-land',x1:0,x2:0,y1:0,y2:1},defs); mk('stop',{offset:'0','stop-color':'#6b5a41'},landG); mk('stop',{offset:'1','stop-color':'#2f271d'},landG);
+    var cp=mk('clipPath',{id:'syy-landclip'},defs); g.landClip=mk('path',{},cp);
+    g.shelf=mk('path',{fill:'url(#syy-land)',stroke:'#8a7656','stroke-width':1.4},g.B);
+    g.strata=mk('path',{fill:'none',stroke:'rgba(20,14,8,.35)','stroke-width':1.2,'clip-path':'url(#syy-landclip)'},g.B);
+    g.strata2=mk('path',{fill:'none',stroke:'rgba(255,230,190,.07)','stroke-width':6,'clip-path':'url(#syy-landclip)'},g.B);
+    g.scaleT=U.txt(g.B,0,0,'depths exaggerated','sy-ts sy-halo','end');
+    g.drown=mk('path',{fill:'none',stroke:'#a7c07a','stroke-width':3,'stroke-linecap':'round'},g.B);
+    g.bIce=mk('path',{fill:'url(#syy-ice)',stroke:'#e8f1f7','stroke-width':1},g.B);
+    g.streams=mk('path',{fill:'none',stroke:'#9fd6f2','stroke-width':1.6,'stroke-linecap':'round'},g.B);
+    g.walkers=[]; for(var wk=0;wk<3;wk++){ var wg=mk('g',{},g.B); mk('circle',{cx:0,cy:-13,r:2.6,fill:'#f1e6d2'},wg); mk('path',{d:'M0 -10L0 -3M0 -3L-3 3M0 -3L3 3M0 -8L-3 -4M0 -8L4 -5',stroke:'#f1e6d2','stroke-width':1.6,'stroke-linecap':'round',fill:'none'},wg); g.walkers.push(wg); }
+    g.today=mk('path',{fill:'none',stroke:'rgba(255,255,255,.55)','stroke-dasharray':'5 5'},g.B);
+    g.seaT=U.txt(g.B,0,0,'','sy-t sy-halo','end'); g.todayT=U.txt(g.B,0,0,"today's sea level",'sy-ts sy-halo','start');
+    g.bIceT=U.txt(g.B,0,0,'ice sheet','sy-ts sy-halo','middle'); g.dryT=U.txt(g.B,0,0,'dry land then, seabed now','sy-ts sy-halo','middle');
     /* C: the clues (chapter 4) */
     g.Cg=mk('g',{},svg);
     var sx0=L.pad, sx1=cx+m*.06, sy0=L.top+m*.2, sy1=H-m*.12;
@@ -8522,6 +8541,7 @@ SY.add('skyfell',function(C){
     g.melt=mk('path',{fill:'rgba(160,220,250,.4)'},g.E);
     g.amoc=[mk('path',{fill:'none',stroke:'#ff8a5a','stroke-width':4,'stroke-linecap':'round'},g.E),mk('path',{fill:'none',stroke:'#6fb4ff','stroke-width':4,'stroke-linecap':'round','stroke-dasharray':'8 6'},g.E)];
     g.eT=[U.txt(g.E,L.pad+W*.16,L.top+m*.26+m*.1,'glacial lake','sy-ts sy-halo','middle'),U.txt(g.E,cx+m*.05,L.top+m*.5,'Atlantic currents weaken','sy-t sy-halo','middle'),U.txt(g.E,cx,L.top+m*.1,'the standard answer: meltwater','syf-big sy-halo','middle')];
+    svg.appendChild(g.th);
     /* F: the verdict (chapter 7) */
     g.F=mk('g',{},svg);
     [['The cold','real','#7fd1a4','✓'],['The comet','not shown','#e8b87a','?']].forEach(function(v,i){ var y=cy-m*.3+i*m*.24, gg=mk('g',{},g.F);
@@ -8536,7 +8556,7 @@ SY.add('skyfell',function(C){
     /* the cold: 0 and 3 cold, 2 warm */
     var warm=U.clamp(w(sc,2,1)*1.2,0,1), cold=1-warm;
     g.skyStops[0].setAttribute('stop-color',U.mix([11,20,34],[22,40,70],warm)); g.skyStops[1].setAttribute('stop-color',U.mix([61,87,112],[196,150,110],warm));
-    var oA=Math.max(w(sc,0,.9),w(sc,2,.7),w(sc,3,.9)); fade(g.A,oA);
+    var oA=Math.max(vis(sc,0),vis(sc,3)); fade(g.A,oA);
     if(oA>0){ var iceX=U.lerp(W*.62,W*.28,warm)+(sc>2.5?(sc-2.5)*W*.2:0);
       g.ice.setAttribute('d','M-10 '+(hz+4)+'L-10 '+(hz-m*.26)+'Q'+(iceX*.5)+' '+(hz-m*.3)+' '+iceX+' '+(hz-m*.02)+'L'+(iceX+20)+' '+(hz+4)+'Z');
       g.ground.setAttribute('d','M0 '+hz+'C'+W*.3+' '+(hz-6)+' '+W*.7+' '+(hz+6)+' '+W+' '+hz+'V'+H+'H0Z');
@@ -8565,25 +8585,47 @@ SY.add('skyfell',function(C){
     if(tho>0){ var temp=U.lerp(-50,-32,warm), f=(temp+55)/30, y1=L.th[1], y0=L.th[0];
       g.thF.setAttribute('y',(y1-(y1-y0)*f).toFixed(1)); g.thF.setAttribute('height',((y1-y0)*f+4).toFixed(1)); g.thF.setAttribute('fill',U.mix([143,208,255],[255,160,110],warm));
       var tv=Math.round(temp)+' °C'; if(g.thV.textContent!==tv) g.thV.textContent=tv; }
-    /* B: the sea */
-    var oB=Math.max(w(sc,1,.8),w(sc,2,.5)*.8); fade(g.B,oB);
-    if(oB>0){ var lev=U.lerp(-134,-60,U.smooth(U.clamp(sc-1,0,1))), base=L.top+m*.25, per=m*.0035, sl=base+(-lev)*per;
-      g.shelf.setAttribute('d','M0 '+(base-m*.02)+'L'+W*.3+' '+base+'C'+W*.5+' '+(base+m*.05)+' '+W*.6+' '+(base+m*.4)+' '+W+' '+(base+m*.62)+'V'+H+'H0Z');
-      g.sea.setAttribute('d','M0 '+sl.toFixed(1)+'H'+W+'V'+H+'H0Z');
-      g.today.setAttribute('d','M0 '+base+'H'+W); g.todayT.setAttribute('x',L.pad); g.todayT.setAttribute('y',base-6);
-      var s=Math.round(-lev)+' m below today'; if(g.seaT.textContent!==s) g.seaT.textContent=s; g.seaT.setAttribute('x',W*.62); g.seaT.setAttribute('y',(sl-8).toFixed(1)); }
+    /* B: the coast */
+    var oB=vis(sc,1,2); fade(g.B,oB);
+    if(oB>0){ var th=U.smooth(U.clamp(sc-1,0,1)), lev=U.lerp(-134,-80,th), base=L.top+(H-L.top)*.36, per=m*.0035, sl=base+(-lev)*per;
+      g.bStops[0].setAttribute('stop-color',U.mix([11,20,34],[22,40,70],th)); g.bStops[1].setAttribute('stop-color',U.mix([61,87,112],[196,150,110],th));
+      /* the profile: high ground at left, today's shore at x0, the shelf down to its edge at x1 (a little below the Ice Age sea), then the slope */
+      var x0=W*.34, x1=W*.7, yEdge=base+m*.5, prof=function(x){ if(x<=x0) return base-m*.1*Math.pow(1-x/x0,1.3); var u=(x-x0)/(x1-x0); if(u<=1) return base+(yEdge-base)*(u*.85+.15*u*u); return yEdge+(x-x1)*2.2; };
+      var d='M0 '+H; for(var k=0;k<=60;k++){ var xx=W*k/60; d+='L'+xx.toFixed(1)+' '+Math.min(H+2,prof(xx)).toFixed(1); } d+='L'+W+' '+H+'Z'; g.shelf.setAttribute('d',d); g.landClip.setAttribute('d',d);
+      if(!g.strataDone||g.strataW!==W){ var sd1='',sd2=''; for(var ly=1;ly<=9;ly++){ var off=m*(.05*ly+.012*ly*ly); for(var k5=0;k5<=40;k5++){ var x5=W*k5/40, y5=prof(x5)+off*(1-.25*Math.sin(ly+k5*.2)); sd1+=(k5?'L':'M')+x5.toFixed(1)+' '+y5.toFixed(1); if(ly%3===1) sd2+=(k5?'L':'M')+x5.toFixed(1)+' '+(y5+m*.02).toFixed(1); } }
+        g.strata.setAttribute('d',sd1); g.strata2.setAttribute('d',sd2); g.strataDone=1; g.strataW=W; }
+      g.bStars.setAttribute('opacity',(1-th).toFixed(2)); g.sun.setAttribute('cx',(W*.78).toFixed(1)); g.sun.setAttribute('cy',(base-m*.06).toFixed(1)); g.sun.setAttribute('r',(m*.32).toFixed(1)); g.sun.setAttribute('opacity',(th*.85).toFixed(2));
+      g.scaleT.setAttribute('x',W-L.pad); g.scaleT.setAttribute('y',H-L.pad-6);
+      /* where the land meets this sea */
+      var lo=x0, hi=x1; for(var it=0;it<24;it++){ var mid=(lo+hi)/2; if(prof(mid)<sl) lo=mid; else hi=mid; } var shore=lo;
+      var dd='M'+(x0+2).toFixed(1)+' '+(prof(x0+2)-1).toFixed(1); for(var k2=1;k2<=20;k2++){ var xs=x0+(shore-x0)*k2/20; dd+='L'+xs.toFixed(1)+' '+(prof(xs)-1.5).toFixed(1); } g.drown.setAttribute('d',dd); g.drown.setAttribute('opacity',(.9-.4*th).toFixed(2));
+      g.sea.setAttribute('d','M'+(shore-2).toFixed(1)+' '+sl.toFixed(1)+'H'+W+'V'+H+'H'+(shore-2).toFixed(1)+'Z');
+      var sd=''; for(var k3=0;k3<=30;k3++){ var xw=shore+(W-shore)*k3/30; sd+=(k3?'L':'M')+xw.toFixed(1)+' '+(sl+Math.sin(xw*.05+t*1.6)*1.4).toFixed(1); } g.surf.setAttribute('d',sd);
+      /* the ice sheet on the high ground: it thins and pulls back as the world warms, meltwater running off it */
+      var iw=U.lerp(x0*.8,x0*.4,th), ih=m*U.lerp(.3,.16,th), gy=function(x){ return prof(Math.max(0,x)); };
+      g.bIce.setAttribute('d','M-10 '+(gy(0)+2).toFixed(1)+'L-10 '+(gy(0)-ih).toFixed(1)+'Q'+(iw*.55).toFixed(1)+' '+(gy(0)-ih*1.08).toFixed(1)+' '+iw.toFixed(1)+' '+(gy(iw)-2).toFixed(1)+'Z');
+      var sm=''; if(th>.05){ for(var r=0;r<3;r++){ var sx=iw-4-r*6, sy=gy(sx)-2, ex=sx+(shore-sx)*th, ph3=(t*.8+r*.33)%1; sm+='M'+sx.toFixed(1)+' '+sy.toFixed(1);
+          for(var k4=1;k4<=10;k4++){ var xm=sx+(ex-sx)*k4/10; sm+='L'+xm.toFixed(1)+' '+(prof(xm)-1.5+Math.sin(k4*1.7+r)*1.2).toFixed(1); } } }
+      g.streams.setAttribute('d',sm); g.streams.setAttribute('opacity',(U.clamp(th*2,0,1)*.9).toFixed(2));
+      /* people walk out into the land the ice gives up */
+      var pw=U.smooth(U.clamp((sc-1.45)/.5,0,1));
+      g.walkers.forEach(function(el,i){ var xw2=U.lerp(W*.05,iw+W*.05+i*W*.06,pw)+Math.sin(t*3+i)*.6; el.setAttribute('transform','translate('+xw2.toFixed(1)+' '+(prof(xw2)-1).toFixed(1)+') scale('+(m/420).toFixed(2)+')'); el.setAttribute('opacity',(pw*.95).toFixed(2)); });
+      g.today.setAttribute('d','M'+x0.toFixed(1)+' '+base+'H'+W); g.todayT.setAttribute('x',(x0+8).toFixed(1)); g.todayT.setAttribute('y',base-7);
+      var s=Math.round(-lev)+' m below today'; if(g.seaT.textContent!==s) g.seaT.textContent=s; g.seaT.setAttribute('x',W-L.pad); g.seaT.setAttribute('y',(sl+22).toFixed(1));
+      g.bIceT.setAttribute('x',(iw*.42).toFixed(1)); g.bIceT.setAttribute('y',(gy(0)-ih*.5).toFixed(1));
+      var dx=(x0+shore)/2; g.dryT.setAttribute('x',dx.toFixed(1)); g.dryT.setAttribute('y',(prof(dx)+24).toFixed(1)); g.dryT.setAttribute('opacity',(1-th*.3).toFixed(2)); }
     /* C: the clues */
-    var oC=w(sc,4,.8); fade(g.Cg,oC);
+    var oC=vis(sc,4); fade(g.Cg,oC);
     if(oC>0){ var u4=U.smooth(U.clamp((sc-3.5)/.6,0,1)), ix=L.cx+m*.2+m*.12+6, y0=L.top+m*.2, y1=H-m*.12, d='';
       for(var k=0;k<=40;k++){ var yy=y0+(y1-y0)*k/40, sp=Math.exp(-Math.pow((k/40-.52)/.02,2))*u4; d+=(k?'L':'M')+(ix+4+sp*m*.2).toFixed(1)+' '+yy.toFixed(1); }
       g.pt.setAttribute('d',d); g.mat.setAttribute('opacity',(.5+.5*Math.sin(t*2)).toFixed(2)); }
     /* D */
-    var oD=w(sc,5,.8); fade(g.D,oD);
+    var oD=vis(sc,5); fade(g.D,oD);
     if(oD>0){ var u5=U.clamp((sc-4.6)/.5,0,1); g.x.setAttribute('opacity',U.smooth(U.clamp(u5*2,0,1)).toFixed(2));
       g.papers.forEach(function(pp,i){ var k=U.smooth(U.clamp(u5*2-.6-i*.25,0,1)); pp.g.setAttribute('transform','translate('+(cx+(i-1)*m*.26).toFixed(1)+' '+(L.top+m*.36).toFixed(1)+') rotate('+((i-1)*6)+')'); pp.g.setAttribute('opacity',k.toFixed(2));
         pp.s.setAttribute('transform','rotate(-14) scale('+(1.6-.6*k).toFixed(2)+')'); }); }
     /* E */
-    var oE=w(sc,6,.8); fade(g.E,oE);
+    var oE=vis(sc,6); fade(g.E,oE);
     if(oE>0){ var u6=U.smooth(U.clamp((sc-5.5)/.6,0,1)), lx=L.pad+W*.16, ly=L.top+m*.26;
       g.lake.setAttribute('rx',(W*.1*(1-.5*u6)).toFixed(1));
       g.melt.setAttribute('d','M'+(lx+W*.08)+' '+ly+'C'+(W*.5)+' '+(ly+m*.02)+' '+(W*.62)+' '+(ly+m*.12*u6)+' '+(W*.66)+' '+(ly+m*.2*u6)+'L'+(W*.6)+' '+(ly+m*.22*u6)+'C'+(W*.5)+' '+(ly+m*.1)+' '+(W*.4)+' '+(ly+m*.05)+' '+(lx+W*.06)+' '+(ly+m*.03)+'Z');
@@ -8591,7 +8633,7 @@ SY.add('skyfell',function(C){
       g.amoc[0].setAttribute('d','M'+(W*.45)+' '+(L.top+m*.74)+'C'+(W*.55)+' '+(L.top+m*.55)+' '+(W*.6)+' '+(L.top+m*.4)+' '+(W*.7)+' '+(L.top+m*.24)); g.amoc[0].setAttribute('opacity',fl.toFixed(2));
       g.amoc[0].setAttribute('stroke-dasharray','18 10'); g.amoc[0].setAttribute('stroke-dashoffset',(-ph2*fl).toFixed(1));
       g.amoc[1].setAttribute('d','M'+(W*.74)+' '+(L.top+m*.3)+'C'+(W*.72)+' '+(L.top+m*.5)+' '+(W*.62)+' '+(L.top+m*.66)+' '+(W*.52)+' '+(L.top+m*.78)); g.amoc[1].setAttribute('opacity',fl.toFixed(2)); g.amoc[1].setAttribute('stroke-dashoffset',(-ph2*fl).toFixed(1)); }
-    var oF=w(sc,7,.8); fade(g.F,oF);
+    var oF=vis(sc,7); fade(g.F,oF);
     var yr=sc<.5?'12,900 years ago':(sc<1.5?'about 21,000 years ago':(sc<2.5?'14,500 years ago':(sc<3.5?'12,900 years ago':(sc<6.5?'The evidence':'Today'))));
     C.hud(yr,['the cold returns','the Ice Age sea','the thaw','the impact idea','the clues','the problems','the standard answer','the verdict'][Math.min(7,Math.max(0,Math.round(sc)))]);
   }
