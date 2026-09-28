@@ -1,0 +1,81 @@
+{
+ "id": "2026-09-28",
+ "date": "2026-09-28",
+ "title": "The oldest complex cells were already choosing oxygen",
+ "kicker": "Ancient cell fossils",
+ "dek": "More than 12,000 fossils from Australia link the earliest known eukaryotes to oxygenated seafloors between 1.7 and 1.4 billion years ago.",
+ "body": [
+  "In an open-air warehouse in tropical Darwin, rock cores sit in trays that mineral exploration companies drilled hundreds of metres underground decades ago. The companies were searching for minerals, not buried life. Within some Northern Territory mudstones, however, researchers found more than 12,000 microscopic fossils left by organisms on the floor of an ancient inland sea.",
+  "The fossils belong to some of the oldest known eukaryotes, the kind of complex cells that include animals, plants, algae and fungi. The oldest examples in the Northern Territory date back 1.75 billion years, while the studied assemblage lived about 1.7 to 1.4 billion years ago. Eukaryotic cells differ from bacteria and archaea by possessing a nucleus and specialized internal structures.",
+  "The team crushed samples of the stored mudstone, dissolved the surrounding rock and examined the organic residue under a microscope. That process revealed the shapes of individual fossilized cells. The researchers also studied the mudstones themselves to reconstruct where the sediments accumulated, while chemical analysis indicated whether oxygen was present in the ancient seawater.",
+  "The remains appeared in deposits formed in oxygenated settings, from coastal mudflats to the open sea. Samples laid down without oxygen contained only what the study describes as simple prokaryotic forms. The association was therefore environmental: within these rocks, recognizable eukaryote fossils occurred only where the team inferred that oxygenated conditions had prevailed.",
+  "The team argues that the oldest known eukaryotes were already dependent on oxygen. That supports the long-held hypothesis that oxygen helped shape the emergence of complex cellular life rather than becoming important only later. The study therefore ties a major evolutionary development to a changing seafloor environment at a time when eukaryotes were becoming established.",
+  "The work is reported in Nature as “Early fossil eukaryotes were benthic aerobes,” with the DOI 10.1038/s41586-026-10533-4. By pairing cellular fossils with the sediment chemistry that surrounded them, the study adds a physical habitat to the record of early eukaryotic evolution. It does not reconstruct the full ancestral cell, but it shows where these particular organisms lived and what conditions accompanied them.",
+  "The evolutionary leap from prokaryotic to eukaryotic organization created the lineage that eventually produced animals and humans. The ancient cells preserved here are not human ancestors in any direct sense. They are much older representatives of the wider branch that made animals possible, offering a rare view of life’s cellular complexity before multicellular organisms appeared in this record.",
+  "The research also fits a changing picture of early microbial ecosystems. A related study of Palaeoproterozoic microorganisms reports a diverse ecosystem, while work on anaerobic eukaryotes shows that oxygen-free eukaryotic life exists today. The Australian fossils add a precise environmental association for the earliest known forms, placing them within an ancient seafloor community rather than outside the evidence supplied by sediment and chemistry."
+ ],
+ "doesnt_show": "The fossils do not establish that oxygen caused the origin of eukaryotes, or that all early eukaryotes required it. The study links one fossil assemblage to oxygenated deposits, but it cannot recover the full range of extinct lineages or their cellular anatomy.",
+ "settle": "Fossils from additional oxygen-free and oxygenated rocks of comparable age, combined with independent dating and habitat chemistry, would show how broadly the oxygen association held.",
+ "firm": "strong",
+ "related": [],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/09/260925005447.htm",
+  "title": "1.7-billion-year-old fossils reveal a crucial clue to the rise of complex life",
+  "date": "2026-09-27"
+ },
+ "refs": [
+  {
+   "doi": "10.1038/s41586-026-10533-4",
+   "title": "Early fossil eukaryotes were benthic aerobes",
+   "container": "Nature",
+   "year": 2026,
+   "authors": [
+    "Maxwell A. Lechte",
+    "Leigh Anne Riedman",
+    "Susannah M. Porter",
+    "Galen P. Halverson",
+    "Margaret Whelan"
+   ]
+  },
+  {
+   "doi": "10.1126/sciadv.adk3208",
+   "title": "1.63-billion-year-old multicellular eukaryotes from the Chuanlinggou Formation in North China",
+   "container": "Science Advances",
+   "year": 2024,
+   "authors": [
+    "Lanyun Miao",
+    "Zongjun Yin",
+    "Andrew H. Knoll",
+    "Yuangao Qu",
+    "Maoyan Zhu"
+   ]
+  },
+  {
+   "doi": "10.1098/rstb.2024.0092",
+   "title": "A diverse Palaeoproterozoic microbial ecosystem implies early eukaryogenesis",
+   "container": "Philosophical Transactions of the Royal Society B: Biological Sciences",
+   "year": 2025,
+   "authors": [
+    "Emmanuelle J. Javaux"
+   ]
+  },
+  {
+   "doi": "10.1038/s41564-022-01299-2",
+   "title": "Energetics and evolution of anaerobic microbial eukaryotes",
+   "container": "Nature Microbiology",
+   "year": 2023,
+   "authors": [
+    "Sergio A. Muñoz-Gómez"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Darwin_%28AU%29%2C_Darwin_Waterfront_--_2019_--_4423-5.jpg/1280px-Darwin_%28AU%29%2C_Darwin_Waterfront_--_2019_--_4423-5.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Darwin_(AU),_Darwin_Waterfront_--_2019_--_4423-5.jpg",
+  "licence": "CC BY-SA 4.0",
+  "title": "Darwin (AU), Darwin Waterfront -- 2019 -- 4423-5.jpg",
+  "credit": "Dietmar Rabich"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
