@@ -2,7 +2,7 @@
 
 **History is older and stranger than you were taught.** A field guide to the human past built around one pattern: rises and collapses, drowned coastlines, and knowledge lost and found. Every open question gets what is solid, the mainstream story, the challengers' case at its strongest, what would settle it, and two meters: the weight of evidence and how confident the textbooks sound.
 
-Live: https://residual-continuum.vercel.app
+Live: https://residualcontinuum.com
 
 ## What is inside
 
