@@ -61,6 +61,7 @@ video{width:100%;max-height:60vh;border-radius:12px;background:#000}
 .hours{display:flex;gap:4px;flex-wrap:wrap}.hours button{width:34px;padding:5px 0;border-radius:8px;background:var(--panel2);border:1px solid var(--line);font-size:12px;color:var(--muted)}.hours button.on{background:var(--gold);color:#1a1510;border-color:var(--gold)}
 .timeline{display:flex;flex-direction:column;gap:0}.tl{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:9px 0;border-top:1px solid var(--line)}.tl:first-child{border-top:0}
 footer{color:var(--muted);text-align:center;font-size:12px;padding:30px 0 0}
+.pol{font-size:11.5px;line-height:1.5;color:var(--muted);margin:14px auto 0;max-width:640px;text-align:center}.pol a{color:inherit;text-decoration:underline}
 @media (max-width:640px){td:last-child .btn{display:block;margin:3px 0;width:100%}header{padding:10px 14px}main{padding:14px 14px 100px}.hide-s{display:none}.kpi .n{font-size:30px}.tl{grid-template-columns:96px 1fr}}
 </style>
 </head>
@@ -106,6 +107,8 @@ function chipFor(net, r) {
   return `<span class="chip bad" title="${esc(r.error || "")}">${name} · failed</span>`;
 }
 
+const POL = `<p class="pol">Residual Continuum Studio publishes our own films to our own channels. It uses YouTube API Services: see the YouTube Terms of Service (youtube.com/t/terms) and the Google Privacy Policy (policies.google.com/privacy). <a href="/privacy.html">Privacy policy</a> · <a href="/terms.html">Terms of use</a></p>`;
+const FOOT = `<footer>Coherence is the measure, not final demonstration.${POL}</footer>`;
 /* --------------------------------------------------------------- login */
 function showLogin(setup) {
   $("#tabs").style.display = "none"; $("#logoutBtn").style.display = "none";
@@ -113,7 +116,7 @@ function showLogin(setup) {
   $("#main").innerHTML = `<div class="card login"><h1>Studio</h1><p class="muted">The console for the films, the schedule and the AI. Not linked from anywhere.</p>
   ${s.password === false ? `<p class="small" style="color:var(--amber)">ADMIN_PASSWORD is not set in Vercel yet: see the setup steps below.</p>` : ""}
   <form id="lf"><input type="password" id="pw" placeholder="Password" autocomplete="current-password" autofocus><div style="height:10px"></div><button class="btn gold" style="width:100%">Unlock</button></form>
-  ${setupList(s)}</div>`;
+  ${setupList(s)}${POL}</div>`;
   $("#lf").onsubmit = async e => { e.preventDefault(); try { await api("login", { password: $("#pw").value }); boot(); } catch (err) { toast(err.message); } };
 }
 function setupList(s) {
@@ -192,7 +195,7 @@ async function roomOverview(force) {
   <div style="height:14px"></div>
   <div class="card"><h2>Render farm <span class="sp"></span><a class="btn" href="https://github.com/Eouchi147/rc-render/actions" target="_blank" rel="noopener">Open on GitHub</a></h2>
     <div class="list">${runs.length ? runs.map(r => `<div class="item row sb"><span><span class="dot ${r.conclusion === "success" ? "ok" : r.status !== "completed" ? "wait" : "bad"}"></span> Run #${r.n} <span class="muted small">${esc(r.title || "")}</span></span><span class="small muted">${r.status === "completed" ? esc(r.conclusion) : esc(r.status)} · ${ago(r.at)}</span></div>`).join("") : `<p class="muted small">${esc(o.farm.error || "No runs yet.")}</p>`}</div></div>
-  <footer>Coherence is the measure, not final demonstration.</footer>`;
+  ${FOOT}`;
   $$("#modeSeg button").forEach(b => b.onclick = () => setDial({ mode: b.dataset.m }, b.dataset.m === "auto" ? "Switch the poster to automatic? Films will go out at the posting hours without asking." : null));
   $$("#aiSeg button").forEach(b => b.onclick = () => setDial({ ai: b.dataset.a }));
   $("#aiCap").onchange = e => setDial({ aiCaptions: e.target.checked });
@@ -244,7 +247,7 @@ async function roomSchedule(force) {
     <div class="card"><h2>Coming</h2><div class="timeline">${up.map(u => `<div class="tl"><div class="small muted">${when(u.at)}</div><div>${u.film ? `<a href="#" data-film="${esc(u.film)}">${esc(u.title)}</a>` : `<span class="muted">${esc(u.title)}</span>`}</div></div>`).join("") || `<p class="muted small">No posting hours set.</p>`}</div>
       <p class="tiny muted" style="margin-top:10px">The film for each slot is decided when the slot comes: pinned films first, then the plan's order, among the films the farm has finished.</p></div>
     <div class="card"><h2>Gone out and waiting</h2><div class="list">${recs.map(recRow).join("") || `<p class="muted small">Nothing yet.</p>`}</div></div></div>
-    <footer>Coherence is the measure, not final demonstration.</footer>`;
+    ${FOOT}`;
   wireCommon();
 }
 
@@ -259,7 +262,7 @@ async function roomFilms(force) {
     ${rows.map(f => `<tr><td class="muted">${f.order}</td><td><a href="#" data-film="${esc(f.id)}">${esc(f.title)}</a><div class="tiny muted">${esc(f.series || "")} · ${esc(f.code)}</div></td><td class="hide-s small">${esc(f.verdict)}</td>
       <td><div class="chips">${f.rendered ? `<span class="chip ok">rendered</span>` : `<span class="chip">not rendered</span>`}${f.pinned ? `<span class="chip wait">next #${f.pinned}</span>` : ""}${f.held ? `<span class="chip bad">held</span>` : ""}${f.nets.map(n => `<span class="chip ok">${NETS[n]}</span>`).join("")}</div></td>
       <td style="white-space:nowrap"><button class="btn tiny" data-do="${f.pinned ? "unpin" : "pin"}|${esc(f.id)}">${f.pinned ? "Unpin" : "Next"}</button> <button class="btn tiny" data-do="${f.held ? "unskip" : "skip"}|${esc(f.id)}">${f.held ? "Release" : "Hold"}</button></td></tr>`).join("")}
-    </tbody></table></div></div><footer>Coherence is the measure, not final demonstration.</footer>`;
+    </tbody></table></div></div>${FOOT}`;
   $$("#fseg button").forEach(b => b.onclick = () => { S.filter = b.dataset.f; roomFilms(); });
   $("#fq").oninput = e => { S.q = e.target.value; clearTimeout(S.qt); S.qt = setTimeout(() => { roomFilms(); const i = $("#fq"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 250); };
   $$("[data-do]").forEach(b => b.onclick = async () => { const [tool, id] = b.dataset.do.split("|"); try { await api("do", { tool, args: { id } }); } catch (e) { toast(e.message); } roomFilms(true); });
@@ -331,7 +334,7 @@ async function roomNetworks() {
     ${x.vars && x.vars.length ? `<div class="small muted" style="margin:6px 0">Vercel variables: ${x.vars.map(v => `<span class="code">${v}</span>`).join(" ")} ${x.ready ? `<span style="color:var(--green)">set</span>` : `<span style="color:var(--red)">missing</span>`}</div>` : ""}
     ${x.kind === "form" && !x.connected ? `<form data-form="${x.net}">${(x.fields || []).map(f => `<input name="${f.k}" type="${f.secret ? "password" : "text"}" placeholder="${esc(f.label)}" style="margin-top:8px" autocomplete="off">`).join("")}<button class="btn gold" style="margin-top:10px">Connect</button></form>` : ""}
     <div class="row" style="margin-top:10px">${x.via ? "" : x.connected ? `<button class="btn red" data-disc="${x.net}">Disconnect</button>` : x.kind === "oauth" ? `<button class="btn gold" data-conn="${x.net}" ${x.ready ? "" : "disabled"}>Connect</button>` : ""}
-    ${x.connected && x.since ? `<span class="tiny muted">since ${when(x.since)}</span>` : ""}</div></div>`).join("")}</div><footer>Coherence is the measure, not final demonstration.</footer>`;
+    ${x.connected && x.since ? `<span class="tiny muted">since ${when(x.since)}</span>` : ""}</div></div>`).join("")}</div>${FOOT}`;
   $$("[data-conn]").forEach(b => b.onclick = async () => { try { const j = await api("connect", { net: b.dataset.conn }); location.href = j.url; } catch (e) { toast(e.message); } });
   $$("[data-disc]").forEach(b => b.onclick = async () => { if (!confirm("Disconnect " + NETS[b.dataset.disc] + "?")) return; try { await api("disconnect", { net: b.dataset.disc }); } catch (e) { toast(e.message); } roomNetworks(); });
   $$("[data-form]").forEach(f => f.onsubmit = async e => { e.preventDefault(); const values = Object.fromEntries(new FormData(f)); try { const r = await api("connect_form", { net: f.dataset.form, values }); if (!r.ok) throw new Error(r.error); toast("Connected " + (r.who || "")); } catch (err) { toast(err.message); } roomNetworks(); });
