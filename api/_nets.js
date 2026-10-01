@@ -106,7 +106,7 @@ const youtube = {
 
 /* ======================================================= Facebook + Instagram */
 const GRAPH = "https://graph.facebook.com/v21.0";
-const META_SCOPE = "pages_show_list,pages_read_engagement,pages_manage_posts,publish_video,instagram_basic,instagram_content_publish,business_management,read_insights,instagram_manage_insights";
+const META_SCOPE = "pages_show_list,pages_read_engagement,pages_manage_posts,instagram_basic,instagram_content_publish,business_management,read_insights,instagram_manage_insights";
 const metaReady = () => !!(env("META_APP_ID") && env("META_APP_SECRET"));
 async function metaExchange(code, net) {
   const a = await jfetch(GRAPH + "/oauth/access_token?" + form({ client_id: env("META_APP_ID"), client_secret: env("META_APP_SECRET"), redirect_uri: cb(net), code }));
