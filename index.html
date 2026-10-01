@@ -4750,7 +4750,7 @@ function hydrate(el){
   if(!b||!b.hasAttribute('data-lazy')) return b;
   var t=document.getElementById(el.id+'-tpl');
   if(!t&&TPL){ TPL.need(el.id+'-tpl'); t=document.getElementById(el.id+'-tpl'); }
-  if(!t&&TPL){ if(!b.querySelector('.tpl-miss')) b.insertAdjacentHTML('beforeend','<p class="tpl-miss">'+(TPL.local?'This page opens from the web. Open residual-continuum.vercel.app, or the offline copy (full.html).':'This page did not load. Check the connection and open it again.')+'</p>'); return b; }
+  if(!t&&TPL){ if(!b.querySelector('.tpl-miss')) b.insertAdjacentHTML('beforeend','<p class="tpl-miss">'+(TPL.local?'This page opens from the web. Open residualcontinuum.com, or the offline copy (full.html).':'This page did not load. Check the connection and open it again.')+'</p>'); return b; }
   var miss=b.querySelector('.tpl-miss'); if(miss) miss.remove();
   if(t) b.insertAdjacentHTML('beforeend',t.textContent);
   b.removeAttribute('data-lazy');
@@ -5878,7 +5878,7 @@ if(!location.hash) window.go('home',true); else route();
 
 /* -------------------------------------------------------- cite this page, report an error */
 (function(){
-  var base=(location.protocol==='http:'||location.protocol==='https:')?location.origin+location.pathname:'https://residual-continuum.vercel.app/';
+  var base=(location.protocol==='http:'||location.protocol==='https:')?location.origin+location.pathname:'https://residualcontinuum.com/';
   function urlOf(a){ return base+'#'+a.getAttribute('data-v')+'/'+a.getAttribute('data-id'); }
   function fill(root){ [].forEach.call((root||document).querySelectorAll('.rc-cite .cite-u'),function(u){ var a=u.closest('.rc-cite'); if(a) u.textContent=urlOf(a); }); }
   function copy(txt,btn){ var done=function(){ var t=btn.textContent; btn.textContent='Copied'; setTimeout(function(){ btn.textContent=t; },1500); };
@@ -10189,7 +10189,7 @@ function renderPage(){
     el.innerHTML=list.map(function(p,i){ return card(p,i===0); }).join('');
     if(PENDING){ open(PENDING,null,true); PENDING=null; }
   }).catch(function(e){
-    el.innerHTML='<p class="dy-note">'+(e&&e.message==='file'?'The daily entries load on the live site, residual-continuum.vercel.app.':'The daily entries could not be loaded just now.')+'</p>';
+    el.innerHTML='<p class="dy-note">'+(e&&e.message==='file'?'The daily entries load on the live site, residualcontinuum.com.':'The daily entries could not be loaded just now.')+'</p>';
   });
 }
 function teaser(){

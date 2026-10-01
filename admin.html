@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#131211">
+<title>Studio · Residual Continuum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#131211;--panel:#1b1a18;--panel2:#22201d;--line:rgba(245,241,235,.09);--text:#f5f1eb;--muted:#a59d92;--gold:#e8b87a;--gold2:#c98a4e;--green:#8fd9b0;--red:#e98a8a;--blue:#9fd0ff;--amber:#f0c674;--r:16px}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--gold)}button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3{font-family:Newsreader,Georgia,serif;font-weight:500;margin:0;letter-spacing:-.01em}
+.mark{width:28px;height:28px;flex:none}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 18px;background:rgba(19,18,17,.86);backdrop-filter:blur(18px) saturate(160%);-webkit-backdrop-filter:blur(18px) saturate(160%);border-bottom:1px solid var(--line)}
+header h1{font-size:20px}header .sub{color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+header .sp{flex:1}
+.pill{font-family:Inter,system-ui,sans-serif;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);font-size:12px;color:var(--muted);white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}.dot.ok{background:var(--green)}.dot.bad{background:var(--red)}.dot.wait{background:var(--amber)}.dot.off{background:#5d574f}
+nav.tabs{display:flex;gap:4px;padding:10px 18px 0;overflow-x:auto;scrollbar-width:none}nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{background:none;border:0;padding:9px 14px;border-radius:999px;color:var(--muted);font-weight:500;white-space:nowrap}
+nav.tabs button.on{background:var(--panel2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line)}
+main{max-width:1240px;margin:0 auto;padding:18px 18px 110px}
+.grid{display:grid;gap:14px}.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+.card h2{font-size:19px;margin-bottom:10px;display:flex;align-items:center;gap:10px}.card h2 .sp{flex:1}
+.kpi .n{font-family:Newsreader,serif;font-size:38px;line-height:1}.kpi .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-top:6px}
+.muted{color:var(--muted)}.small{font-size:12.5px}.tiny{font-size:11.5px}
+.btn{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:7px 12px;font-weight:500;font-size:13px;font-family:Inter,system-ui,sans-serif;text-decoration:none;display:inline-block}
+.btn:hover{border-color:rgba(232,184,122,.5)}.btn.gold{background:var(--gold);color:#1a1510;border-color:var(--gold)}.btn.red{color:var(--red)}.btn.green{color:var(--green)}
+.btn:disabled{opacity:.45;cursor:default}
+.seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:3px;max-width:100%;overflow-x:auto;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}
+.seg button{background:none;border:0;padding:6px 12px;border-radius:9px;color:var(--muted);font-weight:500;font-size:13px;white-space:nowrap;flex:none}.seg button.on{background:var(--gold);color:#1a1510}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.row.sb{justify-content:space-between}
+.list{display:flex;flex-direction:column}.item{padding:11px 0;border-top:1px solid var(--line)}.item:first-child{border-top:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);text-decoration:none}
+.chip.ok{color:var(--green);border-color:rgba(143,217,176,.35)}.chip.bad{color:var(--red);border-color:rgba(233,138,138,.35)}.chip.wait{color:var(--amber);border-color:rgba(240,198,116,.35)}.chip.priv{color:var(--blue);border-color:rgba(159,208,255,.35)}
+.bar{height:10px;border-radius:6px;background:var(--panel2);overflow:hidden;position:relative}.bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--gold2),var(--gold));border-radius:6px;transition:width .6s cubic-bezier(.25,1,.5,1)}
+.bar.green i{background:linear-gradient(90deg,#4f9f78,var(--green))}.bar.blue i{background:linear-gradient(90deg,#4f7fa8,var(--blue))}
+.funnel .r{display:grid;grid-template-columns:96px 1fr 52px;align-items:center;gap:10px;margin:8px 0}.funnel .v{text-align:right;font-variant-numeric:tabular-nums}
+.nets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.net{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}.net b{display:block;font-weight:600;font-size:13.5px}.net .who{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:left;color:var(--muted);font-weight:500;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;padding:8px 6px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--panel)}
+td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}tr:hover td{background:rgba(245,241,235,.02)}
+.tbl{max-height:68vh;overflow:auto}
+input,textarea,select{background:#141312;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;font:inherit;width:100%}
+textarea{min-height:110px;resize:vertical;line-height:1.5}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.drawer{position:fixed;inset:0;z-index:40;display:none}.drawer.on{display:block}.drawer .scrim{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+.drawer .sheet{position:absolute;right:0;top:0;bottom:0;width:min(640px,100%);background:var(--panel);border-left:1px solid var(--line);overflow:auto;padding:20px}
+video{width:100%;max-height:60vh;border-radius:12px;background:#000}
+.chat{display:flex;flex-direction:column;gap:12px;max-height:62vh;overflow:auto;padding-right:4px}
+.msg{max-width:88%;padding:11px 14px;border-radius:14px;white-space:pre-wrap;line-height:1.5}.msg.user{align-self:flex-end;background:#2a2620;border:1px solid rgba(232,184,122,.25)}.msg.assistant{align-self:flex-start;background:var(--panel2);border:1px solid var(--line)}
+.msg .meta{font-size:11px;color:var(--muted);margin-top:6px}
+.prop{border:1px solid rgba(232,184,122,.35);background:rgba(232,184,122,.06);border-radius:12px;padding:10px 12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);padding:10px 16px;border-radius:12px;z-index:60;max-width:90vw;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.login{max-width:380px;margin:12vh auto;padding:26px}.login h1{font-size:30px;margin-bottom:6px}
+.setup li{margin:6px 0}.code{font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#141312;border:1px solid var(--line);border-radius:8px;padding:2px 6px;word-break:break-all}
+.hours{display:flex;gap:4px;flex-wrap:wrap}.hours button{width:34px;padding:5px 0;border-radius:8px;background:var(--panel2);border:1px solid var(--line);font-size:12px;color:var(--muted)}.hours button.on{background:var(--gold);color:#1a1510;border-color:var(--gold)}
+.timeline{display:flex;flex-direction:column;gap:0}.tl{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:9px 0;border-top:1px solid var(--line)}.tl:first-child{border-top:0}
+footer{color:var(--muted);text-align:center;font-size:12px;padding:30px 0 0}
+@media (max-width:640px){td:last-child .btn{display:block;margin:3px 0;width:100%}header{padding:10px 14px}main{padding:14px 14px 100px}.hide-s{display:none}.kpi .n{font-size:30px}.tl{grid-template-columns:96px 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="27" fill="none" stroke="#f5f1eb" stroke-width="2.2"/><path d="M19 34a13 13 0 0 1 26 0z" fill="#e8b87a"/><line x1="7" y1="34" x2="57" y2="34" stroke="#f5f1eb" stroke-width="2.2"/><line x1="18" y1="40" x2="46" y2="40" stroke="#a59d92" stroke-width="1.6"/><line x1="24" y1="45" x2="40" y2="45" stroke="#a59d92" stroke-width="1.2"/></svg>
+  <div><h1>Studio</h1><div class="sub">Residual Continuum</div></div>
+  <div class="sp"></div>
+  <span class="pill hide-s" id="modePill"><span class="dot"></span><span>…</span></span>
+  <button class="btn" id="refreshBtn" title="Refresh">↻</button>
+  <button class="btn" id="logoutBtn" style="display:none">Lock</button>
+</header>
+<nav class="tabs" id="tabs" style="display:none">
+  <button data-room="overview" class="on">Overview</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="director">Director (AI)</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
+</nav>
+<main id="main"></main>
+<div class="drawer" id="drawer"><div class="scrim" data-close></div><div class="sheet" id="sheet"></div></div>
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const NETS = { youtube: "YouTube", tiktok: "TikTok", instagram: "Instagram", facebook: "Facebook", x: "X" };
+let S = { room: (location.hash.slice(1).split("?")[0]) || "overview", ov: null, plan: null, chat: null, filter: "all", q: "" };
+
+async function api(action, body, params) {
+  const qs = new URLSearchParams({ action, ...(params || {}) }).toString();
+  const r = await fetch("/api/studio?" + qs, body ? { method: "POST", headers: { "content-type": "application/json", "x-rc": "1" }, body: JSON.stringify(body), credentials: "same-origin" } : { credentials: "same-origin" });
+  const j = await r.json().catch(() => ({ error: "http " + r.status }));
+  if (r.status === 401 && action !== "login") { showLogin(); throw new Error("locked"); }
+  if (!r.ok) throw new Error(j.error || ("http " + r.status));
+  return j;
+}
+function toast(msg, ms = 3800) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), ms); }
+const when = iso => { if (!iso) return ""; const d = new Date(iso); return d.toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); };
+const ago = iso => { if (!iso) return ""; const s = (Date.now() - Date.parse(iso)) / 1000; if (s < 90) return "just now"; if (s < 5400) return Math.round(s / 60) + " min ago"; if (s < 129600) return Math.round(s / 3600) + " h ago"; return Math.round(s / 86400) + " d ago"; };
+const slotTime = (date, hour) => { const h = String(hour).slice(0, 2), m = /m(\d\d)/.exec(hour); return new Date(date + "T" + h + ":" + (m ? m[1] : "00") + ":00Z"); };
+function chipFor(net, r) {
+  if (!r) return "";
+  const name = NETS[net] || net;
+  if (r.ok) return `<a class="chip ${r.private ? "priv" : "ok"}" ${r.url ? `href="${esc(r.url)}" target="_blank" rel="noopener"` : ""} title="${esc(r.note || "")}">${name}${r.private ? " · private" : ""}${r.already ? " · already" : ""}</a>`;
+  if (r.pending) return `<span class="chip wait" title="${esc(r.note || "processing")}">${name} · processing</span>`;
+  if (r.skipped) return `<span class="chip" title="${esc(r.skipped)}">${name} · not connected</span>`;
+  return `<span class="chip bad" title="${esc(r.error || "")}">${name} · failed</span>`;
+}
+
+/* --------------------------------------------------------------- login */
+function showLogin(setup) {
+  $("#tabs").style.display = "none"; $("#logoutBtn").style.display = "none";
+  const s = setup || {};
+  $("#main").innerHTML = `<div class="card login"><h1>Studio</h1><p class="muted">The console for the films, the schedule and the AI. Not linked from anywhere.</p>
+  ${s.password === false ? `<p class="small" style="color:var(--amber)">ADMIN_PASSWORD is not set in Vercel yet: see the setup steps below.</p>` : ""}
+  <form id="lf"><input type="password" id="pw" placeholder="Password" autocomplete="current-password" autofocus><div style="height:10px"></div><button class="btn gold" style="width:100%">Unlock</button></form>
+  ${setupList(s)}</div>`;
+  $("#lf").onsubmit = async e => { e.preventDefault(); try { await api("login", { password: $("#pw").value }); boot(); } catch (err) { toast(err.message); } };
+}
+function setupList(s) {
+  if (!s || (s.password && s.store && s.cron && s.ai)) return "";
+  const li = (ok, t) => `<li><span class="dot ${ok ? "ok" : "bad"}"></span> ${t}</li>`;
+  return `<ul class="setup small muted" style="list-style:none;padding:0;margin-top:18px">
+    ${li(s.password, "<b>ADMIN_PASSWORD</b> in Vercel → Settings → Environment Variables (you choose it), then Redeploy")}
+    ${li(s.store, "A store: Vercel → Storage → Upstash Redis (free) → connect to this project")}
+    ${li(s.cron, "<b>CRON_SECRET</b> (already used by the daily discovery)")}
+    ${li(s.ai, "<b>OPENROUTER_API_KEY</b> (already set for the site assistant)")}</ul>`;
+}
+
+/* ------------------------------------------------------------- rooms */
+async function load(room, force) {
+  S.room = room; $$("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.room === room));
+  if (!location.hash.startsWith("#" + room)) history.replaceState(null, "", "#" + room);
+  const R = { overview: roomOverview, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
+  try { await R(force); } catch (e) { if (e.message !== "locked") $("#main").innerHTML = `<div class="card"><h2>Something went wrong</h2><p class="muted">${esc(e.message)}</p></div>`; }
+}
+async function getOv(force) { if (!S.ov || force) S.ov = await api("overview"); paintMode(); return S.ov; }
+function paintMode() {
+  const d = S.ov && S.ov.dials; if (!d) return;
+  const map = { off: ["off", "Poster off"], approve: ["wait", "Waits for your yes"], auto: ["ok", "Posting on its own"] };
+  const [c, t] = map[d.mode] || ["", d.mode];
+  $("#modePill").innerHTML = `<span class="dot ${c}"></span><span>${t}</span>`;
+}
+
+async function roomOverview(force) {
+  const o = await getOv(force);
+  const f = o.films, max = Math.max(1, f.planned);
+  const pct = n => Math.round(100 * n / max);
+  const props = o.proposals || [];
+  const recs = (o.calendar.records || []).slice(0, 6), up = (o.calendar.upcoming || []).slice(0, 6);
+  const runs = (o.farm.runs || []).slice(0, 5);
+  const nets = o.nets.map(n => {
+    const c = n.connected ? (o.dials.nets[n.net] === false ? "off" : "ok") : (n.ready || n.kind === "form" ? "wait" : "bad");
+    const label = n.connected ? (o.dials.nets[n.net] === false ? "connected, paused" : (n.who || "connected")) : (n.via ? "through " + NETS[n.via] : (n.ready || n.kind === "form" ? "ready to connect" : "app keys needed"));
+    return `<div class="net"><b><span class="dot ${c}"></span> ${NETS[n.net]}</b><div class="who">${esc(label)}</div><div class="tiny muted" style="margin-top:4px">${o.perNet[n.net] || 0} posted</div></div>`;
+  }).join("");
+  $("#main").innerHTML = `
+  ${setupBanner(o.setup)}
+  ${props.length ? `<div class="card" style="margin-bottom:14px"><h2>The AI asks <span class="pill">${props.length}</span></h2>${props.map(propCard).join("")}</div>` : ""}
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi"><div class="n">${f.planned}</div><div class="l">Films planned</div></div>
+    <div class="card kpi"><div class="n">${f.rendered}</div><div class="l">Rendered by the farm</div></div>
+    <div class="card kpi"><div class="n">${f.posted}</div><div class="l">Posted</div></div>
+    <div class="card kpi"><div class="n">${o.nets.filter(n => n.connected).length}<span class="muted" style="font-size:20px">/${o.nets.length}</span></div><div class="l">Networks connected</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h2>Pipeline</h2>
+      <div class="funnel">
+        <div class="r"><span class="small muted">Planned</span><div class="bar"><i style="width:100%"></i></div><span class="v">${f.planned}</span></div>
+        <div class="r"><span class="small muted">Rendered</span><div class="bar blue"><i style="width:${pct(f.rendered)}%"></i></div><span class="v">${f.rendered}</span></div>
+        <div class="r"><span class="small muted">Posted</span><div class="bar green"><i style="width:${pct(f.posted)}%"></i></div><span class="v">${f.posted}</span></div>
+      </div>
+      <p class="small muted" style="margin:10px 0 0">${f.rendered - f.posted > 0 ? `${f.rendered - f.posted} finished films are waiting their turn: at ${o.dials.slots.length} a day, that is about ${Math.ceil((f.rendered - f.posted) / Math.max(1, o.dials.slots.length))} days of posts ready.` : "Nothing finished is waiting: the farm is the bottleneck."}${f.farmError ? ` <span style="color:var(--red)">Farm: ${esc(f.farmError)}</span>` : ""}</p>
+    </div>
+    <div class="card"><h2>The poster <span class="sp"></span></h2>
+      <div class="row sb"><span class="small muted">Mode</span><div class="seg" id="modeSeg">${["off", "approve", "auto"].map(m => `<button data-m="${m}" class="${o.dials.mode === m ? "on" : ""}">${{ off: "Off", approve: "Approve each", auto: "Automatic" }[m]}</button>`).join("")}</div></div>
+      <div style="height:12px"></div>
+      <div class="small muted" style="margin-bottom:6px">Posting hours (UTC · yours: ${o.dials.slots.map(h => new Date(Date.UTC(2026, 0, 1, h)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })).join(", ") || "none"})</div>
+      <div class="hours" id="hours">${Array.from({ length: 24 }, (_, h) => `<button data-h="${h}" class="${o.dials.slots.includes(h) ? "on" : ""}">${String(h).padStart(2, "0")}</button>`).join("")}</div>
+      <div style="height:12px"></div>
+      <div class="row sb"><span class="small muted">The AI</span><div class="seg" id="aiSeg"><button data-a="propose" class="${o.dials.ai === "propose" ? "on" : ""}">Proposes</button><button data-a="act" class="${o.dials.ai === "act" ? "on" : ""}">Acts (not posting)</button></div></div>
+      <div style="height:10px"></div>
+      <label class="row small"><input type="checkbox" id="aiCap" style="width:auto" ${o.dials.aiCaptions ? "checked" : ""}> AI writes each network's caption before a post</label>
+    </div>
+  </div>
+  <div style="height:14px"></div>
+  <div class="card"><h2>Networks</h2><div class="nets">${nets}</div></div>
+  <div style="height:14px"></div>
+  <div class="grid g2">
+    <div class="card"><h2>Next up</h2><div class="timeline">${up.length ? up.map(u => `<div class="tl"><div class="small muted">${when(u.at)}</div><div>${u.film ? `<a href="#" data-film="${esc(u.film)}">${esc(u.title)}</a>` : `<span class="muted">${esc(u.title)}</span>`}</div></div>`).join("") : `<p class="muted small">No posting hours are set.</p>`}</div></div>
+    <div class="card"><h2>Lately</h2><div class="list">${recs.length ? recs.map(recRow).join("") : `<p class="muted small">Nothing has gone out yet.</p>`}</div></div>
+  </div>
+  <div style="height:14px"></div>
+  <div class="card"><h2>Render farm <span class="sp"></span><a class="btn" href="https://github.com/Eouchi147/rc-render/actions" target="_blank" rel="noopener">Open on GitHub</a></h2>
+    <div class="list">${runs.length ? runs.map(r => `<div class="item row sb"><span><span class="dot ${r.conclusion === "success" ? "ok" : r.status !== "completed" ? "wait" : "bad"}"></span> Run #${r.n} <span class="muted small">${esc(r.title || "")}</span></span><span class="small muted">${r.status === "completed" ? esc(r.conclusion) : esc(r.status)} · ${ago(r.at)}</span></div>`).join("") : `<p class="muted small">${esc(o.farm.error || "No runs yet.")}</p>`}</div></div>
+  <footer>Coherence is the measure, not final demonstration.</footer>`;
+  $$("#modeSeg button").forEach(b => b.onclick = () => setDial({ mode: b.dataset.m }, b.dataset.m === "auto" ? "Switch the poster to automatic? Films will go out at the posting hours without asking." : null));
+  $$("#aiSeg button").forEach(b => b.onclick = () => setDial({ ai: b.dataset.a }));
+  $("#aiCap").onchange = e => setDial({ aiCaptions: e.target.checked });
+  $$("#hours button").forEach(b => b.onclick = () => { const h = +b.dataset.h; const s = new Set(o.dials.slots); s.has(h) ? s.delete(h) : s.add(h); setDial({ slots: [...s] }); });
+  wireCommon();
+}
+function setupBanner(s) {
+  if (!s || (s.store && s.password)) return "";
+  return `<div class="card" style="margin-bottom:14px;border-color:rgba(240,198,116,.4)"><h2>Finish the setup</h2>${setupList(s)}</div>`;
+}
+function recRow(r) {
+  const t = slotTime(r.date, r.hour);
+  const st = { sent: "ok", partial: "wait", pending: "wait", failed: "bad", queued: "wait", rejected: "off", nothing: "off", sending: "wait" }[r.status] || "";
+  return `<div class="item"><div class="row sb"><a href="#" data-film="${esc(r.film)}">${esc(r.title || r.film)}</a><span class="small muted"><span class="dot ${st}"></span> ${esc(r.status)} · ${when(t.toISOString())}</span></div>
+  <div class="chips" style="margin-top:6px">${Object.entries(r.results || {}).map(([n, x]) => chipFor(n, x)).join("")}</div>
+  ${r.status === "queued" ? `<div class="row" style="margin-top:8px"><button class="btn gold" data-approve="${r.date}|${r.hour}">Post it now</button><button class="btn" data-reject="${r.date}|${r.hour}">Skip this slot</button><button class="btn" data-film="${esc(r.film)}">Preview</button></div>` : ""}
+  ${Object.entries(r.results || {}).filter(([, x]) => x && !x.ok && !x.pending && !x.skipped).map(([n]) => `<button class="btn tiny red" style="margin-top:6px;margin-right:6px" data-retry="${r.date}|${r.hour}|${n}">Retry ${NETS[n]}</button>`).join("")}</div>`;
+}
+function propCard(p) {
+  const label = { pin: "Put next in line", unpin: "Unpin", skip: "Hold back", unskip: "Release", caption: "Set caption", write_captions: "Write captions", set_slots: "Change posting hours", set_network: "Turn a network on/off", ai_captions: "AI captions", set_mode: "Change the poster's mode", approve: "Send a queued slot", post_now: "Post a film now" }[p.tool] || p.tool;
+  return `<div class="prop" style="margin-top:8px"><div class="row sb"><b>${esc(label)}</b><span class="tiny muted">${ago(p.at)}</span></div>
+  <div class="small" style="margin:4px 0">${esc(describeArgs(p.args))}</div>${p.why ? `<div class="small muted">${esc(p.why)}</div>` : ""}
+  <div class="row" style="margin-top:8px"><button class="btn gold" data-prop="${p.id}|1">Approve</button><button class="btn" data-prop="${p.id}|0">Reject</button></div></div>`;
+}
+function describeArgs(a) {
+  a = a || {}; const t = id => { const f = (S.plan || []).find(x => x.id === id); return f ? f.title : id; };
+  const parts = [];
+  if (a.id) parts.push(t(a.id)); if (a.net) parts.push(NETS[a.net] || a.net); if (a.mode) parts.push("mode: " + a.mode);
+  if (a.hours) parts.push("hours (UTC): " + a.hours.join(", ")); if ("on" in a) parts.push(a.on ? "on" : "off");
+  if (a.date) parts.push(a.date + " " + a.hour + ":00 UTC"); if (a.text) parts.push("\u201c" + a.text.slice(0, 160) + "\u201d");
+  return parts.join(" · ") || JSON.stringify(a);
+}
+async function setDial(patch, confirmText) {
+  if (confirmText && !confirm(confirmText)) return;
+  try { await api("dials", { patch }); await load(S.room, true); toast("Saved"); } catch (e) { toast(e.message); }
+}
+function wireCommon() {
+  $$("[data-film]").forEach(a => a.onclick = e => { e.preventDefault(); openFilm(a.dataset.film); });
+  $$("[data-approve]").forEach(b => b.onclick = async () => { const [d, h] = b.dataset.approve.split("|"); b.disabled = true; b.textContent = "Sending…"; try { await api("approve", { date: d, hour: h }); toast("Sent: see the chips for each network"); } catch (e) { toast(e.message); } load(S.room, true); });
+  $$("[data-reject]").forEach(b => b.onclick = async () => { const [d, h] = b.dataset.reject.split("|"); try { await api("reject", { date: d, hour: h }); } catch (e) { toast(e.message); } load(S.room, true); });
+  $$("[data-retry]").forEach(b => b.onclick = async () => { const [d, h, n] = b.dataset.retry.split("|"); b.disabled = true; b.textContent = "Retrying…"; try { await api("retry", { date: d, hour: h, net: n }); } catch (e) { toast(e.message); } load(S.room, true); });
+  $$("[data-prop]").forEach(b => b.onclick = async () => { const [id, y] = b.dataset.prop.split("|"); b.disabled = true; try { await api("proposal", { id, yes: y === "1" }); toast(y === "1" ? "Done" : "Rejected"); } catch (e) { toast(e.message); } load(S.room, true); });
+}
+
+async function roomSchedule(force) {
+  const o = await getOv(force);
+  const recs = o.calendar.records || [], up = o.calendar.upcoming || [];
+  $("#main").innerHTML = `<div class="grid g2">
+    <div class="card"><h2>Coming</h2><div class="timeline">${up.map(u => `<div class="tl"><div class="small muted">${when(u.at)}</div><div>${u.film ? `<a href="#" data-film="${esc(u.film)}">${esc(u.title)}</a>` : `<span class="muted">${esc(u.title)}</span>`}</div></div>`).join("") || `<p class="muted small">No posting hours set.</p>`}</div>
+      <p class="tiny muted" style="margin-top:10px">The film for each slot is decided when the slot comes: pinned films first, then the plan's order, among the films the farm has finished.</p></div>
+    <div class="card"><h2>Gone out and waiting</h2><div class="list">${recs.map(recRow).join("") || `<p class="muted small">Nothing yet.</p>`}</div></div></div>
+    <footer>Coherence is the measure, not final demonstration.</footer>`;
+  wireCommon();
+}
+
+async function roomFilms(force) {
+  if (!S.plan || force) S.plan = (await api("plan")).films;
+  const rows = S.plan.filter(f => (S.filter === "all" || (S.filter === "ready" && f.rendered && !f.posted) || (S.filter === "waiting" && !f.rendered) || (S.filter === "posted" && f.posted) || (S.filter === "held" && f.held))
+    && (!S.q || (f.title + " " + f.id + " " + f.series).toLowerCase().includes(S.q.toLowerCase())));
+  const cnt = k => S.plan.filter(f => k === "ready" ? f.rendered && !f.posted : k === "waiting" ? !f.rendered : k === "posted" ? f.posted : k === "held" ? f.held : true).length;
+  $("#main").innerHTML = `<div class="card"><div class="row sb" style="margin-bottom:10px"><div class="seg" id="fseg">${["all", "ready", "waiting", "posted", "held"].map(k => `<button data-f="${k}" class="${S.filter === k ? "on" : ""}">${{ all: "All", ready: "Ready to post", waiting: "Not rendered", posted: "Posted", held: "Held" }[k]} ${cnt(k)}</button>`).join("")}</div>
+    <input id="fq" placeholder="Search a film" value="${esc(S.q)}" style="max-width:260px"></div>
+    <div class="tbl"><table><thead><tr><th>#</th><th>Film</th><th class="hide-s">Verdict</th><th>State</th><th></th></tr></thead><tbody>
+    ${rows.map(f => `<tr><td class="muted">${f.order}</td><td><a href="#" data-film="${esc(f.id)}">${esc(f.title)}</a><div class="tiny muted">${esc(f.series || "")} · ${esc(f.code)}</div></td><td class="hide-s small">${esc(f.verdict)}</td>
+      <td><div class="chips">${f.rendered ? `<span class="chip ok">rendered</span>` : `<span class="chip">not rendered</span>`}${f.pinned ? `<span class="chip wait">next #${f.pinned}</span>` : ""}${f.held ? `<span class="chip bad">held</span>` : ""}${f.nets.map(n => `<span class="chip ok">${NETS[n]}</span>`).join("")}</div></td>
+      <td style="white-space:nowrap"><button class="btn tiny" data-do="${f.pinned ? "unpin" : "pin"}|${esc(f.id)}">${f.pinned ? "Unpin" : "Next"}</button> <button class="btn tiny" data-do="${f.held ? "unskip" : "skip"}|${esc(f.id)}">${f.held ? "Release" : "Hold"}</button></td></tr>`).join("")}
+    </tbody></table></div></div><footer>Coherence is the measure, not final demonstration.</footer>`;
+  $$("#fseg button").forEach(b => b.onclick = () => { S.filter = b.dataset.f; roomFilms(); });
+  $("#fq").oninput = e => { S.q = e.target.value; clearTimeout(S.qt); S.qt = setTimeout(() => { roomFilms(); const i = $("#fq"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }, 250); };
+  $$("[data-do]").forEach(b => b.onclick = async () => { const [tool, id] = b.dataset.do.split("|"); try { await api("do", { tool, args: { id } }); } catch (e) { toast(e.message); } roomFilms(true); });
+  wireCommon();
+}
+
+async function openFilm(id) {
+  $("#drawer").classList.add("on"); $("#sheet").innerHTML = `<p class="muted">Loading…</p>`;
+  try {
+    const j = await api("film", null, { id });
+    const f = j.film;
+    $("#sheet").innerHTML = `<div class="row sb"><span class="pill">${esc(f.code)} · ${esc(f.verdict)}</span><button class="btn" data-close>Close</button></div>
+    <h2 style="font-size:26px;margin:12px 0 4px">${esc(f.title)}</h2><p class="muted" style="margin-top:0">${esc(f.hook)}</p>
+    <video controls preload="metadata" playsinline src="${esc(j.video)}"></video>
+    <div class="chips" style="margin:10px 0">${Object.entries(j.posted || {}).map(([n, r]) => chipFor(n, { ok: true, ...r })).join("") || `<span class="chip">not posted yet</span>`}</div>
+    <div class="row"><button class="btn gold" id="postNow">Post now to every network</button><button class="btn" id="aiCaps">AI: write captions</button></div>
+    <h3 style="margin:18px 0 8px;font-size:18px">The words, per network</h3>
+    ${Object.keys(NETS).map(n => { const w = j.words[n] || {}; const t = w.text || w.description || ""; return `<div style="margin-bottom:12px"><div class="row sb"><b class="small">${NETS[n]}</b><span class="tiny muted">${t.length} characters${w.title ? " · title: " + esc(w.title) : ""}</span></div><textarea data-cap="${n}">${esc(t)}</textarea><div class="row" style="margin-top:6px"><button class="btn tiny" data-save="${n}">Save for ${NETS[n]}</button></div></div>`; }).join("")}
+    <p class="tiny muted">Sources: ${esc(f.sources)}</p>`;
+    $$("[data-close]", $("#sheet")).forEach(b => b.onclick = closeDrawer);
+    $("#postNow").onclick = async e => { if (!confirm("Post “" + f.title + "” now to every connected network?")) return; e.target.disabled = true; e.target.textContent = "Posting… (up to 4 minutes)"; try { await api("post_now", { id }); toast("Sent: see Schedule for each network"); } catch (err) { toast(err.message); } openFilm(id); };
+    $("#aiCaps").onclick = async e => { e.target.disabled = true; e.target.textContent = "Writing…"; try { const r = await api("captions", { id }); toast("Written for " + (Object.keys(r.captions).join(", ") || "no network (the drafts broke the house rules)")); } catch (err) { toast(err.message); } openFilm(id); };
+    $$("[data-save]").forEach(b => b.onclick = async () => { const n = b.dataset.save; try { await api("do", { tool: "caption", args: { id, net: n, text: $(`[data-cap="${n}"]`).value } }); toast("Saved for " + NETS[n]); } catch (err) { toast(err.message); } });
+  } catch (e) { $("#sheet").innerHTML = `<p>${esc(e.message)}</p><button class="btn" data-close>Close</button>`; $$("[data-close]", $("#sheet")).forEach(b => b.onclick = closeDrawer); }
+}
+function closeDrawer() { $("#drawer").classList.remove("on"); const v = $("#sheet video"); if (v) v.pause(); }
+
+async function roomDirector(force) {
+  if (!S.chat || force) S.chat = (await api("chat_history")).chat;
+  const o = await getOv(force);
+  const props = o.proposals || [];
+  $("#main").innerHTML = `<div class="grid g2" style="grid-template-columns:minmax(0,2fr) minmax(0,1fr)">
+  <div class="card"><h2>The Director <span class="pill tiny">free models, via OpenRouter</span></h2>
+    <div class="chat" id="chat">${S.chat.length ? S.chat.map(m => `<div class="msg ${m.role}">${esc(m.content)}${m.role === "assistant" ? `<div class="meta">${esc(m.model || "")}${(m.done || []).length ? " · did: " + m.done.map(d => d.tool + (d.error ? " (" + d.error + ")" : "")).join(", ") : ""}${(m.props || []).length ? " · " + m.props.length + " proposal(s)" : ""}</div>` : ""}</div>`).join("") : `<p class="muted">Ask anything about the studio: what goes out next, why a network failed, how to plan the week. It can also act: reorder, hold, write captions, change the hours. Anything that publishes waits for your yes.</p>`}</div>
+    <div class="chips" style="margin:12px 0 8px">${["What is going out next, and is everything ready?", "Plan the next 7 days for the most reach", "Why did the last post fail anywhere?", "Write fresh captions for the next film", "What do I still need to connect?"].map(s => `<button class="chip" data-ask="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+    <form id="cf" class="row" style="flex-wrap:nowrap"><textarea id="cm" placeholder="Talk to the Director…" style="min-height:48px;height:48px"></textarea><button class="btn gold">Send</button></form></div>
+  <div class="card"><h2>Waiting for you <span class="pill">${props.length}</span></h2>${props.length ? props.map(propCard).join("") : `<p class="muted small">No proposals.</p>`}</div></div>`;
+  const box = $("#chat"); box.scrollTop = box.scrollHeight;
+  const send = async text => {
+    if (!text.trim()) return;
+    S.chat.push({ role: "user", content: text });
+    box.insertAdjacentHTML("beforeend", `<div class="msg user">${esc(text)}</div><div class="msg assistant" id="thinking"><span class="muted">Thinking…</span></div>`); box.scrollTop = box.scrollHeight;
+    try { await api("chat", { message: text }); } catch (e) { toast(e.message); }
+    S.ov = null; roomDirector(true);
+  };
+  $("#cf").onsubmit = e => { e.preventDefault(); const t = $("#cm").value; $("#cm").value = ""; send(t); };
+  $("#cm").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#cf").requestSubmit(); } };
+  $$("[data-ask]").forEach(b => b.onclick = () => send(b.dataset.ask));
+  wireCommon();
+}
+
+async function roomNetworks() {
+  const n = (await api("networks")).networks;
+  const flash = new URLSearchParams(location.hash.split("?")[1] || "");
+  const guide = {
+    youtube: "Google Cloud console → APIs & Services → Credentials → the OAuth client (the one NOOR uses works) → add this redirect URI. YouTube Data API v3 must be enabled.",
+    facebook: "Meta for Developers → your app (NOOR's works) → Facebook Login → Settings → Valid OAuth Redirect URIs: add this one. You must be an admin of the app and of the Page. Connecting Facebook also connects the Instagram professional account linked to the Page.",
+    instagram: "Connected through Facebook: switch Instagram to a professional account and link it to the Residual Continuum Page, then connect Facebook.",
+    threads: "Meta for Developers → the app → Use cases → Threads API → Settings: add this redirect URI; copy the Threads app ID and secret into Vercel.",
+    x: "developer.x.com → Projects & Apps → your app → User authentication settings: OAuth 2.0, type Web App, callback URI below, read and write. Copy the OAuth 2.0 Client ID and Secret into Vercel.",
+    tiktok: "developers.tiktok.com → your app → Login Kit redirect URI below; add the Content Posting API (Direct Post). Until TikTok audits the app, posts are private (Only me).",
+    pinterest: "developers.pinterest.com → your app → Redirect URIs: add this one. Pinterest gives Trial access first; video pins need Standard access.",
+    bluesky: "No app needed: make an app password in Bluesky (Settings → Privacy and security → App passwords) and enter it below.",
+  };
+  $("#main").innerHTML = `${flash.get("msg") ? `<div class="card" style="margin-bottom:14px;border-color:${flash.get("ok") === "1" ? "rgba(143,217,176,.4)" : "rgba(233,138,138,.4)"}">${esc(NETS[flash.get("net")] || "")}: ${esc(flash.get("msg"))}</div>` : ""}
+  <div class="grid g2">${n.map(x => `<div class="card"><h2><span class="dot ${x.connected ? "ok" : x.ready ? "wait" : "bad"}"></span> ${x.label}<span class="sp"></span>${x.connected ? `<span class="pill">${esc(x.who || "connected")}</span>` : ""}</h2>
+    <p class="small muted">${esc(guide[x.net] || "")}</p>
+    ${x.callback ? `<div class="small" style="margin:8px 0">Redirect URI: <span class="code">${esc(x.callback)}</span></div>` : ""}
+    ${x.vars && x.vars.length ? `<div class="small muted" style="margin:6px 0">Vercel variables: ${x.vars.map(v => `<span class="code">${v}</span>`).join(" ")} ${x.ready ? `<span style="color:var(--green)">set</span>` : `<span style="color:var(--red)">missing</span>`}</div>` : ""}
+    ${x.kind === "form" && !x.connected ? `<form data-form="${x.net}">${(x.fields || []).map(f => `<input name="${f.k}" type="${f.secret ? "password" : "text"}" placeholder="${esc(f.label)}" style="margin-top:8px" autocomplete="off">`).join("")}<button class="btn gold" style="margin-top:10px">Connect</button></form>` : ""}
+    <div class="row" style="margin-top:10px">${x.via ? "" : x.connected ? `<button class="btn red" data-disc="${x.net}">Disconnect</button>` : x.kind === "oauth" ? `<button class="btn gold" data-conn="${x.net}" ${x.ready ? "" : "disabled"}>Connect</button>` : ""}
+    ${x.connected && x.since ? `<span class="tiny muted">since ${when(x.since)}</span>` : ""}</div></div>`).join("")}</div><footer>Coherence is the measure, not final demonstration.</footer>`;
+  $$("[data-conn]").forEach(b => b.onclick = async () => { try { const j = await api("connect", { net: b.dataset.conn }); location.href = j.url; } catch (e) { toast(e.message); } });
+  $$("[data-disc]").forEach(b => b.onclick = async () => { if (!confirm("Disconnect " + NETS[b.dataset.disc] + "?")) return; try { await api("disconnect", { net: b.dataset.disc }); } catch (e) { toast(e.message); } roomNetworks(); });
+  $$("[data-form]").forEach(f => f.onsubmit = async e => { e.preventDefault(); const values = Object.fromEntries(new FormData(f)); try { const r = await api("connect_form", { net: f.dataset.form, values }); if (!r.ok) throw new Error(r.error); toast("Connected " + (r.who || "")); } catch (err) { toast(err.message); } roomNetworks(); });
+}
+
+async function roomLog(force) {
+  const o = await getOv(force);
+  $("#main").innerHTML = `<div class="card"><h2>What happened</h2><div class="list">${(o.log || []).map(l => `<div class="item small row sb"><span><b>${esc(l.what)}</b> ${esc(l.film || "")} ${l.net ? "· " + esc(NETS[l.net] || l.net) : ""} ${l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">open</a>` : ""} <span class="muted">${esc(l.error || l.note || (l.tool ? l.tool + " " + JSON.stringify(l.args || {}) : ""))}</span></span><span class="tiny muted">${ago(l.at)}</span></div>`).join("") || `<p class="muted small">Empty.</p>`}</div></div>`;
+}
+
+/* --------------------------------------------------------------- boot */
+async function boot() {
+  let me; try { me = await api("me"); } catch (e) { $("#main").innerHTML = `<div class="card login"><p>${esc(e.message)}</p></div>`; return; }
+  if (!me.owner) return showLogin(me.setup);
+  $("#tabs").style.display = ""; $("#logoutBtn").style.display = "";
+  try { S.plan = (await api("plan")).films; } catch { }
+  load(S.room);
+}
+$$("#tabs button").forEach(b => b.onclick = () => load(b.dataset.room));
+window.addEventListener("hashchange", () => { const r = location.hash.slice(1).split("?")[0]; if (r && r !== S.room && $("#tabs").style.display !== "none") load(r); });
+$("#refreshBtn").onclick = async () => { try { await api("refresh", {}); } catch { } S.plan = null; load(S.room, true); };
+$("#logoutBtn").onclick = async () => { await api("logout"); location.reload(); };
+$("#drawer").addEventListener("click", e => { if (e.target.dataset && "close" in e.target.dataset) closeDrawer(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeDrawer(); });
+boot();
+</script>
+</body>
+</html>

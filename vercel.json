@@ -4,6 +4,102 @@
     {
       "path": "/api/draft",
       "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 1 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 2 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 15 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 16 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 17 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 18 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 19 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 20 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 21 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 22 * * *"
+    },
+    {
+      "path": "/api/studio?action=due",
+      "schedule": "0 23 * * *"
     }
   ],
   "headers": [
@@ -23,6 +119,19 @@
           "value": "SAMEORIGIN"
         }
       ]
+    },
+    {
+      "source": "/admin(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
   ],
   "functions": {
@@ -31,7 +140,21 @@
     },
     "api/draft.js": {
       "maxDuration": 300
+    },
+    "api/studio.js": {
+      "maxDuration": 300,
+      "includeFiles": "studio/plan.json"
     }
   },
-  "fluid": true
+  "fluid": true,
+  "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/studio/callback/:net",
+      "destination": "/api/studio?action=callback&net=:net"
+    }
+  ]
 }
