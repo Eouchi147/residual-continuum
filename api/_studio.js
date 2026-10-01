@@ -248,9 +248,13 @@ export function shape(f, net, custom) {
       return { text: custom ? clip(custom, 500) : clip(t, 500) };
     }
     case "x": {
-      const head = custom || [f.hook, f.title + ".", (f.verdict ? "Verdict: " + f.verdict + "." : "")].filter(Boolean).join(" ");
+      /* No link on X: the X API bills a post that carries a URL about 13 times
+         the price of a plain one, so the site lives in the profile instead. */
+      const head = String(custom || [f.hook, f.title + ".", (f.verdict ? "Verdict: " + f.verdict + "." : "")].filter(Boolean).join(" "))
+        .replace(/https?:\/\/\S+/gi, "").replace(/\S*residualcontinuum\.com\S*/gi, "").replace(/[ \t]{2,}/g, " ").trim();
       const tag = tags.slice(0, 2).join(" ");
-      return { text: clip(head, 280 - 24 - (tag ? tag.length + 1 : 0) - 2) + (tag ? " " + tag : "") + "\n" + link };
+      const tail = "\nSources: link in bio.";
+      return { text: clip(head, 280 - tail.length - (tag ? tag.length + 1 : 0) - 2) + (tag ? " " + tag : "") + tail };
     }
     case "bluesky": {
       const head = custom || [f.hook, f.title + ".", (f.verdict ? "Verdict: " + f.verdict + "." : "")].filter(Boolean).join(" ");
