@@ -222,10 +222,11 @@ export default async function handler(req, res) {
  if (req.method !== "POST") {
  return res.status(405).json({ error: "POST only" });
  }
- const allowed = process.env.ALLOWED_ORIGIN;
- if (allowed) {
+ const allowed = [process.env.ALLOWED_ORIGIN, process.env.PUBLIC_HOST && "https://" + process.env.PUBLIC_HOST,
+ process.env.PUBLIC_HOST && "https://www." + process.env.PUBLIC_HOST].join(",").split(",").map(x => x.trim()).filter(Boolean);
+ if (allowed.length) {
  const o = req.headers.origin || "";
- if (o && o !== allowed) return res.status(403).json({ error: "origin" });
+ if (o && !allowed.includes(o)) return res.status(403).json({ error: "origin" });
  }
 
  const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim()

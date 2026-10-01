@@ -188,7 +188,7 @@ async function attempt(id, req, signal) {
     headers: {
       Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": "https://residual-continuum.vercel.app",
+      "HTTP-Referer": "https://residualcontinuum.com",
       "X-Title": req.title || "Residual Continuum",
     },
     body: JSON.stringify({

@@ -39,7 +39,7 @@ const CROSSREF = "https://api.crossref.org";
 const COMMONS = "https://commons.wikimedia.org/w/api.php";
 const MAILTO = process.env.CONTACT_EMAIL || "noreply@example.com";
 const BRANCH = process.env.GITHUB_BRANCH || "main";
-const UA = "ResidualContinuumBot/2.0 (+https://residual-continuum.vercel.app)";
+const UA = "ResidualContinuumBot/2.0 (+https://residualcontinuum.com)";
 
 const FEEDS = [
   ["ScienceDaily", "https://www.sciencedaily.com/rss/fossils_ruins/archaeology.xml"],
