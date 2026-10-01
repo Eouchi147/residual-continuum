@@ -108,6 +108,7 @@ const youtube = {
 const GRAPH = "https://graph.facebook.com/v21.0";
 const META_SCOPE = "pages_show_list,pages_read_engagement,pages_manage_posts,instagram_basic,instagram_content_publish,business_management,read_insights,instagram_manage_insights";
 const metaReady = () => !!(env("META_APP_ID") && env("META_APP_SECRET"));
+const META_CONFIG = () => env("META_CONFIG_ID") || "2346928819444598";
 async function metaExchange(code, net) {
   const a = await jfetch(GRAPH + "/oauth/access_token?" + form({ client_id: env("META_APP_ID"), client_secret: env("META_APP_SECRET"), redirect_uri: cb(net), code }));
   if (!a.ok || !a.j || !a.j.access_token) return { ok: false, error: said(a.j, a.t, "http " + a.r.status) };
@@ -141,7 +142,10 @@ async function fbStatus(videoId, tok, tries = 1) {
 const facebook = {
   label: "Facebook Reels", kind: "oauth", vars: ["META_APP_ID", "META_APP_SECRET"], also: "instagram",
   ready: metaReady,
-  connectUrl: st => "https://www.facebook.com/v21.0/dialog/oauth?" + form({ client_id: env("META_APP_ID"), redirect_uri: cb("facebook"), state: st, scope: META_SCOPE, response_type: "code" }),
+  /* The app uses Facebook Login for Business: the permissions live in a login
+     configuration ("Studio publishing"), passed as config_id. Its id is public. */
+  connectUrl: st => "https://www.facebook.com/v21.0/dialog/oauth?" + form({ client_id: env("META_APP_ID"), redirect_uri: cb("facebook"), state: st, response_type: "code",
+    ...(META_CONFIG() ? { config_id: META_CONFIG() } : { scope: META_SCOPE }) }),
   exchange: code => metaExchange(code, "facebook"),
   async send(f, w) {
     const t = await getTok("facebook"); if (!t) return { ok: false, skipped: "Facebook is not connected" };
