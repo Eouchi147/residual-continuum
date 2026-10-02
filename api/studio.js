@@ -136,7 +136,7 @@ export default async function handler(req, res) {
       return back(r.ok ? "connected " + (r.who || "") : String(r.error || "failed"), r.ok);
     }
 
-    if (["explorer_sense", "explorer_think", "explorer_order"].includes(action) && req.method !== "POST") return json(res, 405, { error: "POST only" });
+    if (["explorer_sense", "explorer_think", "explorer_order", "explorer_forget"].includes(action) && req.method !== "POST") return json(res, 405, { error: "POST only" });
     const b = req.method === "POST" ? await readBody(req) : {};
     const A = { ...q, ...b };
     switch (action) {
@@ -188,6 +188,8 @@ export default async function handler(req, res) {
       case "explorer_sense": { const E = await import("./_explorer.js"); await E.sense("asked by Sam"); return json(res, 200, await E.room()); }
       case "explorer_think": { const E = await import("./_explorer.js"); const r = await E.think(); return json(res, 200, { think: r }); }
       case "explorer_goals": { const E = await import("./_explorer.js"); return json(res, 200, { goals: req.method === "POST" ? await E.setGoals(A.goals || {}) : await E.goals() }); }
+      case "explorer_notes": { const E = await import("./_explorer.js"); return json(res, 200, { notes: req.method === "POST" ? await E.setNotes(A.text) : await E.notes() }); }
+      case "explorer_forget": { const E = await import("./_explorer.js"); return json(res, 200, await E.forget(String(A.kind), String(A.id))); }
       case "explorer_order": { const E = await import("./_explorer.js"); return json(res, 200, { order: A.id ? await E.closeOrder(String(A.id), String(A.status || "done"), String(A.note || "")) : await E.addOrder({ for: A.for, title: A.title, why: A.why }, "Sam") }); }
       case "refresh": await available({ fresh: true }); return json(res, 200, { ok: true });
       default: return json(res, 400, { error: "unknown action" });

@@ -28,8 +28,9 @@ import crypto from "node:crypto";
 import { kv, kvReady, K, kget, kset, dials, plan, film, longFilms, teasers, clip, errText, log, today, NETS } from "./_studio.js";
 import { chatFree, extractJSON, freeModels, modelStatus } from "./_models.js";
 
-export const VERSION = "2.0";
+export const VERSION = "2.1";
 const CHANGES = {
+  "2.1": "Standing facts from Sam, read by every role; only real levers offered to the Strategist; a failed auditor is asked again on another model; a new experiment or playbook needs both auditors.",
   "2.0": "Memory, senses and a daily thinking loop. I read every network's numbers each day, an Analyst reads them, I plan, an Editor and a Steward on other models audit every item, and an Archivist keeps what the evidence taught me.",
 };
 
@@ -63,6 +64,7 @@ const X = {
   think: "rc:x:think:last",
   thinks: "rc:x:thinks",             // list of past thinking summaries
   version: "rc:x:version",
+  notes: "rc:x:notes",               // standing facts from Sam
   ran: (k, d) => "rc:x:ran:" + k + ":" + d,
 };
 const hgetall = raw => { if (Array.isArray(raw)) { const o = {}; for (let i = 0; i < raw.length; i += 2) o[raw[i]] = raw[i + 1]; return o; } return raw || {}; };
@@ -85,6 +87,24 @@ async function beat(patch) {
   const nb = { ...b, ...patch };
   await kset(X.beat, nb);
   return nb;
+}
+
+/* --------------------------------------------- standing facts from Sam
+   What is true about the studio that the numbers cannot tell: read by every
+   role and by the chat; Sam edits it in the console. */
+const DEFAULT_NOTES = `- YouTube: uploads through the API stay private until Google's YouTube API audit passes (submitted 1 Oct 2026). Until then Sam uploads the films to YouTube by hand in YouTube Studio, and the studio's YouTube switch stays off. Never ask to turn it on: it would post private duplicates.
+- X is held until the project makes money (Sam's decision). TikTok waits for Sam's developer account. Never ask to turn either on.
+- Custom YouTube thumbnails need the channel phone-verified (Sam's step); until then thumbnails are not a lever.
+- Facebook and Instagram post on their own at the posting hours. The long films go to Facebook on their weekdays and their teasers to Instagram the hour after.
+- Your levers are only these: the order of the films (pin, hold), the Shorts posting hours, the long films' days and hour, the captions and the AI-captions switch. Experiments use these levers only; for anything else, file a work order.`;
+export async function notes() { const n = kvReady() ? await kget(X.notes) : null; return n && typeof n.text === "string" ? n : { text: DEFAULT_NOTES, at: "" }; }
+export const notesText = async () => (await notes()).text;
+export async function setNotes(text) {
+  const t = String(text || "").trim().slice(0, 4000);
+  const n = { text: t || DEFAULT_NOTES, at: iso() };
+  await kset(X.notes, n);
+  await journal("note", "Sam updated the standing facts", clip(n.text, 600));
+  return n;
 }
 
 /* ---------------------------------------------------------------- goals */
@@ -362,19 +382,34 @@ export async function brief() {
 /* ------------------------------------------------------------- the council */
 const VOICE = "Write in British English, plainly. Never an em dash or an en dash. Never proof language (proves, proof, undeniable, definitely, certainly).";
 const ask = async (role, content, opts = {}) => {
-  const r = await chatFree({ messages: [{ role: "system", content: CONSTITUTION + "\n\nYour role today: " + role + "\n" + VOICE }, { role: "user", content }],
+  const sys = CONSTITUTION + (opts.notes ? "\n\nStanding facts from Sam (true until he changes them):\n" + opts.notes : "") + "\n\nYour role today: " + role + "\n" + VOICE;
+  const r = await chatFree({ messages: [{ role: "system", content: sys }, { role: "user", content }],
     parse: extractJSON, max_tokens: opts.max_tokens || 1400, temperature: opts.temperature ?? 0.3, title: "Residual Continuum Explorer",
     budgetMs: opts.budgetMs || 60e3, hedgeMs: opts.hedgeMs || 8e3, exclude: opts.exclude || [], lastResort: opts.lastResort !== false });
   return r;
 };
-const ALLOWED = new Set(["pin", "unpin", "skip", "unskip", "caption", "write_captions", "set_slots", "set_long", "set_network", "ai_captions", "set_mode", "approve", "post_now", "set_goal"]);
-const ALWAYS_ASK = new Set(["post_now", "approve", "set_mode", "set_network", "set_goal"]);
-const MORE_TOOLS = `- {"tool":"set_goal","args":{"id":"<goal id or new>","label":"...","metric":"<${Object.keys(METRICS).join("|")}>","target":1000}}   (always waits for Sam)
-Work orders (for what you cannot do yourself) go in "orders", not "actions".`;
+/* the Strategist's levers: publishing, the poster's mode and the networks'
+   switches are Sam's, so they are not even offered here (the chat can still
+   propose them when Sam asks) */
+const ALLOWED = new Set(["pin", "unpin", "skip", "unskip", "caption", "write_captions", "set_slots", "set_long", "ai_captions", "set_goal"]);
+const ALWAYS_ASK = new Set(["set_goal"]);
+const ALIAS = { set_ai_captions: "ai_captions", ai_caption: "ai_captions", hold: "skip", release: "unskip", set_hours: "set_slots", set_posting_hours: "set_slots", write_caption: "write_captions", set_caption: "caption", set_long_films: "set_long" };
+const LEVERS = `Actions you may take (each with a short "why"):
+- {"tool":"pin","args":{"id":"<film id>"}}             put a film next in line
+- {"tool":"unpin","args":{"id":"<film id>"}}
+- {"tool":"skip","args":{"id":"<film id>"}}            hold a film back
+- {"tool":"unskip","args":{"id":"<film id>"}}
+- {"tool":"caption","args":{"id":"<film id>","net":"youtube|instagram|facebook|tiktok|x","text":"..."}}   a network's words for a film
+- {"tool":"write_captions","args":{"id":"<film id>"}}  the AI writes every network's words for a film
+- {"tool":"set_slots","args":{"hours":[14,22]}}        the Shorts' posting hours, UTC, 1 to 4 a day
+- {"tool":"set_long","args":{"on":true,"days":[1,3,6],"hour":18}}   the long films' weekdays (UTC, 0 = Sunday) and hour
+- {"tool":"ai_captions","args":{"on":true}}            the AI writes each network's caption before each post
+- {"tool":"set_goal","args":{"id":"<goal id or new>","label":"...","metric":"<${Object.keys(METRICS).join("|")}>","target":1000}}   (always waits for Sam)
+Publishing, the poster's mode and the networks' switches are Sam's: do not ask for them. Work orders (for what you cannot do yourself) go in "orders", not "actions".`;
 
 /* deterministic checks: a model's approval never overrides these */
 function ruleCheck(a, BAD) {
-  if (!a || typeof a !== "object" || !ALLOWED.has(a.tool)) return "not an action I am allowed";
+  if (!a || typeof a !== "object" || !ALLOWED.has(a.tool)) return "not one of my levers (" + (a && a.tool) + ")";
   const g = a.args || {};
   const txt = JSON.stringify(g) + " " + (a.why || "");
   if (BAD.test(txt)) return "breaks the house rules (a dash, proof language or an email)";
@@ -411,6 +446,7 @@ export async function think(opts = {}) {
     const series = await readSeries(60);
     const [snap, b, pending, ex] = await Promise.all([D.snapshot(), brief(), D.proposals(), experiments()]);
     const ev = evidence(reading, series);
+    const N = await notesText();
     const state = { now: snap.now, dials: snap.dials, films: snap.films, next: snap.next.slice(0, 6), longFilms: snap.longFilms, networks: snap.networks,
       recent: snap.recent.slice(0, 6), upcoming: snap.upcoming.slice(0, 4), waitingForSam: pending.map(p => ({ tool: p.tool, args: p.args })) };
     /* free models are slow on long prompts and some spend their tokens thinking:
@@ -420,7 +456,7 @@ export async function think(opts = {}) {
       if (budget < 15e3) throw new Error(name + ": out of time");
       const t = Date.now();
       try {
-        const r = await ask(role, content, { ...o, budgetMs: budget });
+        const r = await ask(role, content, { ...o, budgetMs: budget, notes: N });
         calls.push({ name, model: r.model, ms: Date.now() - t }); models[name] = r.model;
         return r;
       } catch (e) { calls.push({ name, error: errText(e), ms: Date.now() - t }); throw new Error(name + ": " + errText(e)); }
@@ -435,29 +471,38 @@ export async function think(opts = {}) {
 
     /* 2. the Strategist: The Explorer itself */
     const S = await call("strategist", "the Strategist, The Explorer itself. You decide today's moves toward the goals, within your freedoms.",
-      `The studio now:\n${JSON.stringify(state)}\n\nThe Analyst says:\n${JSON.stringify(res.analysis)}\n\nWhat you have learned (insights):\n${JSON.stringify(b.insights)}\n\nYour playbook${b.playbook ? " (v" + b.playbook.v + ")" : " (none yet: write the first one)"}:\n${b.playbook ? b.playbook.text : ""}\n\nGoals (north star: ${b.north}):\n${JSON.stringify(b.goals)}\n\nRunning experiments:\n${JSON.stringify(b.experiments)}\n\nOpen work orders (do not repeat them):\n${JSON.stringify(b.openOrders)}\n\n${D.TOOLS}\n${MORE_TOOLS}\n\nDecide: at most 4 actions, at most 2 work orders, at most one new experiment (only if none is running on the same lever), and a revised playbook only when the evidence calls for it (the whole text, under 1,200 characters: what to post, when, how to word it, what to test next). No action is fine when nothing needs changing. Never ask again for something already waiting for Sam. Be brief: the whole answer under 400 words.\n\nAnswer with JSON only: {"plan":"2 to 4 sentences for Sam: what you will do and why","actions":[{"tool":"...","args":{},"why":"..."}],"orders":[{"for":"sam|builder","title":"...","why":"..."}],"experiment":null,"playbook":"","playbook_why":""}\n(experiment, when there is one: {"name":"...","change":"...","measure":"...","judge_on":"YYYY-MM-DD"})`,
+      `The studio now:\n${JSON.stringify(state)}\n\nThe Analyst says:\n${JSON.stringify(res.analysis)}\n\nWhat you have learned (insights):\n${JSON.stringify(b.insights)}\n\nYour playbook${b.playbook ? " (v" + b.playbook.v + ")" : " (none yet: write the first one)"}:\n${b.playbook ? b.playbook.text : ""}\n\nGoals (north star: ${b.north}):\n${JSON.stringify(b.goals)}\n\nRunning experiments:\n${JSON.stringify(b.experiments)}\n\nOpen work orders (do not repeat them):\n${JSON.stringify(b.openOrders)}\n\n${LEVERS}\n\nDecide: at most 4 actions, at most 2 work orders, at most one new experiment (only if none is running on the same lever), and a revised playbook only when the evidence calls for it (the whole text, under 1,200 characters: what to post, when, how to word it, what to test next). No action is fine when nothing needs changing. Never ask again for something already waiting for Sam. Be brief: the whole answer under 400 words.\n\nAnswer with JSON only: {"plan":"2 to 4 sentences for Sam: what you will do and why","actions":[{"tool":"...","args":{},"why":"..."}],"orders":[{"for":"sam|builder","title":"...","why":"..."}],"experiment":null,"playbook":"","playbook_why":""}\n(experiment, when there is one: {"name":"...","change":"...","measure":"...","judge_on":"YYYY-MM-DD"})`,
       { max_tokens: 2600, temperature: 0.4, budgetMs: 130e3, hedgeMs: 15e3 });
     const P = S.value || {};
     res.plan = clip(String(P.plan || ""), 900);
     const rawActs = Array.isArray(P.actions) ? P.actions : [];
     P.orders = [...(Array.isArray(P.orders) ? P.orders : []), ...rawActs.filter(a => a && a.tool === "order").map(a => ({ ...(a.args || {}), why: (a.args || {}).why || a.why }))];
-    const acts = rawActs.filter(a => a && a.tool !== "order").slice(0, 4).map(a => ({ tool: a && a.tool, args: (a && a.args) || {}, why: clip(String((a && a.why) || ""), 300) }));
+    const acts = rawActs.filter(a => a && a.tool !== "order").slice(0, 4).map(a => ({ tool: ALIAS[a.tool] || a.tool, args: a.args || {}, why: clip(String(a.why || ""), 300) }));
     const ords = (Array.isArray(P.orders) ? P.orders : []).slice(0, 2).map(o => ({ for: o && o.for, title: clip(String((o && o.title) || ""), 160), why: clip(String((o && o.why) || ""), 600) })).filter(o => o.title);
     const exp = P.experiment && P.experiment.name ? { name: clip(String(P.experiment.name), 120), change: clip(String(P.experiment.change || ""), 300), measure: clip(String(P.experiment.measure || ""), 200), judge_on: /^\d{4}-\d{2}-\d{2}$/.test(P.experiment.judge_on) ? P.experiment.judge_on : dayOf(today(), 7) } : null;
     const pbText = clip(String(P.playbook || "").trim(), 1400);
 
     /* 3. the Auditors, on models other than the Strategist's, and other than each other's */
-    const free = (await freeModels()).filter(id => id !== S.id);
+    let benched = new Set(); try { benched = new Set(modelStatus().benched.map(b => b.id)); } catch { }
+    const all = (await freeModels()).filter(id => id !== S.id), healthy = all.filter(id => !benched.has(id));
+    const free = healthy.length >= 2 ? healthy : all;
     const poolA = free.filter((_, i) => i % 2 === 0), poolB = free.filter((_, i) => i % 2 === 1);
     const items = { actions: acts.map((a, i) => ({ i, ...a })), orders: ords.map((o, i) => ({ i, ...o })), experiment: exp, playbook: pbText || null };
     const auditAsk = `The plan to audit:\n${JSON.stringify(items)}\n\nThe studio now:\n${JSON.stringify({ dials: state.dials, films: state.films, next: state.next, networks: state.networks, waitingForSam: state.waitingForSam })}\n\nThe evidence:\n${JSON.stringify({ analysis: res.analysis, today: ev.today, bySeries: ev.bySeries, byPostingHourUTC: ev.byPostingHourUTC })}\n\nApprove or reject every action and every order, with a one-line reason. Reject what breaks a rule, lacks a reason in the evidence or the goals, repeats something already waiting, or would be hard to undo. Answer with JSON only: {"actions":[{"i":0,"ok":true,"why":"..."}],"orders":[{"i":0,"ok":true,"why":"..."}],"experiment_ok":true,"playbook_ok":true,"note":"one line"}`;
     const nothing = !acts.length && !ords.length && !exp && !pbText;
-    const audits = nothing ? [] : await Promise.all([
-      call("editor", "the Editor, an auditor. You guard the house rules, the facts (nothing beyond the films' own data), the voice of Residual Continuum (warm, exact, never sneering, never sensational) and respect for every person and faith.\n" + D.RULES,
-        auditAsk, { exclude: [S.id, ...poolB], max_tokens: 2200, temperature: 0.1, budgetMs: 75e3 }).then(r => ({ who: "editor", v: r.value })).catch(e => ({ who: "editor", error: errText(e) })),
-      call("steward", "the Steward, an auditor. You guard Sam's limits and the constitution's line between what The Explorer may do and what waits for Sam, the platforms' rules (no spam; at most four Shorts a day; YouTube's daily upload cap), efficiency, and whether each item is justified by the evidence and can be measured.",
-        auditAsk, { exclude: [S.id, ...poolA], lastResort: false, max_tokens: 2200, temperature: 0.1, budgetMs: 75e3 }).then(r => ({ who: "steward", v: r.value })).catch(e => ({ who: "steward", error: errText(e) })),
-    ]);
+    const ROLE = {
+      editor: "the Editor, an auditor. You guard the house rules, the facts (nothing beyond the films' own data and the standing facts), the voice of Residual Continuum (warm, exact, never sneering, never sensational) and respect for every person and faith.\n" + D.RULES,
+      steward: "the Steward, an auditor. You guard Sam's limits, the standing facts and the constitution's line between what The Explorer may do and what waits for Sam, the platforms' rules (no spam; at most four Shorts a day; YouTube's daily upload cap), efficiency, and whether each item is justified by the evidence, uses a real lever and can be measured.",
+    };
+    const audit = (who, o) => call(who, ROLE[who], auditAsk, { max_tokens: 2200, temperature: 0.1, budgetMs: 75e3, ...o }).then(r => ({ who, v: r.value, id: r.id })).catch(e => ({ who, error: errText(e) }));
+    const audits = nothing ? [] : await Promise.all([audit("editor", { exclude: [S.id, ...poolB] }), audit("steward", { exclude: [S.id, ...poolA], lastResort: false })]);
+    /* one auditor failed: ask it again on any other model, if there is time */
+    const okA = audits.filter(a => a.v && typeof a.v === "object");
+    if (okA.length === 1 && left() > 45e3) {
+      const i = audits.findIndex(a => !(a.v && typeof a.v === "object"));
+      res.errors.push(audits[i].who + " (first try): " + audits[i].error);
+      audits[i] = await audit(audits[i].who, { exclude: [S.id, okA[0].id], budgetMs: 60e3 });
+    }
     const answered = audits.filter(a => a.v && typeof a.v === "object");
     for (const a of audits) if (a.error) res.errors.push(a.who + ": " + a.error);
     res.auditors = audits.map(a => ({ who: a.who, model: models[a.who] || "", note: a.v ? clip(String(a.v.note || ""), 240) : "", error: a.error || "" }));
@@ -491,9 +536,10 @@ export async function think(opts = {}) {
       else { const made = await addOrder(o); row.outcome = made ? "filed" : "already open"; }
       res.orders.push(row);
     }
-    const allOk = k => answered.length > 0 && answered.every(a => a.v[k] === true);
+    /* a new experiment or playbook needs both auditors */
+    const allOk = k => answered.length >= 2 && answered.every(a => a.v[k] === true);
     if (exp) {
-      if (D.BAD.test(JSON.stringify(exp)) || !allOk("experiment_ok")) res.experiment = { ...exp, outcome: "stopped" };
+      if (D.BAD.test(JSON.stringify(exp)) || !allOk("experiment_ok")) res.experiment = { ...exp, outcome: answered.length < 2 ? "held (one auditor)" : "stopped", audit: answered.map(a => a.who + ": " + (a.v.experiment_ok === true ? "yes" : "no")).join(" · ") };
       else {
         const list = await experiments();
         const row = { id: rid(), at: iso(), status: "running", ...exp };
@@ -503,7 +549,7 @@ export async function think(opts = {}) {
       }
     }
     if (pbText) {
-      if (D.BAD.test(pbText) || !allOk("playbook_ok")) res.playbook = { outcome: "stopped" };
+      if (D.BAD.test(pbText) || !allOk("playbook_ok")) res.playbook = { outcome: answered.length < 2 ? "held (one auditor)" : "stopped" };
       else {
         const old = await playbook();
         const next = { v: (old.v || 0) + 1, at: iso(), text: pbText, why: clip(String(P.playbook_why || ""), 400) };
@@ -541,7 +587,8 @@ export async function learn(opts = {}) {
     const last = await lastThink(); analysis = (last && last.analysis) || {};
     const series = await readSeries(60); days = series.length; ev = evidence(await lastReading(), series);
   }
-  const call = opts.call || (async (name, role, content, o) => ask(role, content, { ...o, budgetMs: Math.min(o.budgetMs || 60e3, left() - 10e3) }));
+  const N = opts.call ? "" : await notesText();
+  const call = opts.call || (async (name, role, content, o) => ask(role, content, { ...o, notes: N, budgetMs: Math.min(o.budgetMs || 60e3, left() - 10e3) }));
   try {
     const ins = await insights(), due = (await experiments()).filter(e => e.status === "running" && e.judge_on <= d);
     const L = await call("archivist", "the Archivist. You keep The Explorer's memory honest: insights that cite their numbers, revised or retired when the evidence changes, and experiments judged when their day comes.",
@@ -564,6 +611,12 @@ export async function learn(opts = {}) {
     if (kvReady()) await kv([["DEL", X.ran("learn", d)]]);
     return { error: errText(e).startsWith("archivist") ? errText(e) : "archivist: " + errText(e) };
   }
+}
+/* Sam's hand on the memory: drop an insight or stop an experiment */
+export async function forget(kind, id) {
+  if (kind === "insight") { const l = await insights(), it = l.find(i => i.id === id); if (!it) throw new Error("no such insight"); await kset(X.insights, l.filter(i => i.id !== id)); await journal("learn", "Sam removed an insight", it.text); return { ok: true }; }
+  if (kind === "experiment") { const l = await experiments(), e = l.find(x => x.id === id); if (!e) throw new Error("no such experiment"); e.status = "judged"; e.result = "stopped by Sam"; e.judged = iso(); await kset(X.experiments, l); await journal("experiment", "Sam stopped an experiment: " + e.name, ""); return { ok: true }; }
+  throw new Error("kind must be insight or experiment");
 }
 export async function lastThink() { return kvReady() ? await kget(X.think) : null; }
 export async function thinkHistory(n = 14) {
@@ -610,7 +663,7 @@ export async function room() {
     experiments(), orders(), kvReady() ? kget(X.beat) : null]);
   const g = await goals(); const latest = series[series.length - 1] || null;
   return {
-    version: VERSION, changes: CHANGES, constitution: CONSTITUTION, beat: beatNow || {}, metrics: METRICS,
+    version: VERSION, changes: CHANGES, constitution: CONSTITUTION, notes: await notes(), beat: beatNow || {}, metrics: METRICS,
     north: g.north, goals: g.goals.map(x => progress(x, latest, series)),
     series, reading: reading ? { at: reading.at, point: reading.point, films: (reading.films || []).slice(0, 40), bySeries: reading.bySeries, byVerdict: reading.byVerdict, byHour: reading.byHour, byKind: reading.byKind,
       who: { youtube: (reading.youtube || {}).who || "", facebook: (reading.facebook || {}).who || "", instagram: (reading.instagram || {}).who || "" },

@@ -178,8 +178,12 @@ export async function chat(message) {
   let history = [];
   try { history = ((await kv([["LRANGE", K.chat, "0", "13"]]))[0] || []).map(s => JSON.parse(s)).reverse(); } catch { }
   const snap = await snapshot();
-  const { CONSTITUTION } = await import("./_explorer.js");
+  const { CONSTITUTION, notesText } = await import("./_explorer.js");
+  const standing = await notesText().catch(() => "");
   const sys = `${CONSTITUTION}
+
+Standing facts from Sam (true until he changes them):
+${standing}
 
 In this conversation you talk with Sam in the console. Your memory (goals and their progress, the latest numbers, insights, playbook, running experiments, open work orders) is in the state below under "explorer"; use it, and say when a number is not readable yet.
 
