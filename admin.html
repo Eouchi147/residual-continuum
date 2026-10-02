@@ -81,6 +81,13 @@ footer{color:var(--muted);text-align:center;font-size:12px;padding:30px 0 0}
 .act{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:9px 0;border-top:1px solid var(--line)}.act:first-child{border-top:0}.act>.chip{align-self:start;justify-self:start;margin-top:1px}
 .hbar{display:grid;grid-template-columns:minmax(80px,140px) 1fr 64px;gap:10px;align-items:center;margin:6px 0;font-size:12.5px}
 details>summary{cursor:pointer;color:var(--muted);font-size:13px}details[open]>summary{margin-bottom:8px}
+.st{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+.st.on{color:var(--green);border-color:rgba(143,217,176,.4)}.st.behind{color:var(--amber);border-color:rgba(240,198,116,.4)}.st.off{color:var(--red);border-color:rgba(233,138,138,.4)}.st.done{color:var(--gold);border-color:rgba(232,184,122,.45)}.st.wait{color:var(--muted)}
+.dial{width:92px;height:92px;flex:none}.course{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center}
+@media (max-width:640px){.course{grid-template-columns:auto minmax(0,1fr);gap:12px}.course .dial{width:64px;height:64px}.course>.btn{grid-column:1/-1}.focus{font-size:18px}}.focus{font-family:Newsreader,serif;font-size:20px;line-height:1.35}
+.vbars{display:flex;align-items:flex-end;gap:3px;height:120px;margin-top:8px}.vbars .b{flex:1;min-width:3px;background:linear-gradient(180deg,var(--gold),var(--gold2));border-radius:3px 3px 0 0;position:relative}.vbars .b i{position:absolute;left:30%;right:30%;bottom:0;background:#9fd0ff;border-radius:2px 2px 0 0}
+.vlab{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+.cmt{padding:9px 0;border-top:1px solid var(--line)}.cmt:first-child{border-top:0}
 .soul{white-space:pre-wrap;font-family:Newsreader,serif;font-size:15.5px;line-height:1.6;color:#e9e3da;max-width:72ch}
 @media (max-width:640px){.xhero{grid-template-columns:auto 1fr}.xhero .acts{grid-column:1/-1}}
 @media (max-width:640px){td:last-child .btn{display:block;margin:3px 0;width:100%}header{padding:10px 14px}main{padding:14px 14px 100px}.hide-s{display:none}.kpi .n{font-size:30px}.tl{grid-template-columns:96px 1fr}}
@@ -96,7 +103,7 @@ details>summary{cursor:pointer;color:var(--muted);font-size:13px}details[open]>s
   <button class="btn" id="logoutBtn" style="display:none">Lock</button>
 </header>
 <nav class="tabs" id="tabs" style="display:none">
-  <button data-room="overview" class="on">Overview</button><button data-room="explorer">The Explorer</button><button data-room="director">Talk</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
+  <button data-room="overview" class="on">Overview</button><button data-room="explorer">The Explorer</button><button data-room="visitors">Visitors</button><button data-room="director">Talk</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
 </nav>
 <main id="main"></main>
 <div class="drawer" id="drawer"><div class="scrim" data-close></div><div class="sheet" id="sheet"></div></div>
@@ -154,7 +161,7 @@ function setupList(s) {
 async function load(room, force) {
   S.room = room; $$("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.room === room));
   if (!location.hash.startsWith("#" + room)) history.replaceState(null, "", "#" + room);
-  const R = { overview: roomOverview, explorer: roomExplorer, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
+  const R = { overview: roomOverview, explorer: roomExplorer, visitors: roomVisitors, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
   try { await R(force); } catch (e) { if (e.message !== "locked") $("#main").innerHTML = `<div class="card"><h2>Something went wrong</h2><p class="muted">${esc(e.message)}</p></div>`; }
 }
 async function getOv(force) { if (!S.ov || force) S.ov = await api("overview"); paintMode(); return S.ov; }
@@ -208,7 +215,7 @@ async function roomOverview(force) {
     </div>
   </div>
   <div style="height:14px"></div>
-  <div class="card"><h2>Networks</h2><div class="nets">${nets}</div></div>
+  <div class="grid g2"><div class="card"><h2>Networks</h2><div class="nets">${nets}</div></div>${visitorsCard(o.visitors)}</div>
   <div style="height:14px"></div>
   ${o.long ? `<div class="card"><h2>Long films <span class="pill tiny">${o.long.posted}/${o.long.planned} out · ${o.long.rendered} rendered · ${o.long.teasers} teasers</span></h2>
     <p class="small muted" style="margin:0 0 8px">${o.dials.long && o.dials.long.on ? `Every ${(o.dials.long.days || []).map(x => ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][x]).join(", ")} at ${new Date(Date.UTC(2026, 0, 1, o.dials.long.hour)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} (your time): the film to YouTube and Facebook, then its teaser to YouTube Shorts, Instagram and TikTok.` : "The long films are paused."}</p>
@@ -399,13 +406,15 @@ async function roomExplorer(force) {
       <div class="small muted"><span class="dot ${dot}"></span> ${esc(lifeText)}${b.sensed ? " · read the numbers " + ago(b.sensed) : ""}${b.thought ? " · thought " + ago(b.thought) : ""}${b.thinking && Date.now() - Date.parse(b.thinking) < 6e5 ? " · <b style='color:var(--gold)'>thinking now…</b>" : ""}</div></div>
     <div class="row acts"><button class="btn" id="xSense">Read the numbers</button><button class="btn gold" id="xThink">Think now</button></div></div></div>
 
+  ${courseCard(x)}
+
   ${open.length ? `<div class="card" style="margin-bottom:14px;border-color:rgba(240,198,116,.35)"><h2>It asks <span class="pill">${open.length}</span></h2>${open.map(o => `<div class="act"><span class="chip ${o.for === "sam" ? "wait" : "priv"}">${o.for === "sam" ? "for you" : "for the builders"}</span><div><b>${esc(o.title)}</b><div class="small muted">${esc(o.why)}</div><div class="row" style="margin-top:6px"><button class="btn tiny green" data-ord="${o.id}|done">Done</button><button class="btn tiny" data-ord="${o.id}|dismissed">Dismiss</button><span class="tiny muted">${ago(o.at)} · by ${esc(o.by)}</span></div></div></div>`).join("")}</div>` : ""}
 
   <div class="grid g2" style="margin-bottom:14px">
     <div class="card"><h2>Goals <span class="sp"></span><button class="btn tiny" id="xGoals">Edit</button></h2>
       ${x.goals.map(g => `<div class="goal"><div class="t"><span>${esc(g.label)}</span><span class="v">${g.value == null ? `<span class="muted small">not readable yet</span>` : `<b>${fmt(g.value)}</b> <span class="muted">/ ${fmt(g.target)}</span>`}</span></div>
         <div class="bar ${g.pct >= 100 ? "green" : ""}" style="margin-top:6px"><i style="width:${Math.max(g.pct || 0, g.value ? 1 : 0)}%"></i></div>
-        <div class="tiny muted" style="margin-top:4px">${g.pct != null ? g.pct + " %" : ""}${g.perDay != null ? " · " + (g.perDay > 0 ? "+" : "") + fmt(g.perDay) + " a day" : ""}${g.eta ? " · at this pace: " + new Date(g.eta + "T12:00:00Z").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : ""}${g.note ? `<br>${esc(g.note)}` : ""}</div></div>`).join("")}</div>
+        <div class="tiny muted" style="margin-top:4px">${stChip(g.status)} ${g.pct != null ? g.pct + " %" : ""}${g.perDay != null ? " · " + (g.perDay > 0 ? "+" : "") + fmt(g.perDay) + " a day" : ""}${g.need != null && g.status !== "reached" ? " · needs +" + fmt(g.need) + " a day" : ""}${g.by ? " · by " + dfmt(g.by) : ""}${g.eta ? " · at this pace: " + dfmt(g.eta) : ""}${g.note ? `<br>${esc(g.note)}` : ""}</div></div>`).join("")}</div>
     <div class="card"><h2>Today's thinking ${t ? `<span class="pill tiny">${ago(t.at)} · ${Math.round((t.ms || 0) / 1000)} s · ${t.calls || 0} model calls</span>` : ""}</h2>
       ${t ? `${t.analysis && t.analysis.summary ? `<p style="margin:0 0 8px">${esc(t.analysis.summary)}</p>` : ""}
       ${t.plan ? `<p class="small" style="margin:0 0 10px"><b>The plan.</b> ${esc(t.plan)}</p>` : ""}
@@ -432,6 +441,10 @@ async function roomExplorer(force) {
       <div class="small muted" style="margin:12px 0 4px">By verdict</div>${hbars(r && r.byVerdict)}</div>
   </div>
 
+  <div class="grid g2" style="margin-bottom:14px">${runwayCard(x.watch)}${trendCard(x.trends)}</div>
+  ${voiceCard(x.voice, t)}
+  ${reviewsCard(x.reviews, x.focus)}
+
   <div class="grid g2" style="margin-bottom:14px">
     <div class="card"><h2>What it has learned <span class="pill tiny">${(x.insights || []).length}</span></h2>
       ${(x.insights || []).length ? x.insights.map(i => `<div class="act"><span class="chip ${i.confidence === "high" ? "ok" : i.confidence === "medium" ? "wait" : ""}">${esc(i.confidence)}</span><div class="small">${esc(i.text)}<div class="tiny muted">${esc(i.evidence || "")} · ${ago(i.updated || i.at)} · <a href="#" data-forget="insight|${esc(i.id)}">remove</a></div></div></div>`).join("") : `<p class="muted small">Nothing yet: it learns only what the numbers support, and it needs a few days of them.</p>`}
@@ -457,16 +470,111 @@ async function roomExplorer(force) {
   $("#xSense").onclick = async e => { e.target.disabled = true; e.target.textContent = "Reading…"; try { S.x = await api("explorer_sense", {}); toast("Numbers read"); } catch (err) { toast(err.message); } roomExplorer(); };
   $("#xThink").onclick = async e => { e.target.disabled = true; e.target.textContent = "Thinking… (up to 3 min)"; try { await api("explorer_think", {}); toast("It thought: see Today's thinking"); } catch (err) { toast(err.message); } S.ov = null; roomExplorer(true); };
   $("#xGoals").onclick = () => editGoals(x);
+  const rv = $("#xReview"); if (rv) rv.onclick = async e => { e.target.disabled = true; e.target.textContent = "Reviewing… (up to 4 min)"; try { await api("explorer_review", {}); toast("Weekly review done"); } catch (err) { toast(err.message); } roomExplorer(true); };
+  const tf = $("#xTopic"); if (tf) tf.onsubmit = async e => { e.preventDefault(); try { await api("explorer_topic", { film: $("#xTopicFilm").value.trim(), article: $("#xTopicArt").value.trim() }); toast("Saved: read on the next turn"); } catch (err) { toast(err.message); } };
   $("#xNotesSave").onclick = async e => { e.target.disabled = true; try { await api("explorer_notes", { text: $("#xNotes").value }); toast("Saved: it reads them from its next thought"); } catch (err) { toast(err.message); } roomExplorer(true); };
   $$("[data-forget]").forEach(a => a.onclick = async ev => { ev.preventDefault(); const [kind, id] = a.dataset.forget.split("|"); try { await api("explorer_forget", { kind, id }); } catch (err) { toast(err.message); } roomExplorer(true); });
   $$("[data-xk]").forEach(c => c.onclick = () => { S.xk = c.dataset.xk; roomExplorer(); });
   $$("[data-ord]").forEach(bt => bt.onclick = async () => { const [id, status] = bt.dataset.ord.split("|"); bt.disabled = true; try { await api("explorer_order", { id, status }); } catch (err) { toast(err.message); } roomExplorer(true); });
   wireCommon();
 }
+const dfmt = d => d ? new Date(d + "T12:00:00Z").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : "";
+function stChip(st) {
+  const m = { "on track": "on", reached: "done", behind: "behind", "off track": "off", missed: "off" };
+  return st ? `<span class="st ${m[st] || "wait"}">${esc(st)}</span>` : "";
+}
+function courseCard(x) {
+  const h = x.heading || {}, f = x.focus, sc = h.score;
+  const ring = sc == null ? "" : `<svg class="dial" viewBox="0 0 100 100" role="img" aria-label="Course ${sc} out of 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(245,241,235,.1)" stroke-width="9"/><circle cx="50" cy="50" r="42" fill="none" stroke="${sc >= 70 ? "#8fd9b0" : sc >= 40 ? "#f0c674" : "#e98a8a"}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${(2.639 * sc).toFixed(1)} 264" transform="rotate(-90 50 50)"/><text x="50" y="56" text-anchor="middle" font-family="Newsreader,serif" font-size="26" fill="#f5f1eb">${sc}</text></svg>`;
+  return `<div class="card" style="margin-bottom:14px"><div class="course">${ring}
+    <div style="flex:1;min-width:0"><div class="tiny muted" style="text-transform:uppercase;letter-spacing:.08em">The course</div>
+      <div class="focus" style="margin:4px 0">${f && f.text ? esc(f.text) : "No weekly focus yet: the first weekly review sets it."}</div>
+      <div class="small muted">${f && f.why ? esc(f.why) + " · " : ""}${f && f.week ? "week " + esc(f.week) + " · " : ""}${esc(h.line || "")}</div></div>
+    <button class="btn" id="xReview">Weekly review now</button></div></div>`;
+}
+function runwayCard(w) {
+  if (!w) return `<div class="card"><h2>Runway and health</h2><p class="muted small">The first check runs on the next hourly run.</p></div>`;
+  const r = w.runway || {}, h = w.health || {}, s = r.shorts || {}, l = r.long || {};
+  const lv = { high: "bad", medium: "wait", low: "" };
+  return `<div class="card"><h2>Runway and health <span class="sp"></span><span class="pill tiny">health ${h.score ?? "·"}/100 · ${ago(w.at)}</span></h2>
+    <div class="grid g4" style="margin-bottom:10px"><div><div class="kpi"><div class="n" style="font-size:30px">${s.days ?? "·"}</div><div class="l">days of Shorts</div></div><div class="tiny muted">${s.ready ?? 0} ready, ${s.perDay ?? 0} a day${s.until ? ", until " + dfmt(s.until) : ""}; ${s.notRendered ?? 0} not rendered</div></div>
+      <div><div class="kpi"><div class="n" style="font-size:30px">${l.weeks ?? "·"}</div><div class="l">weeks of long films</div></div><div class="tiny muted">${l.ready ?? 0} ready, ${l.perWeek ?? 0} a week${l.until ? ", until " + dfmt(l.until) : ""}</div></div></div>
+    ${(h.issues || []).length ? h.issues.map(i => `<div class="act"><span class="chip ${lv[i.level] || ""}">${esc(i.level)}</span><div class="small">${esc(i.text)}<div class="tiny muted">${esc(i.fix || "")}</div></div></div>`).join("") : `<p class="small" style="color:var(--green);margin:0">Nothing is broken.</p>`}</div>`;
+}
+function trendCard(t) {
+  if (!t) return `<div class="card"><h2>Trend radar</h2><p class="muted small">Not read yet.</p></div>`;
+  const row = r => `<div class="act"><span class="chip ${r.spike >= 1.5 ? "ok" : ""}">${r.spike != null ? "×" + r.spike : "·"}</span><div class="small"><a href="#" data-film="${esc(r.film)}">${esc(r.title)}</a><div class="tiny muted">${esc(r.article)} · ${fmt(r.avg7)} readers a day (usually ${fmt(r.base)})</div></div></div>`;
+  return `<div class="card"><h2>Trend radar <span class="sp"></span><span class="pill tiny">${t.measured}/${t.total} films read</span></h2>
+    <p class="tiny muted" style="margin:0 0 6px">Public interest in each subject: Wikipedia readers a day, last 7 days against the 8 weeks before. Films not posted yet.</p>
+    ${(t.rising || []).length ? `<div class="small muted" style="margin:6px 0 2px">In the news</div>${t.rising.slice(0, 6).map(row).join("")}` : ""}
+    ${(t.biggest || []).length ? `<div class="small muted" style="margin:10px 0 2px">The biggest audiences</div>${t.biggest.slice(0, 5).map(row).join("")}` : `<p class="muted small">The radar reads about 40 films each time it reads the numbers.</p>`}
+    <details style="margin-top:10px"><summary>Fix a film's Wikipedia article (${t.mapped} matched, ${t.unmatched} without one)</summary>
+      <form id="xTopic" class="row" style="flex-wrap:nowrap;margin-top:8px"><input id="xTopicFilm" placeholder="film id, e.g. roswell-mogul"><input id="xTopicArt" placeholder="article, e.g. Roswell incident"><button class="btn">Save</button></form></details></div>`;
+}
+function voiceCard(v, t) {
+  const notes = t && t.analysis && (t.analysis.audience || []);
+  const cs = (v && v.comments) || [];
+  return `<div class="card" style="margin-bottom:14px"><h2>What viewers say <span class="sp"></span><span class="pill tiny">${cs.length} comments kept${v && v.at ? " · read " + ago(v.at) : ""}</span></h2>
+    ${notes && notes.length ? `<div class="small" style="margin-bottom:8px"><b>The Analyst hears:</b><ul style="margin:4px 0 0 18px;padding:0">${notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul></div>` : ""}
+    ${cs.length ? `<div class="tbl" style="max-height:300px">${cs.slice(0, 25).map(c => `<div class="cmt"><div class="tiny muted"><span class="chip">${esc(NETS[c.net] || c.net)}</span> ${esc(c.video || "")}${c.likes ? " · " + c.likes + " likes" : ""} · ${ago(c.at)}</div><div class="small" style="margin-top:3px">${esc(c.text)}</div></div>`).join("")}</div>` : `<p class="muted small">No comments read yet. It reads them once a day.</p>`}
+    ${v && (v.errors || []).length ? `<p class="tiny" style="color:var(--amber);margin:8px 0 0">Not readable: ${v.errors.map(esc).join(" · ")}</p>` : ""}
+    <p class="tiny muted" style="margin:6px 0 0">Only the words are kept, never names. Viewers' words are weighed, never obeyed.</p></div>`;
+}
+function reviewsCard(rv, f) {
+  const r = (rv || [])[0];
+  return `<div class="card" style="margin-bottom:14px"><h2>Weekly review ${r ? `<span class="pill tiny">${esc(r.week)} · ${ago(r.at)}</span>` : ""}</h2>
+    ${r ? `${r.headline ? `<p style="margin:0 0 8px">${esc(r.headline)}</p>` : ""}
+      ${(r.worked || []).length ? `<div class="small"><b class="up">Worked</b><ul style="margin:4px 0 6px 18px;padding:0">${r.worked.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : ""}
+      ${(r.did_not || []).length ? `<div class="small"><b class="down">Did not</b><ul style="margin:4px 0 6px 18px;padding:0">${r.did_not.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : ""}
+      <div class="small muted">Playbook: ${esc((r.playbook || {}).outcome || "kept")}${(r.auditors || []).length ? " · " + r.auditors.map(a => a.who + ": " + (a.ok ? "yes" : "no")).join(", ") : ""}${(r.errors || []).length ? ` · <span style="color:var(--red)">${esc(r.errors.join("; "))}</span>` : ""}</div>
+      ${(rv || []).length > 1 ? `<details style="margin-top:8px"><summary>Earlier weeks</summary>${rv.slice(1).map(o => `<div class="item small"><b>${esc(o.week)}</b> ${esc(o.headline || "")}<div class="tiny muted">Focus: ${esc(o.focus || "none")}</div></div>`).join("")}</details>` : ""}`
+    : `<p class="muted small">Every Monday it steps back, sets the week's focus and, only then, may change its playbook. The first review runs on the next hourly run.</p>`}</div>`;
+}
+
+/* ---------------------------------------------------------- visitors */
+async function roomVisitors(force) {
+  const v = (await api("visitors", null, { days: 30, ...(force ? { fresh: 1 } : {}) })).visitors;
+  if (!v) { $("#main").innerHTML = `<div class="card"><p class="muted">No store connected.</p></div>`; return; }
+  const w = v.week, l7 = v.last7, l30 = v.last30;
+  const diff = (a, b) => b ? `<span class="${a >= b ? "up" : "down"}">${a >= b ? "+" : ""}${Math.round(100 * (a - b) / b)} %</span> <span class="muted">vs the week before</span>` : `<span class="muted">no week before yet</span>`;
+  const max = Math.max(1, ...v.series.map(x => x.visits));
+  const bars = list => { const m = Math.max(1, ...list.map(x => x[1])); return list.map(([k, n]) => `<div class="hbar"><span class="muted" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(k)}</span><div class="bar"><i style="width:${Math.max(2, Math.round(100 * n / m))}%"></i></div><span style="text-align:right;font-variant-numeric:tabular-nums">${fmt(n)}</span></div>`).join("") || `<p class="muted small">Nothing yet.</p>`; };
+  const SRC = { direct: "direct or an app", other: "other websites", ai: "AI assistants" };
+  $("#main").innerHTML = `
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi"><div class="n"><span class="dot ${v.live ? "ok" : "off"}" style="width:10px;height:10px;vertical-align:middle"></span> ${v.live}</div><div class="l">On the site now</div></div>
+    <div class="card kpi"><div class="n">${fmt(v.today.visits)}</div><div class="l">Visits today · ${fmt(v.today.uniques)} people</div></div>
+    <div class="card kpi"><div class="n">${fmt(w.visits)}</div><div class="l">Visits, last 7 full days</div><div class="tiny" style="margin-top:6px">${diff(w.visits, w.before.visits)}</div></div>
+    <div class="card kpi"><div class="n">${Math.floor(l7.avgSecs / 60)}:${String(l7.avgSecs % 60).padStart(2, "0")}</div><div class="l">Average visit · ${l7.engagedShare} % stay 30 s+</div></div>
+  </div>
+  <div class="card" style="margin-bottom:14px"><h2>Last 30 days <span class="sp"></span><span class="tiny muted">gold: visits · blue: different people</span><button class="btn tiny" id="vRefresh" style="margin-left:10px">↻</button></h2>
+    <div class="vbars" role="img" aria-label="Visits per day over 30 days">${v.series.map(x => `<div class="b" style="height:${Math.max(1, Math.round(100 * x.visits / max))}%" title="${esc(x.d)}: ${x.visits} visits, ${x.uniques} people, ${x.pv} pages"><i style="height:${x.visits ? Math.round(100 * x.uniques / x.visits) : 0}%"></i></div>`).join("")}</div>
+    <div class="vlab"><span>${esc(dfmt(v.series[0].d))}</span><span>today</span></div>
+    <p class="tiny muted" style="margin:10px 0 0">All time: ${fmt(v.allTime.visits)} visits, ${fmt(v.allTime.pv)} pages read${v.allTime.since ? ", counted since " + dfmt(v.allTime.since) : ""}. Your own visits from this browser are not counted.</p></div>
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card"><h2>Where they come from <span class="pill tiny">7 days</span></h2>${bars(l7.sources.map(([k, n]) => [SRC[k] || k, n]))}
+      <p class="tiny muted" style="margin:8px 0 0">Instagram's and TikTok's apps often hide where a visitor came from (they count as direct). A link like residualcontinuum.com/?from=ig in a bio or a caption names it.</p></div>
+    <div class="card"><h2>What they read <span class="pill tiny">7 days</span></h2>${bars(l7.pages.slice(0, 12))}</div>
+  </div>
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card"><h2>Countries <span class="pill tiny">30 days</span></h2>${bars(l30.countries)}</div>
+    <div class="card"><h2>Devices <span class="pill tiny">30 days</span></h2>${bars(l30.devices)}
+      <p class="small muted" style="margin:12px 0 0">Counted without cookies; nothing personal is kept (see the privacy page).</p></div>
+  </div>${FOOT}`;
+  $("#vRefresh").onclick = () => roomVisitors(true);
+}
+function visitorsCard(v) {
+  if (!v) return "";
+  const s = v.series || [], m = Math.max(1, ...s.map(x => x.visits));
+  return `<div class="card"><h2>Visitors <span class="sp"></span><a class="btn tiny" href="#visitors">Open</a></h2>
+    <div class="row" style="gap:22px;align-items:flex-end"><div class="kpi"><div class="n">${v.live}</div><div class="l">on the site now</div></div><div class="kpi"><div class="n">${fmt(v.today.visits)}</div><div class="l">visits today</div></div><div class="kpi"><div class="n">${fmt(v.week.visits)}</div><div class="l">last 7 full days</div></div></div>
+    <div class="vbars" style="height:46px">${s.map(x => `<div class="b" style="height:${Math.max(2, Math.round(100 * x.visits / m))}%" title="${esc(x.d)}: ${x.visits}"></div>`).join("")}</div>
+    <div class="tiny muted" style="margin-top:6px">${(v.sources || []).map(([k, n]) => esc(k) + " " + n).join(" · ") || "No visits counted yet."}</div></div>`;
+}
 function editGoals(x) {
   $("#drawer").classList.add("on");
   const opts = sel => Object.entries(x.metrics).map(([k, l]) => `<option value="${k}" ${k === sel ? "selected" : ""}>${esc(l)}</option>`).join("");
-  const row = g => `<div class="item" data-g="${esc(g.id || "")}"><input data-f="label" value="${esc(g.label || "")}" placeholder="Goal"><div class="row" style="margin-top:6px;flex-wrap:nowrap"><select data-f="metric">${opts(g.metric)}</select><input data-f="target" type="number" min="1" value="${esc(g.target || "")}" placeholder="Target" style="max-width:140px"><button class="btn tiny red" data-del>Remove</button></div></div>`;
+  const row = g => `<div class="item" data-g="${esc(g.id || "")}"><input data-f="label" value="${esc(g.label || "")}" placeholder="Goal"><div class="row" style="margin-top:6px;flex-wrap:nowrap"><select data-f="metric">${opts(g.metric)}</select><input data-f="target" type="number" min="1" value="${esc(g.target || "")}" placeholder="Target" style="max-width:120px"><input data-f="by" type="date" value="${esc(g.by || "")}" title="By" style="max-width:150px"><button class="btn tiny red" data-del>Remove</button></div></div>`;
   $("#sheet").innerHTML = `<div class="row sb"><h2 style="font-size:24px">Goals</h2><button class="btn" data-close>Close</button></div>
     <p class="small muted">The Explorer works toward these. It may propose changes; only you can make them.</p>
     <label class="small muted">North star</label><textarea id="gNorth" style="min-height:60px">${esc(x.north)}</textarea>
@@ -478,7 +586,7 @@ function editGoals(x) {
   $("#gAdd").onclick = () => { $("#gList").insertAdjacentHTML("beforeend", row({ metric: "yt_subs" })); wire(); };
   $("#gSave").onclick = async () => {
     const goals = $$("#gList [data-g]").map(el => { const id = el.dataset.g || undefined, was = x.goals.find(g => g.id === id) || {};
-      return { id, label: $("[data-f=label]", el).value, metric: $("[data-f=metric]", el).value, target: Number($("[data-f=target]", el).value), ...(was.note && was.metric === $("[data-f=metric]", el).value ? { note: was.note } : {}) }; });
+      return { id, label: $("[data-f=label]", el).value, metric: $("[data-f=metric]", el).value, target: Number($("[data-f=target]", el).value), by: $("[data-f=by]", el).value, ...(was.note && was.metric === $("[data-f=metric]", el).value ? { note: was.note } : {}) }; });
     try { await api("explorer_goals", { goals: { north: $("#gNorth").value, goals } }); closeDrawer(); toast("Goals saved"); roomExplorer(true); } catch (e) { toast(e.message); }
   };
 }

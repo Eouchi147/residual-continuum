@@ -10211,5 +10211,20 @@ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded'
 })();
 
 </script>
+<script>
+/* Visit counter: no cookies, nothing stored on this device, nothing personal kept (see /privacy.html) */
+(function(){try{
+if(!/^https?:$/.test(location.protocol)||!/(^|\.)residualcontinuum\.com$/.test(location.hostname))return;
+if(navigator.globalPrivacyControl||navigator.doNotTrack==='1'||window.doNotTrack==='1')return;
+var q=new URLSearchParams(location.search),src=q.get('utm_source')||q.get('from')||'',last=null,first=1,vis=0,tot=0,eng=0,since=document.visibilityState==='visible'?Date.now():0,tm;
+function send(o){try{var b=JSON.stringify(o);if(navigator.sendBeacon&&navigator.sendBeacon('/api/hit',b))return;fetch('/api/hit',{method:'POST',body:b,keepalive:true,credentials:'same-origin'}).catch(function(){});}catch(e){}}
+function view(){var r=(location.hash||'').replace(/^#\/?/,'').slice(0,80);if(r===last)return;last=r;send({t:'v',r:r,f:first,ref:first?document.referrer:'',src:first?src:''});first=0;}
+function leave(){if(since){vis+=Date.now()-since;since=0;}var s=Math.round(vis/1000);if(s<1)return;vis=0;tot+=s;var e=(!eng&&tot>=30)?1:0;if(e)eng=1;send({t:'l',s:s,e:e});}
+window.addEventListener('hashchange',function(){clearTimeout(tm);tm=setTimeout(view,700);});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')since=Date.now();else leave();});
+window.addEventListener('pagehide',leave);
+view();
+}catch(e){}})();
+</script>
 </body>
 </html>
