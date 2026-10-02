@@ -62,6 +62,27 @@ video{width:100%;max-height:60vh;border-radius:12px;background:#000}
 .timeline{display:flex;flex-direction:column;gap:0}.tl{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:9px 0;border-top:1px solid var(--line)}.tl:first-child{border-top:0}
 footer{color:var(--muted);text-align:center;font-size:12px;padding:30px 0 0}
 .pol{font-size:11.5px;line-height:1.5;color:var(--muted);margin:14px auto 0;max-width:640px;text-align:center}.pol a{color:inherit;text-decoration:underline}
+/* The Explorer's room */
+.xhero{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center}
+.orb{width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe2b8,var(--gold) 38%,var(--gold2) 70%,#5a3d22);box-shadow:0 0 0 6px rgba(232,184,122,.08),0 0 38px rgba(232,184,122,.35);position:relative}
+.orb.alive::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(232,184,122,.5);animation:pulse 2.8s cubic-bezier(.25,1,.5,1) infinite}
+.orb.sleep{filter:grayscale(.8) brightness(.7);box-shadow:none}
+@keyframes pulse{0%{transform:scale(.92);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+@media (prefers-reduced-motion:reduce){.orb.alive::after{animation:none}}
+.north{font-family:Newsreader,serif;font-style:italic;font-size:19px;line-height:1.35;color:var(--text)}
+.goal{padding:10px 0;border-top:1px solid var(--line)}.goal:first-child{border-top:0}
+.goal .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.goal .v{font-variant-numeric:tabular-nums;white-space:nowrap}
+.mx{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.mx .m{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 12px 8px}
+.mx .m .n{font-family:Newsreader,serif;font-size:28px;line-height:1.1}.mx .m .d{font-size:12px}.up{color:var(--green)}.down{color:var(--red)}
+.mx svg{display:block;width:100%;height:54px;margin-top:6px}
+.kind{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.kind.think{color:var(--gold);border-color:rgba(232,184,122,.4)}.kind.sense{color:var(--blue);border-color:rgba(159,208,255,.35)}.kind.learn,.kind.milestone{color:var(--green);border-color:rgba(143,217,176,.35)}.kind.trouble{color:var(--red);border-color:rgba(233,138,138,.35)}.kind.order,.kind.experiment,.kind.playbook{color:var(--amber);border-color:rgba(240,198,116,.35)}
+.act{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:9px 0;border-top:1px solid var(--line)}.act:first-child{border-top:0}.act>.chip{align-self:start;justify-self:start;margin-top:1px}
+.hbar{display:grid;grid-template-columns:minmax(80px,140px) 1fr 64px;gap:10px;align-items:center;margin:6px 0;font-size:12.5px}
+details>summary{cursor:pointer;color:var(--muted);font-size:13px}details[open]>summary{margin-bottom:8px}
+.soul{white-space:pre-wrap;font-family:Newsreader,serif;font-size:15.5px;line-height:1.6;color:#e9e3da;max-width:72ch}
+@media (max-width:640px){.xhero{grid-template-columns:auto 1fr}.xhero .acts{grid-column:1/-1}}
 @media (max-width:640px){td:last-child .btn{display:block;margin:3px 0;width:100%}header{padding:10px 14px}main{padding:14px 14px 100px}.hide-s{display:none}.kpi .n{font-size:30px}.tl{grid-template-columns:96px 1fr}}
 </style>
 </head>
@@ -75,7 +96,7 @@ footer{color:var(--muted);text-align:center;font-size:12px;padding:30px 0 0}
   <button class="btn" id="logoutBtn" style="display:none">Lock</button>
 </header>
 <nav class="tabs" id="tabs" style="display:none">
-  <button data-room="overview" class="on">Overview</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="director">The Explorer (AI)</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
+  <button data-room="overview" class="on">Overview</button><button data-room="explorer">The Explorer</button><button data-room="director">Talk</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
 </nav>
 <main id="main"></main>
 <div class="drawer" id="drawer"><div class="scrim" data-close></div><div class="sheet" id="sheet"></div></div>
@@ -133,7 +154,7 @@ function setupList(s) {
 async function load(room, force) {
   S.room = room; $$("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.room === room));
   if (!location.hash.startsWith("#" + room)) history.replaceState(null, "", "#" + room);
-  const R = { overview: roomOverview, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
+  const R = { overview: roomOverview, explorer: roomExplorer, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
   try { await R(force); } catch (e) { if (e.message !== "locked") $("#main").innerHTML = `<div class="card"><h2>Something went wrong</h2><p class="muted">${esc(e.message)}</p></div>`; }
 }
 async function getOv(force) { if (!S.ov || force) S.ov = await api("overview"); paintMode(); return S.ov; }
@@ -158,6 +179,7 @@ async function roomOverview(force) {
   }).join("");
   $("#main").innerHTML = `
   ${setupBanner(o.setup)}
+  ${o.explorer ? explorerCard(o.explorer) : ""}
   ${props.length ? `<div class="card" style="margin-bottom:14px"><h2>The Explorer asks <span class="pill">${props.length}</span></h2>${props.map(propCard).join("")}</div>` : ""}
   <div class="grid g4" style="margin-bottom:14px">
     <div class="card kpi"><div class="n">${f.planned}</div><div class="l">Films planned</div></div>
@@ -205,6 +227,15 @@ async function roomOverview(force) {
   $$("#hours button").forEach(b => b.onclick = () => { const h = +b.dataset.h; const s = new Set(o.dials.slots); s.has(h) ? s.delete(h) : s.add(h); setDial({ slots: [...s] }); });
   wireCommon();
 }
+function explorerCard(e) {
+  const g = (e.goals || []).filter(x => x.value != null && x.pct < 100).slice(0, 3);
+  return `<div class="card" style="margin-bottom:14px"><div class="row" style="flex-wrap:nowrap;align-items:flex-start;gap:14px"><div class="orb ${e.lastThink && Date.now() - Date.parse(e.lastThink) < 30 * 3600e3 ? "alive" : ""}" style="width:40px;height:40px;flex:none;margin-top:4px" aria-hidden="true"></div>
+    <div style="min-width:0;flex:1"><h2 style="margin-bottom:4px">The Explorer <span class="pill tiny">v${esc(e.version)}</span><span class="sp"></span><a class="btn tiny" href="#explorer">Open its room</a></h2>
+    <p style="margin:0 0 6px">${esc(e.summary || "It has not thought yet: its first thinking comes at 07:00 UTC, or open its room and press Think now.")}</p>
+    ${e.plan ? `<p class="small muted" style="margin:0 0 8px">${esc(e.plan)}</p>` : ""}
+    ${g.length ? `<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">${g.map(x => `<div><div class="tiny muted">${esc(x.label)}</div><div class="bar" style="margin-top:4px"><i style="width:${Math.max(1, x.pct)}%"></i></div><div class="tiny muted" style="margin-top:3px">${fmt(x.value)} / ${fmt(x.target)}</div></div>`).join("")}</div>` : ""}
+    ${(e.openOrders || []).length ? `<p class="small" style="margin:8px 0 0;color:var(--amber)">It asks you for ${e.openOrders.length} thing${e.openOrders.length > 1 ? "s" : ""}: see its room.</p>` : ""}</div></div></div>`;
+}
 function setupBanner(s) {
   if (!s || (s.store && s.password)) return "";
   return `<div class="card" style="margin-bottom:14px;border-color:rgba(240,198,116,.4)"><h2>Finish the setup</h2>${setupList(s)}</div>`;
@@ -218,7 +249,7 @@ function recRow(r) {
   ${Object.entries(r.results || {}).filter(([, x]) => x && !x.ok && !x.pending && !x.skipped).map(([n]) => `<button class="btn tiny red" style="margin-top:6px;margin-right:6px" data-retry="${r.date}|${r.hour}|${n}">Retry ${NETS[n]}</button>`).join("")}</div>`;
 }
 function propCard(p) {
-  const label = { pin: "Put next in line", unpin: "Unpin", skip: "Hold back", unskip: "Release", caption: "Set caption", write_captions: "Write captions", set_slots: "Change posting hours", set_network: "Turn a network on/off", ai_captions: "AI captions", set_mode: "Change the poster's mode", approve: "Send a queued slot", post_now: "Post a film now" }[p.tool] || p.tool;
+  const label = { pin: "Put next in line", unpin: "Unpin", skip: "Hold back", unskip: "Release", caption: "Set caption", write_captions: "Write captions", set_slots: "Change posting hours", set_network: "Turn a network on/off", ai_captions: "AI captions", set_mode: "Change the poster's mode", approve: "Send a queued slot", post_now: "Post a film now", set_long: "Long films' days and hour", set_goal: "Change a goal", order: "File a work order" }[p.tool] || p.tool;
   return `<div class="prop" style="margin-top:8px"><div class="row sb"><b>${esc(label)}</b><span class="tiny muted">${ago(p.at)}</span></div>
   <div class="small" style="margin:4px 0">${esc(describeArgs(p.args))}</div>${p.why ? `<div class="small muted">${esc(p.why)}</div>` : ""}
   <div class="row" style="margin-top:8px"><button class="btn gold" data-prop="${p.id}|1">Approve</button><button class="btn" data-prop="${p.id}|0">Reject</button></div></div>`;
@@ -229,6 +260,8 @@ function describeArgs(a) {
   if (a.id) parts.push(t(a.id)); if (a.net) parts.push(NETS[a.net] || a.net); if (a.mode) parts.push("mode: " + a.mode);
   if (a.hours) parts.push("hours (UTC): " + a.hours.join(", ")); if ("on" in a) parts.push(a.on ? "on" : "off");
   if (a.date) parts.push(a.date + " " + a.hour + ":00 UTC"); if (a.text) parts.push("\u201c" + a.text.slice(0, 160) + "\u201d");
+  if (a.days) parts.push("days: " + a.days.map(x => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][x]).join(", ")); if (a.hour != null && !a.date) parts.push(a.hour + ":00 UTC");
+  if (a.label) parts.push(a.label); if (a.target) parts.push("target " + a.target); if (a.title) parts.push(a.title);
   return parts.join(" · ") || JSON.stringify(a);
 }
 async function setDial(patch, confirmText) {
@@ -315,6 +348,132 @@ async function roomDirector(force) {
   $("#cm").onkeydown = e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#cf").requestSubmit(); } };
   $$("[data-ask]").forEach(b => b.onclick = () => send(b.dataset.ask));
   wireCommon();
+}
+
+/* ------------------------------------------------- The Explorer's room */
+const fmt = n => n == null ? "·" : Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + "M" : Math.abs(n) >= 1e4 ? (n / 1e3).toFixed(n >= 1e5 ? 0 : 1) + "k" : Number(n).toLocaleString();
+const KIND = { think: "thought", sense: "senses", learn: "learned", milestone: "milestone", trouble: "trouble", order: "work order", experiment: "experiment", playbook: "playbook", version: "upgrade", goal: "goals" };
+const OUTCOME = { done: "ok", proposed: "wait", stopped: "bad", "already waiting": "", failed: "bad", filed: "wait", "already open": "", started: "ok", revised: "ok" };
+function spark(series, key) {
+  const pts = series.filter(p => p[key] != null);
+  if (pts.length < 2) return `<svg viewBox="0 0 200 54" preserveAspectRatio="none" aria-hidden="true"><line x1="0" y1="44" x2="200" y2="44" stroke="rgba(245,241,235,.12)" stroke-dasharray="3 4"/></svg>`;
+  const v = pts.map(p => p[key]), lo = Math.min(...v), hi = Math.max(...v), span = hi - lo || 1;
+  const xy = v.map((y, i) => [(i / (v.length - 1)) * 196 + 2, 48 - ((y - lo) / span) * 40]);
+  const line = xy.map(([x, y], i) => (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1)).join(" ");
+  const [lx, ly] = xy[xy.length - 1];
+  return `<svg viewBox="0 0 200 54" preserveAspectRatio="none" role="img" aria-label="${esc(key)} over ${v.length} days"><defs><linearGradient id="g${key}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8b87a" stop-opacity=".35"/><stop offset="1" stop-color="#e8b87a" stop-opacity="0"/></linearGradient></defs>
+    <path d="${line} L${lx.toFixed(1)} 54 L2 54 Z" fill="url(#g${key})"/><path d="${line}" fill="none" stroke="#e8b87a" stroke-width="1.8" vector-effect="non-scaling-stroke" stroke-linejoin="round"/><circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="2.6" fill="#f5f1eb"/></svg>`;
+}
+function delta(series, key) {
+  const pts = series.filter(p => p[key] != null); if (pts.length < 2) return "";
+  const last = pts[pts.length - 1], ref = pts.filter(p => p.d <= new Date(Date.parse(last.d) - 7 * 864e5).toISOString().slice(0, 10)).pop() || pts[0];
+  const dv = last[key] - ref[key]; if (!dv) return `<span class="muted">no change since ${esc(ref.d.slice(5))}</span>`;
+  return `<span class="${dv > 0 ? "up" : "down"}">${dv > 0 ? "+" : ""}${fmt(dv)}</span> <span class="muted">since ${esc(ref.d.slice(5))}</span>`;
+}
+function hbars(obj, label) {
+  const e = Object.entries(obj || {}); if (!e.length) return `<p class="muted small">Not enough posts measured yet.</p>`;
+  const max = Math.max(1, ...e.map(([, x]) => x.avgViews));
+  return e.slice(0, 8).map(([k, x]) => `<div class="hbar"><span class="muted" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(label ? label(k) : k)}</span><div class="bar"><i style="width:${Math.max(2, Math.round(100 * x.avgViews / max))}%"></i></div><span style="text-align:right;font-variant-numeric:tabular-nums">${fmt(x.avgViews)} <span class="tiny muted">×${x.films}</span></span></div>`).join("");
+}
+const localHour = h => h === "?" ? "?" : new Date(Date.UTC(2026, 0, 1, +h)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) + " (" + String(h).padStart(2, "0") + " UTC)";
+function life(beat) {
+  const last = [beat && beat.run, beat && beat.sensed, beat && beat.thought].filter(Boolean).sort().pop();
+  const t = last ? Date.now() - Date.parse(last) : Infinity;
+  return t < 2.2 * 3600e3 ? ["alive", "ok", "Awake: last heartbeat " + ago(last)] : t < 26 * 3600e3 ? ["", "wait", "Heartbeat late: last one " + ago(last)] : ["sleep", "bad", last ? "Asleep since " + ago(last) + ": check the Vercel crons" : "Not started: it wakes on the next hourly run"];
+}
+
+async function roomExplorer(force) {
+  if (!S.x || force) S.x = await api("explorer");
+  const x = S.x, b = x.beat || {}, t = x.think, r = x.reading;
+  const [orb, dot, lifeText] = life(b);
+  const M = [["yt_subs", "YouTube subscribers"], ["yt_views", "YouTube views"], ["fb_followers", "Facebook followers"], ["fb_views", "Facebook video views"], ["ig_followers", "Instagram followers"], ["ig_views", "Instagram reel views"]];
+  const latest = x.series[x.series.length - 1] || {};
+  const open = (x.orders || []).filter(o => o.status === "open"), closed = (x.orders || []).filter(o => o.status !== "open").slice(0, 8);
+  const running = (x.experiments || []).filter(e => e.status === "running"), judged = (x.experiments || []).filter(e => e.status !== "running").slice(0, 6);
+  const J = (x.journal || []).filter(j => !S.xk || j.kind === S.xk);
+  $("#main").innerHTML = `
+  <div class="card" style="margin-bottom:14px"><div class="xhero">
+    <div class="orb ${orb}" aria-hidden="true"></div>
+    <div><h2 style="font-size:28px;margin:0">The Explorer <span class="pill tiny">v${esc(x.version)}</span></h2>
+      <div class="north" style="margin:4px 0 6px">${esc(x.north)}</div>
+      <div class="small muted"><span class="dot ${dot}"></span> ${esc(lifeText)}${b.sensed ? " · read the numbers " + ago(b.sensed) : ""}${b.thought ? " · thought " + ago(b.thought) : ""}${b.thinking && Date.now() - Date.parse(b.thinking) < 6e5 ? " · <b style='color:var(--gold)'>thinking now…</b>" : ""}</div></div>
+    <div class="row acts"><button class="btn" id="xSense">Read the numbers</button><button class="btn gold" id="xThink">Think now</button></div></div></div>
+
+  ${open.length ? `<div class="card" style="margin-bottom:14px;border-color:rgba(240,198,116,.35)"><h2>It asks <span class="pill">${open.length}</span></h2>${open.map(o => `<div class="act"><span class="chip ${o.for === "sam" ? "wait" : "priv"}">${o.for === "sam" ? "for you" : "for the builders"}</span><div><b>${esc(o.title)}</b><div class="small muted">${esc(o.why)}</div><div class="row" style="margin-top:6px"><button class="btn tiny green" data-ord="${o.id}|done">Done</button><button class="btn tiny" data-ord="${o.id}|dismissed">Dismiss</button><span class="tiny muted">${ago(o.at)} · by ${esc(o.by)}</span></div></div></div>`).join("")}</div>` : ""}
+
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card"><h2>Goals <span class="sp"></span><button class="btn tiny" id="xGoals">Edit</button></h2>
+      ${x.goals.map(g => `<div class="goal"><div class="t"><span>${esc(g.label)}</span><span class="v">${g.value == null ? `<span class="muted small">not readable yet</span>` : `<b>${fmt(g.value)}</b> <span class="muted">/ ${fmt(g.target)}</span>`}</span></div>
+        <div class="bar ${g.pct >= 100 ? "green" : ""}" style="margin-top:6px"><i style="width:${Math.max(g.pct || 0, g.value ? 1 : 0)}%"></i></div>
+        <div class="tiny muted" style="margin-top:4px">${g.pct != null ? g.pct + " %" : ""}${g.perDay != null ? " · " + (g.perDay > 0 ? "+" : "") + fmt(g.perDay) + " a day" : ""}${g.eta ? " · at this pace: " + new Date(g.eta + "T12:00:00Z").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" }) : ""}${g.note ? `<br>${esc(g.note)}` : ""}</div></div>`).join("")}</div>
+    <div class="card"><h2>Today's thinking ${t ? `<span class="pill tiny">${ago(t.at)} · ${Math.round((t.ms || 0) / 1000)} s · ${t.calls || 0} model calls</span>` : ""}</h2>
+      ${t ? `${t.analysis && t.analysis.summary ? `<p style="margin:0 0 8px">${esc(t.analysis.summary)}</p>` : ""}
+      ${t.plan ? `<p class="small" style="margin:0 0 10px"><b>The plan.</b> ${esc(t.plan)}</p>` : ""}
+      ${(t.analysis && (t.analysis.wins || []).length) ? `<div class="small" style="margin:6px 0"><b class="up">Working</b><ul style="margin:4px 0 0 18px;padding:0">${t.analysis.wins.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : ""}
+      ${(t.analysis && (t.analysis.problems || []).length) ? `<div class="small" style="margin:6px 0"><b class="down">Not working</b><ul style="margin:4px 0 0 18px;padding:0">${t.analysis.problems.map(w => `<li>${esc(w)}</li>`).join("")}</ul></div>` : ""}
+      <div class="list" style="margin-top:8px">${[...(t.actions || []).map(a => ({ k: a.tool, o: a.outcome, why: a.why, audit: a.audit, args: a.args })), ...(t.orders || []).map(o => ({ k: "work order", o: o.outcome, why: o.title + (o.why ? ": " + o.why : ""), audit: o.audit })),
+        ...(t.experiment ? [{ k: "experiment", o: t.experiment.outcome, why: t.experiment.name + ": " + t.experiment.change }] : []), ...(t.playbook ? [{ k: "playbook", o: t.playbook.outcome, why: t.playbook.v ? "version " + t.playbook.v : "" }] : [])]
+        .map(a => `<div class="act"><span class="chip ${OUTCOME[a.o] || ""}">${esc(a.o || "")}</span><div class="small"><b>${esc(a.k)}</b>${a.args ? " " + esc(describeArgs(a.args)) : ""}<div class="muted">${esc(a.why || "")}</div>${a.audit ? `<div class="tiny muted">Audit: ${esc(a.audit)}</div>` : ""}</div></div>`).join("") || `<p class="small muted">No move needed today.</p>`}</div>
+      <details style="margin-top:10px"><summary>Who thought</summary><div class="small muted">${Object.entries(t.models || {}).map(([k, m]) => `<div><b>${esc(k)}</b>: ${esc(m)}</div>`).join("")}${(t.auditors || []).map(a => `<div>${esc(a.who)} says: ${esc(a.note || a.error || "")}</div>`).join("")}${(t.errors || []).length ? `<div style="color:var(--red)">${esc(t.errors.join("; "))}</div>` : ""}</div></details>`
+      : `<p class="muted small">It has not thought yet. It thinks every day from 07:00 UTC, or now with "Think now" (up to three minutes).</p>`}</div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px"><h2>Numbers <span class="sp"></span><span class="tiny muted">${r ? "read " + ago(r.at) : ""}</span></h2>
+    <div class="mx">${M.map(([k, l]) => `<div class="m"><div class="tiny muted" style="text-transform:uppercase;letter-spacing:.07em">${l}</div><div class="n">${fmt(latest[k])}</div><div class="d">${delta(x.series, k)}</div>${spark(x.series, k)}</div>`).join("")}</div>
+    ${r && (r.trouble || []).length ? `<p class="tiny" style="color:var(--amber);margin:10px 0 0">Not readable: ${r.trouble.map(z => esc(NETS[z.net] + ": " + z.text)).join(" · ")}</p>` : ""}
+    <p class="tiny muted" style="margin:8px 0 0">Watch hours are not readable with the YouTube access the studio has (YouTube Studio shows them).</p></div>
+
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card"><h2>Films that travel</h2>
+      ${r && (r.films || []).length ? `<div class="tbl" style="max-height:420px"><table><thead><tr><th>Film</th><th style="text-align:right">YT</th><th style="text-align:right">FB</th><th style="text-align:right">IG</th></tr></thead><tbody>${r.films.slice(0, 25).map(f => `<tr><td><a href="#" data-film="${esc(f.film)}">${esc(f.title)}</a><div class="tiny muted">${esc(f.kind)} · ${esc(f.series || "")}${f.first ? " · " + ago(f.first) : ""}</div></td>${["youtube", "facebook", "instagram"].map(n => `<td style="text-align:right;font-variant-numeric:tabular-nums">${f.nets[n] ? (f.nets[n].url ? `<a href="${esc(f.nets[n].url)}" target="_blank" rel="noopener">${fmt(f.nets[n].views)}</a>` : fmt(f.nets[n].views)) : `<span class="muted">·</span>`}</td>`).join("")}</tr>`).join("")}</tbody></table></div>` : `<p class="muted small">No film measured yet.</p>`}</div>
+    <div class="card"><h2>What works</h2>
+      <div class="small muted" style="margin:2px 0 4px">Average views per film, by File</div>${hbars(r && r.bySeries)}
+      <div class="small muted" style="margin:12px 0 4px">By posting hour (your time)</div>${hbars(r && r.byHour, localHour)}
+      <div class="small muted" style="margin:12px 0 4px">By verdict</div>${hbars(r && r.byVerdict)}</div>
+  </div>
+
+  <div class="grid g2" style="margin-bottom:14px">
+    <div class="card"><h2>What it has learned <span class="pill tiny">${(x.insights || []).length}</span></h2>
+      ${(x.insights || []).length ? x.insights.map(i => `<div class="act"><span class="chip ${i.confidence === "high" ? "ok" : i.confidence === "medium" ? "wait" : ""}">${esc(i.confidence)}</span><div class="small">${esc(i.text)}<div class="tiny muted">${esc(i.evidence || "")} · ${ago(i.updated || i.at)}</div></div></div>`).join("") : `<p class="muted small">Nothing yet: it learns only what the numbers support, and it needs a few days of them.</p>`}
+      ${running.length || judged.length ? `<h3 style="font-size:16px;margin:14px 0 6px">Experiments</h3>${[...running, ...judged].map(e => `<div class="act"><span class="chip ${e.status === "running" ? "wait" : e.result === "worked" ? "ok" : e.result === "did not work" ? "bad" : ""}">${esc(e.status === "running" ? "running" : e.result)}</span><div class="small"><b>${esc(e.name)}</b><div class="muted">${esc(e.change)} · measure: ${esc(e.measure)} · judged ${esc(e.judge_on)}</div>${e.note ? `<div class="tiny muted">${esc(e.note)}</div>` : ""}</div></div>`).join("")}` : ""}</div>
+    <div class="card"><h2>Its playbook ${x.playbook && x.playbook.v ? `<span class="pill tiny">v${x.playbook.v} · ${ago(x.playbook.at)}</span>` : ""}</h2>
+      ${x.playbook && x.playbook.text ? `<div class="small" style="white-space:pre-wrap;line-height:1.6">${esc(x.playbook.text)}</div>${x.playbook.why ? `<p class="tiny muted">Why this version: ${esc(x.playbook.why)}</p>` : ""}` : `<p class="muted small">It writes its first playbook at its first thinking.</p>`}
+      ${(x.playbooks || []).length ? `<details style="margin-top:10px"><summary>Earlier versions (${x.playbooks.length})</summary>${x.playbooks.map(p => `<div class="item small"><b>v${p.v}</b> <span class="tiny muted">${ago(p.at)}</span><div class="muted" style="white-space:pre-wrap">${esc(p.text)}</div></div>`).join("")}</details>` : ""}</div>
+  </div>
+
+  <div class="card" style="margin-bottom:14px"><h2>Journal <span class="sp"></span></h2>
+    <div class="chips" style="margin-bottom:8px"><button class="chip ${!S.xk ? "ok" : ""}" data-xk="">all</button>${Object.entries(KIND).map(([k, l]) => `<button class="chip ${S.xk === k ? "ok" : ""}" data-xk="${k}">${l}</button>`).join("")}</div>
+    <div class="list">${J.length ? J.slice(0, 60).map(j => `<div class="item"><div class="row sb"><span><span class="kind ${esc(j.kind)}">${esc(KIND[j.kind] || j.kind)}</span> <b class="small">${esc(j.title)}</b></span><span class="tiny muted">${ago(j.at)}</span></div>${j.body ? `<div class="small muted" style="white-space:pre-wrap;margin-top:4px">${esc(j.body)}</div>` : ""}</div>`).join("") : `<p class="muted small">Empty.</p>`}</div></div>
+
+  <div class="card" style="margin-bottom:14px"><details><summary>Its constitution: the soul it reads before every thought</summary><div class="soul">${esc(x.constitution)}</div></details>
+    ${closed.length ? `<details style="margin-top:10px"><summary>Closed work orders (${closed.length})</summary>${closed.map(o => `<div class="item small"><span class="chip ${o.status === "done" ? "ok" : ""}">${esc(o.status)}</span> ${esc(o.title)} <span class="tiny muted">${ago(o.closed)}</span></div>`).join("")}</details>` : ""}
+    <details style="margin-top:10px"><summary>Versions</summary>${Object.entries(x.changes || {}).reverse().map(([v, c]) => `<div class="item small"><b>v${esc(v)}</b> <span class="muted">${esc(c)}</span></div>`).join("")}</details></div>
+  ${FOOT}`;
+  $("#xSense").onclick = async e => { e.target.disabled = true; e.target.textContent = "Reading…"; try { S.x = await api("explorer_sense", {}); toast("Numbers read"); } catch (err) { toast(err.message); } roomExplorer(); };
+  $("#xThink").onclick = async e => { e.target.disabled = true; e.target.textContent = "Thinking… (up to 3 min)"; try { await api("explorer_think", {}); toast("It thought: see Today's thinking"); } catch (err) { toast(err.message); } S.ov = null; roomExplorer(true); };
+  $("#xGoals").onclick = () => editGoals(x);
+  $$("[data-xk]").forEach(c => c.onclick = () => { S.xk = c.dataset.xk; roomExplorer(); });
+  $$("[data-ord]").forEach(bt => bt.onclick = async () => { const [id, status] = bt.dataset.ord.split("|"); bt.disabled = true; try { await api("explorer_order", { id, status }); } catch (err) { toast(err.message); } roomExplorer(true); });
+  wireCommon();
+}
+function editGoals(x) {
+  $("#drawer").classList.add("on");
+  const opts = sel => Object.entries(x.metrics).map(([k, l]) => `<option value="${k}" ${k === sel ? "selected" : ""}>${esc(l)}</option>`).join("");
+  const row = g => `<div class="item" data-g="${esc(g.id || "")}"><input data-f="label" value="${esc(g.label || "")}" placeholder="Goal"><div class="row" style="margin-top:6px;flex-wrap:nowrap"><select data-f="metric">${opts(g.metric)}</select><input data-f="target" type="number" min="1" value="${esc(g.target || "")}" placeholder="Target" style="max-width:140px"><button class="btn tiny red" data-del>Remove</button></div></div>`;
+  $("#sheet").innerHTML = `<div class="row sb"><h2 style="font-size:24px">Goals</h2><button class="btn" data-close>Close</button></div>
+    <p class="small muted">The Explorer works toward these. It may propose changes; only you can make them.</p>
+    <label class="small muted">North star</label><textarea id="gNorth" style="min-height:60px">${esc(x.north)}</textarea>
+    <div class="list" id="gList" style="margin-top:10px">${x.goals.map(row).join("")}</div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="gAdd">Add a goal</button><button class="btn gold" id="gSave">Save</button></div>`;
+  $$("[data-close]", $("#sheet")).forEach(b => b.onclick = closeDrawer);
+  const wire = () => $$("[data-del]").forEach(b => b.onclick = () => b.closest("[data-g]").remove());
+  wire();
+  $("#gAdd").onclick = () => { $("#gList").insertAdjacentHTML("beforeend", row({ metric: "yt_subs" })); wire(); };
+  $("#gSave").onclick = async () => {
+    const goals = $$("#gList [data-g]").map(el => { const id = el.dataset.g || undefined, was = x.goals.find(g => g.id === id) || {};
+      return { id, label: $("[data-f=label]", el).value, metric: $("[data-f=metric]", el).value, target: Number($("[data-f=target]", el).value), ...(was.note && was.metric === $("[data-f=metric]", el).value ? { note: was.note } : {}) }; });
+    try { await api("explorer_goals", { goals: { north: $("#gNorth").value, goals } }); closeDrawer(); toast("Goals saved"); roomExplorer(true); } catch (e) { toast(e.message); }
+  };
 }
 
 async function roomNetworks() {
