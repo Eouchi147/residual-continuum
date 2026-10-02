@@ -488,7 +488,7 @@ export async function think(opts = {}) {
     const free = healthy.length >= 2 ? healthy : all;
     const poolA = free.filter((_, i) => i % 2 === 0), poolB = free.filter((_, i) => i % 2 === 1);
     const items = { actions: acts.map((a, i) => ({ i, ...a })), orders: ords.map((o, i) => ({ i, ...o })), experiment: exp, playbook: pbText || null };
-    const auditAsk = `The plan to audit:\n${JSON.stringify(items)}\n\nThe studio now:\n${JSON.stringify({ dials: state.dials, films: state.films, next: state.next, networks: state.networks, waitingForSam: state.waitingForSam })}\n\nThe evidence:\n${JSON.stringify({ analysis: res.analysis, today: ev.today, bySeries: ev.bySeries, byPostingHourUTC: ev.byPostingHourUTC })}\n\nApprove or reject every action and every order, with a one-line reason. Reject what breaks a rule, lacks a reason in the evidence or the goals, repeats something already waiting, or would be hard to undo. Answer with JSON only: {"actions":[{"i":0,"ok":true,"why":"..."}],"orders":[{"i":0,"ok":true,"why":"..."}],"experiment_ok":true,"playbook_ok":true,"note":"one line"}`;
+    const auditAsk = `The plan to audit:\n${JSON.stringify(items)}\n\nThe studio now:\n${JSON.stringify({ dials: state.dials, films: state.films, next: state.next, networks: state.networks, waitingForSam: state.waitingForSam })}\n\nThe evidence:\n${JSON.stringify({ analysis: res.analysis, today: ev.today, bySeries: ev.bySeries, byPostingHourUTC: ev.byPostingHourUTC })}\n\nApprove or reject every action and every order, with a one-line reason. Reject what breaks a rule, lacks a reason in the evidence or the goals, repeats something already waiting, or would be hard to undo. Answer with JSON only: {"actions":[{"i":0,"ok":true,"why":"..."}],"orders":[{"i":0,"ok":true,"why":"..."}],"experiment_ok":true,"playbook_ok":true,"note":"<your overall view in one line>"}`;
     const nothing = !acts.length && !ords.length && !exp && !pbText;
     const ROLE = {
       editor: "the Editor, an auditor. You guard the house rules, the facts (nothing beyond the films' own data and the standing facts), the voice of Residual Continuum (warm, exact, never sneering, never sensational) and respect for every person and faith.\n" + D.RULES,
@@ -506,11 +506,14 @@ export async function think(opts = {}) {
     const answered = audits.filter(a => a.v && typeof a.v === "object");
     for (const a of audits) if (a.error) res.errors.push(a.who + ": " + a.error);
     res.auditors = audits.map(a => ({ who: a.who, model: models[a.who] || "", note: a.v ? clip(String(a.v.note || ""), 240) : "", error: a.error || "" }));
+    /* free models bend the schema: "true" for true, "index" for "i", or a plain list in order */
+    const yes = v => v === true || v === "true" || v === "yes" || v === 1;
+    const pick = (arr, i, n) => { if (!Array.isArray(arr)) return null; const k = y => y && (y.i ?? y.index ?? y.idx); return arr.find(y => k(y) != null && Number(k(y)) === i) || (arr.length === n && arr.every(y => y && k(y) == null) ? arr[i] : null); };
     const verdict = (list, i) => {
-      const reasons = [];
+      const reasons = [], n = list === "actions" ? acts.length : ords.length;
       for (const a of answered) {
-        const x = (Array.isArray(a.v[list]) ? a.v[list] : []).find(y => y && Number(y.i) === i);
-        if (!x || x.ok !== true) return { ok: false, why: a.who + ": " + clip(String((x && x.why) || "no approval given"), 200) };
+        const x = pick(a.v[list], i, n);
+        if (!x || !yes(x.ok ?? x.approve ?? x.approved)) return { ok: false, why: a.who + ": " + clip(String((x && x.why) || "no approval given"), 200) };
         if (x.why) reasons.push(a.who + ": " + clip(String(x.why), 160));
       }
       return { ok: answered.length > 0, why: answered.length ? reasons.join(" · ") : "no auditor answered", n: answered.length };
@@ -537,9 +540,9 @@ export async function think(opts = {}) {
       res.orders.push(row);
     }
     /* a new experiment or playbook needs both auditors */
-    const allOk = k => answered.length >= 2 && answered.every(a => a.v[k] === true);
+    const allOk = k => answered.length >= 2 && answered.every(a => yes(a.v[k]));
     if (exp) {
-      if (D.BAD.test(JSON.stringify(exp)) || !allOk("experiment_ok")) res.experiment = { ...exp, outcome: answered.length < 2 ? "held (one auditor)" : "stopped", audit: answered.map(a => a.who + ": " + (a.v.experiment_ok === true ? "yes" : "no")).join(" · ") };
+      if (D.BAD.test(JSON.stringify(exp)) || !allOk("experiment_ok")) res.experiment = { ...exp, outcome: answered.length < 2 ? "held (one auditor)" : "stopped", audit: answered.map(a => a.who + ": " + (yes(a.v.experiment_ok) ? "yes" : "no")).join(" · ") };
       else {
         const list = await experiments();
         const row = { id: rid(), at: iso(), status: "running", ...exp };
@@ -566,6 +569,8 @@ export async function think(opts = {}) {
     res.errors.push(errText(e));
   }
   res.ms = Date.now() - t0; res.calls = calls.length; res.callLog = calls;
+  /* a thought with a plan counts for the day, however it was started */
+  if (res.plan && kvReady()) { try { await kv([["SET", X.ran("think", today()), res.at, "EX", "172800"]]); } catch { } }
   if (res.errors.length) { try { res.benched = modelStatus().benched.slice(0, 12); } catch { } }
   const did = res.actions.filter(a => a.outcome === "done").length, asked = res.actions.filter(a => a.outcome === "proposed").length, stopped = res.actions.filter(a => a.outcome === "stopped").length;
   await kv([["SET", X.think, JSON.stringify(res)], ["LPUSH", X.thinks, JSON.stringify({ at: res.at, plan: res.plan || "", summary: (res.analysis || {}).summary || "", did, asked, stopped, ms: res.ms })], ["LTRIM", X.thinks, "0", "59"]]);
@@ -592,7 +597,7 @@ export async function learn(opts = {}) {
   try {
     const ins = await insights(), due = (await experiments()).filter(e => e.status === "running" && e.judge_on <= d);
     const L = await call("archivist", "the Archivist. You keep The Explorer's memory honest: insights that cite their numbers, revised or retired when the evidence changes, and experiments judged when their day comes.",
-      `Insights now:\n${JSON.stringify(ins.map(i => ({ id: i.id, text: i.text, evidence: i.evidence, confidence: i.confidence })))}\n\nToday's analysis:\n${JSON.stringify(analysis)}\n\nThe evidence:\n${JSON.stringify({ today: ev.today, days, filmsMeasured: ev.filmsMeasured, bySeries: ev.bySeries, byVerdict: ev.byVerdict, byPostingHourUTC: ev.byPostingHourUTC, byKind: ev.byKind, topFilms: (ev.topFilms || []).slice(0, 5) })}\n\nExperiments to judge today:\n${JSON.stringify(due)}\n\nWith fewer than 7 days of numbers or fewer than 10 films measured, add at most one insight, with low confidence. Never more than 3 additions. Answer with JSON only: {"add":[{"text":"...","evidence":"the numbers","confidence":"low|medium|high"}],"revise":[{"id":"...","text":"...","evidence":"...","confidence":"..."}],"retire":["id"],"judged":[{"id":"...","result":"worked|did not work|unclear","note":"..."}]}`,
+      `Insights now:\n${JSON.stringify(ins.map(i => ({ id: i.id, text: i.text, evidence: i.evidence, confidence: i.confidence })))}\n\nToday's analysis:\n${JSON.stringify(analysis)}\n\nThe evidence:\n${JSON.stringify({ today: ev.today, days, filmsMeasured: ev.filmsMeasured, bySeries: ev.bySeries, byVerdict: ev.byVerdict, byPostingHourUTC: ev.byPostingHourUTC, byKind: ev.byKind, topFilms: (ev.topFilms || []).slice(0, 5) })}\n\nExperiments to judge today:\n${JSON.stringify(due)}\n\nAn insight needs at least three films or three days of numbers behind it; with less, add nothing (an empty answer is a good answer). With fewer than 7 days of numbers or fewer than 10 films measured, add at most one insight, with low confidence. Never more than 3 additions. Answer with JSON only: {"add":[{"text":"...","evidence":"the numbers","confidence":"low|medium|high"}],"revise":[{"id":"...","text":"...","evidence":"...","confidence":"..."}],"retire":["id"],"judged":[{"id":"...","result":"worked|did not work|unclear","note":"..."}]}`,
       { max_tokens: 2200, temperature: 0.2, budgetMs: 60e3 });
     const v = L.value || {}, conf = c => ["low", "medium", "high"].includes(c) ? c : "low";
     let next = ins.slice(); const ch = { added: 0, revised: 0, retired: 0, judged: 0, model: L.model };
