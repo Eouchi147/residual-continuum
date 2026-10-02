@@ -11,7 +11,7 @@
 --------------------------------------------------------------------------- */
 import { Readable } from "node:stream";
 import { env, kv, kvReady, K, kget, kset, json, readBody, isOwner, isCron, passwordOk, makeSession, dials, setDials, plan, film,
-         available, farmRuns, readLog, nextFilms, videoUrl, randomState, pkce, siteUrl, errText, NETS, shape } from "./_studio.js";
+         available, farmRuns, readLog, nextFilms, nextLong, longFilms, videoUrl, randomState, pkce, siteUrl, errText, NETS, shape } from "./_studio.js";
 import { NETWORKS, netStatus } from "./_nets.js";
 import { runDue, calendar, approve, reject, retry, postNow, readSlot, postedTo, compose } from "./_poster.js";
 import { chat, chatHistory, proposals, decide, doAction, captionsFor, snapshot } from "./_director.js";
@@ -62,7 +62,9 @@ async function overview() {
   const cal = kvReady() ? await calendar(10, 3) : { records: [], upcoming: [] };
   return {
     dials: d, setup: await setupState(),
-    films: { planned: p.films.length, rendered: Object.keys(av.films).length, posted: (done || []).length, held: (skip || []).length, pinned: pins || [], farmError: av.error || "" },
+    films: { planned: p.films.length, rendered: p.films.filter(f => av.films[f.id]).length, posted: p.films.filter(f => (done || []).includes(f.id)).length, held: (skip || []).length, pinned: pins || [], farmError: av.error || "" },
+    long: { planned: longFilms().length, rendered: longFilms().filter(f => av.films[f.id]).length, teasers: longFilms().filter(f => f.teaser && av.films[f.teaser]).length,
+            posted: longFilms().filter(f => (done || []).includes(f.id)).length, next: (await nextLong(3, { avail: av })).map(f => ({ id: f.id, title: f.yt_title || f.title })) },
     perNet, nets, calendar: cal, farm: runs, log, proposals: props,
   };
 }
@@ -163,12 +165,21 @@ export default async function handler(req, res) {
       case "reject": return json(res, 200, { record: await reject(String(A.date), String(A.hour)) });
       case "retry": return json(res, 200, { record: await retry(String(A.date), String(A.hour), String(A.net)) });
       case "post_now": return json(res, 200, { record: await postNow(String(A.id)) });
+      /* a film that went out on a network by hand (YouTube Studio, while the
+         API audit is pending): recorded so the poster never sends it twice */
+      case "mark": {
+        const f = film(String(A.id)); if (!f) return json(res, 404, { error: "no such film" });
+        const net = String(A.net); if (!NETS.includes(net)) return json(res, 400, { error: "no such network" });
+        await kv([["HSET", K.posted, f.id + "|" + net, JSON.stringify({ date: String(A.date || ""), slot: "hand", id: String(A.vid || ""), url: String(A.url || ""), at: new Date().toISOString(), by: "hand" })]]);
+        return json(res, 200, { ok: true });
+      }
       case "do": return json(res, 200, await doAction({ tool: A.tool, args: A.args || {} }, "owner"));
       case "chat": return json(res, 200, await chat(String(A.message || "")));
       case "chat_history": return json(res, 200, { chat: await chatHistory() });
       case "proposal": return json(res, 200, await decide(String(A.id), !!A.yes));
       case "captions": return json(res, 200, { captions: await captionsFor(film(String(A.id))) });
       case "stats": return json(res, 200, await ytStats());
+      case "probe_fb_long": { const { probeFbLong } = await import("./_nets.js"); return json(res, 200, await probeFbLong(String(A.id || "lf-demo"))); }
       case "snapshot": return json(res, 200, await snapshot());
       case "refresh": await available({ fresh: true }); return json(res, 200, { ok: true });
       default: return json(res, 400, { error: "unknown action" });

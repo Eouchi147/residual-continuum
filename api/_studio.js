@@ -136,19 +136,28 @@ export const DEFAULT_DIALS = {
   ai: "propose",              // the AI: propose (every change waits for a yes) · act (it may change dials, order and captions itself)
   aiCaptions: false,          // let the AI write each network's caption before a post (the plan's own captions otherwise)
   start: "",                  // first day the poster may post (YYYY-MM-DD), empty = any day
+  /* the long films (16:9 deep dives) and their vertical teasers: on these UTC
+     weekdays (0 = Sunday) at this UTC hour the next long film goes to YouTube
+     and Facebook; on the next run its teaser goes to YouTube Shorts,
+     Instagram and TikTok, linking to it */
+  long: { on: true, days: [1, 3, 6], hour: 18 },
 };
 export async function dials() {
   let d = {};
   if (kvReady()) { try { d = (await kget(K.dials)) || {}; } catch { } }
-  return { ...DEFAULT_DIALS, ...d, nets: { ...DEFAULT_DIALS.nets, ...(d.nets || {}) } };
+  return { ...DEFAULT_DIALS, ...d, nets: { ...DEFAULT_DIALS.nets, ...(d.nets || {}) }, long: { ...DEFAULT_DIALS.long, ...(d.long || {}) } };
 }
 export async function setDials(patch) {
   const cur = await dials();
-  const next = { ...cur, ...patch, nets: { ...cur.nets, ...((patch && patch.nets) || {}) } };
+  const next = { ...cur, ...patch, nets: { ...cur.nets, ...((patch && patch.nets) || {}) }, long: { ...cur.long, ...((patch && patch.long) || {}) } };
   if (!["off", "approve", "auto"].includes(next.mode)) throw new Error("mode must be off, approve or auto");
   if (!["propose", "act"].includes(next.ai)) throw new Error("ai must be propose or act");
   next.slots = [...new Set((next.slots || []).map(Number).filter(h => Number.isInteger(h) && h >= 0 && h <= 23))].sort((a, b) => a - b).slice(0, 6);
   if (next.start && !/^\d{4}-\d{2}-\d{2}$/.test(next.start)) throw new Error("start must be a date, YYYY-MM-DD");
+  next.long.on = !!next.long.on;
+  next.long.days = [...new Set((next.long.days || []).map(Number).filter(x => Number.isInteger(x) && x >= 0 && x <= 6))].sort();
+  next.long.hour = Number(next.long.hour);
+  if (!Number.isInteger(next.long.hour) || next.long.hour < 0 || next.long.hour > 23) throw new Error("the long films' hour must be 0 to 23 (UTC)");
   await kset(K.dials, next);
   return next;
 }
@@ -161,7 +170,17 @@ export function plan() {
   PLAN = JSON.parse(fs.readFileSync(p, "utf8"));
   return PLAN;
 }
-export const film = id => plan().films.find(f => f.id === id) || null;
+/* the long films (plan.long) and their teasers, each teaser a film of its own
+   (kind "teaser", its id "<long id>-teaser", its words from the long film) */
+export const longFilms = () => plan().long || [];
+let TEASERS = null;
+export function teasers() {
+  if (TEASERS) return TEASERS;
+  TEASERS = longFilms().filter(l => l.teaser).map(l => ({ id: l.teaser, kind: "teaser", long: l.id, order: l.order, code: l.code + "T",
+    title: l.teaser_title || l.title, hook: l.hook, verdict: l.verdict, series: l.series, caption: l.caption, hashtags: l.hashtags, sources: "" }));
+  return TEASERS;
+}
+export const film = id => plan().films.find(f => f.id === id) || longFilms().find(f => f.id === id) || teasers().find(f => f.id === id) || null;
 export const videoUrl = id => plan().release + encodeURIComponent(id) + ".mp4";
 export const doorUrl = id => siteUrl() + "/api/studio?action=video&id=" + encodeURIComponent(id);
 
@@ -219,6 +238,16 @@ export async function nextFilms(n = 10, opts = {}) {
   return out.slice(0, n);
 }
 
+/* The next long film: the plan's long order, skipping what has gone out, what
+   is held back and what the farm has not published. */
+export async function nextLong(n = 1, opts = {}) {
+  const av = opts.avail || await available();
+  let done = [], skip = [];
+  if (kvReady()) { try { [done, skip] = await kv([["SMEMBERS", K.done], ["SMEMBERS", K.skip]]); } catch { } }
+  const D = new Set(done || []), S = new Set(skip || []), taken = new Set(opts.taken || []);
+  return longFilms().filter(f => !D.has(f.id) && !S.has(f.id) && !taken.has(f.id) && (opts.any || av.films[f.id])).slice(0, n);
+}
+
 /* ------------------------------------------------- the words for a network */
 const tagsOf = f => String(f.hashtags || "").split(/\s+/).filter(t => /^#\w/.test(t));
 export function baseText(f) {
@@ -228,6 +257,7 @@ export function baseText(f) {
 /* Each network gets its own words. The plan's caption already carries the
    verdict; the sources and the link are added where a network can hold them. */
 export function shape(f, net, custom) {
+  if (f && (f.kind === "long" || f.kind === "teaser")) return shapeLong(f, net, custom);
   const link = siteUrl();
   const tags = tagsOf(f);
   const cap = String(custom || baseText(f)).replace(/\bresidualcontinuum\.com\b/g, SITE());
@@ -262,6 +292,36 @@ export function shape(f, net, custom) {
       return { text: body, link };
     }
     case "pinterest": return { title: clip(f.title, 100), text: clip([f.hook, cap].join(" "), 500), link };
+    default: return { text: cap };
+  }
+}
+
+/* A long film carries its full YouTube description (chapters, sources); its
+   teaser points to it. "{long_url}" is filled in when the teaser is sent, from
+   wherever the long film went out on YouTube. */
+function shapeLong(f, net, custom) {
+  const link = siteUrl(), tags = tagsOf(f);
+  const cap = String(custom || f.caption || "").replace(/\bresidualcontinuum\.com\b/g, SITE());
+  const ytTags = [...new Set(["Residual Continuum", "history", "archaeology", "documentary", ...tags.map(x => x.slice(1))])].slice(0, 15);
+  if (f.kind === "long") {
+    switch (net) {
+      case "youtube": return { title: clip(String(f.yt_title || f.title).replace(/\s+/g, " ").trim(), 100),
+                               description: [String(f.description || cap).trim(), tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 4900), tags: ytTags };
+      case "facebook": return { title: clip(String(f.yt_title || f.title), 250), text: [String(f.description || cap).trim(), link, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 5000) };
+      case "x": return { text: clip(String(f.yt_title || f.title) + ". Verdict: " + f.verdict + ".", 240) };
+      default: return { text: [cap, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 2150) };
+    }
+  }
+  switch (net) {
+    case "youtube": {
+      let t = String(f.title || f.hook).replace(/\s+/g, " ").trim(); const tail = " #Shorts";
+      if (t.length + tail.length > 100) t = clip(t, 100 - tail.length);
+      return { title: t + tail, description: [cap, "Watch the full deep dive: {long_url}", "Every case, with its sources: " + link, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 4900), tags: ytTags };
+    }
+    case "instagram": return { text: [cap, "The full deep dive is on our YouTube channel: link in bio.", tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 2150) };
+    case "tiktok": return { text: [String(f.title), "The full deep dive is on our YouTube channel, Residual Continuum.", tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 2150) };
+    case "facebook": return { text: [cap, link, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 5000) };
+    case "x": return { text: clip(String(f.title) + " Verdict: " + f.verdict + ".", 240) };
     default: return { text: cap };
   }
 }

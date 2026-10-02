@@ -19,7 +19,7 @@
    - Meta fetches the video itself and wants a plain video/mp4 that does not
      redirect, so it is given this site's own door (/api/studio?action=video).
 --------------------------------------------------------------------------- */
-import { env, SITE, siteUrl, sleep, errText, getTok, putTok, kv, kvReady, K, videoUrl, doorUrl, clip, today } from "./_studio.js";
+import { env, SITE, siteUrl, sleep, errText, getTok, putTok, kv, kvReady, K, videoUrl, doorUrl, clip, today, available } from "./_studio.js";
 
 const cb = net => "https://" + SITE() + "/studio/callback/" + net;
 const form = o => new URLSearchParams(Object.entries(o).filter(([, v]) => v != null && v !== "")).toString();
@@ -47,6 +47,34 @@ export async function filmBytes(id) {
   if (b.length < 50000) throw new Error("the film file is " + b.length + " bytes, which is not a film");
   BYTES.clear(); BYTES.set(id, b);
   return b;
+}
+
+/* A long film is never held in memory: it is read from the farm's release in
+   pieces (HTTP ranges) and handed on piece by piece. The release answers with a
+   redirect to a short-lived signed address, resolved here and again whenever it
+   expires. */
+async function signedUrl(id, ext = ".mp4") {
+  const u = ext === ".mp4" ? videoUrl(id) : videoUrl(id).replace(/\.mp4$/, ext);
+  try { const h = await fetch(u, { method: "HEAD", redirect: "manual" }); const loc = h.headers.get("location"); if (loc && /^https:\/\//.test(loc)) return loc; } catch { }
+  return u;
+}
+async function filmSize(id) {
+  try { const av = await available(); if (av.films[id] && av.films[id].size) return av.films[id].size; } catch { }
+  const h = await fetch(await signedUrl(id), { method: "HEAD" });
+  const n = Number(h.headers.get("content-length") || 0);
+  if (!n) throw new Error("the size of " + id + " could not be read from the render farm");
+  return n;
+}
+async function readPiece(id, a, b, state) {
+  for (let i = 0; i < 3; i++) {
+    if (!state.src) state.src = await signedUrl(id);
+    const r = await fetch(state.src, { headers: { range: `bytes=${a}-${b}` } });
+    if (r.status === 206) return Buffer.from(await r.arrayBuffer());
+    try { await r.body?.cancel(); } catch { }
+    state.src = null;                                     // expired or refused: ask the release again
+    if (r.status === 200) throw new Error("the render farm ignored the byte range");
+  }
+  throw new Error("the film could not be read from the render farm");
 }
 
 /* ================================================================ YouTube */
@@ -78,12 +106,15 @@ const youtube = {
     await putTok("youtube", { refresh: j.refresh_token, access: j.access_token, accessExp: Date.now() + 3000e3, who });
     return { ok: true, who };
   },
-  async send(f, w) {
+  async send(f, w, ctx) {
     const day = today();
     if (kvReady()) { const used = Number((await kv([["GET", K.ytday(day)]]))[0] || 0); if (used >= 6) return { ok: false, error: "YouTube's daily upload quota is spent", quota: true }; }
     const tok = await ytAccess(); if (!tok.ok) return { ok: false, error: tok.error, fatal: tok.fatal };
+    if (f.kind === "long") return ytLong(f, w, tok.token, ctx, null);
+    let desc = w.description;
+    if (f.kind === "teaser") desc = await teaserDesc(f, desc);
     let bytes; try { bytes = await filmBytes(f.id); } catch (e) { return { ok: false, error: errText(e) }; }
-    const meta = { snippet: { title: w.title, description: w.description, tags: w.tags, categoryId: "27", defaultLanguage: "en", defaultAudioLanguage: "en" },
+    const meta = { snippet: { title: w.title, description: desc, tags: w.tags, categoryId: "27", defaultLanguage: "en", defaultAudioLanguage: "en" },
                    status: { privacyStatus: "public", selfDeclaredMadeForKids: false, embeddable: true } };
     const bd = "rc" + Date.now().toString(36);
     const body = Buffer.concat([Buffer.from("--" + bd + "\r\ncontent-type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) + "\r\n--" + bd + "\r\ncontent-type: video/mp4\r\n\r\n"), bytes, Buffer.from("\r\n--" + bd + "--\r\n")]);
@@ -96,6 +127,13 @@ const youtube = {
     if (p && p !== "public") { out.private = true; out.note = "YouTube kept it " + p + ": the Google project has not passed YouTube's API audit, so only you can see it"; }
     return out;
   },
+  async finish(p, ctx, rec) {
+    if (!p || !p.yt) return { ok: false, error: "nothing to finish" };
+    const tok = await ytAccess(); if (!tok.ok) return { ok: false, pending: p, error: tok.error };
+    const { film } = await import("./_studio.js");
+    const f = film(rec && rec.film); if (!f) return { ok: false, error: "the film left the plan" };
+    return ytLong(f, (rec.words || {}).youtube || {}, tok.token, ctx, p.yt);
+  },
   async stats(ids) {
     const tok = await ytAccess(); if (!tok.ok || !ids.length) return {};
     const { j } = await jfetch("https://www.googleapis.com/youtube/v3/videos?part=statistics&id=" + ids.slice(0, 50).join(","), { headers: { authorization: "Bearer " + tok.token } });
@@ -103,6 +141,67 @@ const youtube = {
     return out;
   },
 };
+
+/* A long film goes up with YouTube's resumable upload, 32 MB at a time; if the
+   run runs short of time the session is kept and the next run carries on
+   from where YouTube says it stopped. */
+const YT_PIECE = 32 * 1024 * 1024;                       // a multiple of 256 KiB, as YouTube asks
+async function ytLong(f, w, token, ctx, state) {
+  const st = state ? { ...state } : null;
+  let s = st;
+  try {
+    if (!s) {
+      const total = await filmSize(f.id);
+      const meta = { snippet: { title: w.title, description: w.description, tags: w.tags, categoryId: "27", defaultLanguage: "en", defaultAudioLanguage: "en" },
+                     status: { privacyStatus: "public", selfDeclaredMadeForKids: false, embeddable: true } };
+      const r = await fetch("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status", { method: "POST",
+        headers: { authorization: "Bearer " + token, "content-type": "application/json; charset=UTF-8", "x-upload-content-length": String(total), "x-upload-content-type": "video/mp4" },
+        body: JSON.stringify(meta) });
+      const t = await r.text().catch(() => "");
+      const loc = r.headers.get("location");
+      if (!r.ok || !loc) { let j = null; try { j = JSON.parse(t); } catch { } return { ok: false, error: "YouTube refused: " + said(j, t, "http " + r.status), quota: /quota/i.test(t) }; }
+      s = { session: loc, offset: 0, total, began: new Date().toISOString() };
+      if (kvReady()) { try { await kv([["INCR", K.ytday(today())], ["EXPIRE", K.ytday(today()), "172800"]]); } catch { } }
+    }
+    const src = {};
+    while (s.offset < s.total) {
+      if (ctx && ctx.left() < 45e3) return { ok: false, pending: { yt: s }, note: "uploading the film to YouTube (" + Math.round(100 * s.offset / s.total) + "%); it carries on next run" };
+      const a = s.offset, b = Math.min(s.offset + YT_PIECE, s.total) - 1;
+      const buf = await readPiece(f.id, a, b, src);
+      const r = await fetch(s.session, { method: "PUT", headers: { authorization: "Bearer " + token, "content-range": `bytes ${a}-${a + buf.length - 1}/${s.total}` }, body: buf });
+      if (r.status === 308) { const rg = r.headers.get("range"); s.offset = rg ? Number(rg.split("-")[1]) + 1 : a + buf.length; try { await r.body?.cancel(); } catch { } continue; }
+      const t = await r.text().catch(() => ""); let j = null; try { j = JSON.parse(t); } catch { }
+      if (r.ok && j && j.id) {
+        const out = { ok: true, id: j.id, url: "https://www.youtube.com/watch?v=" + j.id };
+        const pv = j.status && j.status.privacyStatus;
+        if (pv && pv !== "public") { out.private = true; out.note = "YouTube kept it " + pv + ": the Google project has not passed YouTube's API audit, so only you can see it"; }
+        try { await ytThumb(j.id, f.id, token); out.thumb = true; } catch (e) { out.thumbNote = errText(e); }
+        return out;
+      }
+      if (r.status === 404 || r.status === 410) return { ok: false, error: "YouTube dropped the upload session; it starts again on a retry" };
+      return { ok: false, pending: { yt: s }, error: "YouTube upload: " + said(j, t, "http " + r.status) };
+    }
+    return { ok: false, pending: { yt: s }, note: "waiting for YouTube to confirm the upload" };
+  } catch (e) { return s ? { ok: false, pending: { yt: s }, error: errText(e) } : { ok: false, error: errText(e) }; }
+}
+/* the film's own thumbnail (<id>.thumb.jpg on the release); YouTube takes it
+   once the channel is verified, and refuses politely before */
+async function ytThumb(videoId, id, token) {
+  const r = await fetch(await signedUrl(id, ".thumb.jpg"));
+  if (!r.ok) throw new Error("no thumbnail on the release");
+  const img = Buffer.from(await r.arrayBuffer());
+  const u = await fetch("https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId=" + encodeURIComponent(videoId), { method: "POST",
+    headers: { authorization: "Bearer " + token, "content-type": "image/jpeg" }, body: img });
+  if (!u.ok) { const t = await u.text().catch(() => ""); throw new Error("thumbnail: " + clip(t, 120)); }
+}
+/* a teaser's description points to its long film on YouTube, once it is there */
+async function teaserDesc(f, desc) {
+  let url = "";
+  if (kvReady() && f.long) { try { const v = (await kv([["HGET", K.posted, f.long + "|youtube"]]))[0]; if (v) url = JSON.parse(v).url || ""; } catch { } }
+  const d = String(desc || "");
+  if (url) return d.replace("{long_url}", url);
+  return d.replace(/Watch the full deep dive: \{long_url\}\s*/, "").replace("{long_url}", "").trim();
+}
 
 /* ======================================================= Facebook + Instagram */
 const GRAPH = "https://graph.facebook.com/v21.0";
@@ -147,8 +246,9 @@ const facebook = {
   connectUrl: st => "https://www.facebook.com/v21.0/dialog/oauth?" + form({ client_id: env("META_APP_ID"), redirect_uri: cb("facebook"), state: st, response_type: "code",
     ...(META_CONFIG() ? { config_id: META_CONFIG() } : { scope: META_SCOPE }) }),
   exchange: code => metaExchange(code, "facebook"),
-  async send(f, w) {
+  async send(f, w, ctx) {
     const t = await getTok("facebook"); if (!t) return { ok: false, skipped: "Facebook is not connected" };
+    if (f.kind === "long") return fbLong(f, w, t, ctx, null);
     const st = await jfetch(`${GRAPH}/${t.pageId}/video_reels`, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + t.token }, body: JSON.stringify({ upload_phase: "start" }) });
     if (!st.ok || !st.j || !st.j.video_id || !st.j.upload_url) return { ok: false, error: "Facebook start: " + said(st.j, st.t, "http " + st.r.status) };
     const up = await jfetch(st.j.upload_url, { method: "POST", headers: { authorization: "OAuth " + t.token, file_url: doorUrl(f.id) } });
@@ -158,8 +258,50 @@ const facebook = {
     if (!fin.ok) return { ok: false, error: "Facebook finish: " + said(fin.j, fin.t, "http " + fin.r.status), id: st.j.video_id };
     return fbStatus(st.j.video_id, t.token, 3);
   },
-  async finish(p) { const t = await getTok("facebook"); if (!t) return { ok: false, error: "Facebook is not connected" }; return fbStatus(p.fb || p, t.token, 1); },
+  async finish(p, ctx, rec) {
+    const t = await getTok("facebook"); if (!t) return { ok: false, error: "Facebook is not connected" };
+    if (p && p.fbv) {
+      const { film } = await import("./_studio.js");
+      const f = film(rec && rec.film); if (!f) return { ok: false, error: "the film left the plan" };
+      return fbLong(f, (rec.words || {}).facebook || {}, t, ctx, p.fbv);
+    }
+    return fbStatus(p.fb || p, t.token, 1);
+  },
 };
+/* A long film goes to the Page as a video (Reels are for the short ones), with
+   the Graph API's chunked upload: Facebook names each piece it wants next. */
+const GVID = "https://graph-video.facebook.com/v21.0";
+async function fbLong(f, w, t, ctx, state) {
+  let s = state ? { ...state } : null;
+  try {
+    if (!s) {
+      const total = await filmSize(f.id);
+      const st = await jfetch(`${GVID}/${t.pageId}/videos`, { method: "POST", headers: { authorization: "Bearer " + t.token, "content-type": "application/x-www-form-urlencoded" },
+        body: form({ upload_phase: "start", file_size: String(total) }) });
+      if (!st.ok || !st.j || !st.j.upload_session_id) return { ok: false, error: "Facebook start: " + said(st.j, st.t, "http " + st.r.status) };
+      s = { sess: st.j.upload_session_id, vid: st.j.video_id, a: Number(st.j.start_offset), b: Number(st.j.end_offset), total };
+    }
+    const src = {};
+    while (s.a < s.b) {
+      if (ctx && ctx.left() < 40e3) return { ok: false, pending: { fbv: s }, note: "uploading the film to Facebook (" + Math.round(100 * s.a / s.total) + "%); it carries on next run" };
+      const buf = await readPiece(f.id, s.a, s.b - 1, src);
+      const fd = new FormData();
+      fd.append("upload_phase", "transfer"); fd.append("upload_session_id", s.sess); fd.append("start_offset", String(s.a));
+      fd.append("video_file_chunk", new Blob([buf], { type: "application/octet-stream" }), "piece.mp4");
+      const tr = await jfetch(`${GVID}/${t.pageId}/videos`, { method: "POST", headers: { authorization: "Bearer " + t.token }, body: fd });
+      if (!tr.ok || !tr.j || tr.j.start_offset == null) return { ok: false, pending: { fbv: s }, error: "Facebook transfer: " + said(tr.j, tr.t, "http " + tr.r.status) };
+      s.a = Number(tr.j.start_offset); s.b = Number(tr.j.end_offset);
+    }
+    if (!s.finished) {
+      const fin = await jfetch(`${GVID}/${t.pageId}/videos`, { method: "POST", headers: { authorization: "Bearer " + t.token, "content-type": "application/x-www-form-urlencoded" },
+        body: form({ upload_phase: "finish", upload_session_id: s.sess, title: w.title || "", description: w.text || "", published: w.unpublished ? "false" : "true" }) });
+      if (!fin.ok) return { ok: false, error: "Facebook finish: " + said(fin.j, fin.t, "http " + fin.r.status), id: s.vid };
+      s.finished = true;
+    }
+    const done = await fbStatus(s.vid, t.token, 3);
+    return done.pending ? { ...done, pending: { fb: s.vid } } : done;
+  } catch (e) { return s ? { ok: false, pending: { fbv: s }, error: errText(e) } : { ok: false, error: errText(e) }; }
+}
 async function igPublish(t, cid) {
   for (let i = 0; i < 4; i++) {
     if (i) await sleep(4000);
@@ -204,6 +346,18 @@ const instagram = {
     return { ok: false, pending: p };
   },
 };
+
+/* An end-to-end test of the long-film upload to Facebook that publishes
+   nothing: the film goes up unpublished, is checked, then deleted. */
+export async function probeFbLong(id) {
+  const t = await getTok("facebook"); if (!t) return { ok: false, error: "Facebook is not connected" };
+  const t0 = Date.now();
+  const r = await fbLong({ id, kind: "long" }, { title: "Studio upload test (deleted)", text: "Studio upload test", unpublished: true }, t, { left: () => 240e3 - (Date.now() - t0) }, null);
+  const vid = r.id || (r.pending && (r.pending.fb || (r.pending.fbv && r.pending.fbv.vid)));
+  let deleted = false;
+  if (vid) { const d = await jfetch(`${GRAPH}/${vid}`, { method: "DELETE", headers: { authorization: "Bearer " + t.token } }); deleted = d.ok; }
+  return { result: { ok: r.ok, pending: !!r.pending, error: r.error || "", note: r.note || "" }, video: vid ? "made" : "none", deleted, seconds: Math.round((Date.now() - t0) / 1000) };
+}
 
 /* ================================================================ Threads */
 const TH = "https://graph.threads.net/v1.0";

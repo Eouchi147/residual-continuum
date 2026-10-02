@@ -14,7 +14,7 @@
    A slot is claimed in the store before anything is sent (SET NX, ten
    minutes), so two runs can never send the same slot.
 --------------------------------------------------------------------------- */
-import { kv, kvReady, K, kget, kset, dials, film, nextFilms, available, shape, log, today, errText, NETS } from "./_studio.js";
+import { kv, kvReady, K, kget, kset, dials, film, nextFilms, nextLong, available, shape, log, today, errText, NETS } from "./_studio.js";
 import { NETWORKS, filmBytes } from "./_nets.js";
 import { captionsFor } from "./_director.js";
 
@@ -27,7 +27,7 @@ async function writeSlot(rec) {
   rec.status = stateOf(rec);
   rec.updated = new Date().toISOString();
   await kv([["SET", K.slot(rec.date, rec.hour), JSON.stringify(rec)],
-            ["ZADD", K.days, String(Date.parse(rec.date + "T" + hh(String(rec.hour).slice(0, 2)) + ":00:00Z") || Date.now()), rec.date + "#" + rec.hour]]);
+            ["ZADD", K.days, String(Date.parse(rec.date + "T" + hh(String(rec.hour).replace(/^[A-Z]/, "").slice(0, 2)) + ":00:00Z") || Date.now()), rec.date + "#" + rec.hour]]);
   return rec;
 }
 export function stateOf(rec) {
@@ -80,7 +80,7 @@ export async function sendRecord(rec, opts = {}) {
   rec.results = rec.results || {};
   if (!rec.words) rec.words = await compose(f, d);
   rec.status = "sending"; await writeSlot(rec);
-  const nets = ORDER.filter(n => (opts.only ? opts.only === n : true) && d.nets[n] !== false);
+  const nets = ORDER.filter(n => (opts.only ? opts.only === n : true) && (!rec.nets || rec.nets.includes(n)) && d.nets[n] !== false);
   for (const net of nets) {
     const prev = rec.results[net];
     if (prev && (prev.ok || prev.pending) && !opts.force) continue;
@@ -89,6 +89,7 @@ export async function sendRecord(rec, opts = {}) {
     if (has && !opts.force) { try { rec.results[net] = { ok: true, already: true, ...JSON.parse(has) }; } catch { } continue; }
     let r;
     try { r = await NETWORKS[net].send(f, rec.words[net], ctx); } catch (e) { r = { ok: false, error: errText(e) }; }
+    if (r.pending) await log("pending", { film: f.id, net, note: r.note || "" });
     r.at = new Date().toISOString(); r.tries = ((prev && prev.tries) || 0) + 1;
     rec.results[net] = r;
     await notePosted(rec, net, r);
@@ -112,7 +113,7 @@ export async function finishPending(ctx) {
     let touched = false;
     for (const [net, r] of Object.entries(rec.results)) {
       if (!r || !r.pending || !NETWORKS[net].finish) continue;
-      let n; try { n = await NETWORKS[net].finish(r.pending); } catch (e) { n = { ok: false, pending: r.pending, error: errText(e) }; }
+      let n; try { n = await NETWORKS[net].finish(r.pending, ctx, rec); } catch (e) { n = { ok: false, pending: r.pending, error: errText(e) }; }
       if (n.pending && r.at && Date.now() - Date.parse(r.at) > 6 * 3600e3) n = { ok: false, error: "the network never finished processing it (6 hours)", gaveUp: true };
       rec.results[net] = { ...r, ...n, pending: n.pending || undefined, finishedAt: new Date().toISOString() };
       if (!n.pending) delete rec.results[net].pending;
@@ -160,6 +161,51 @@ export async function openSlot(date, hour, opts = {}) {
   return rec;
 }
 
+/* the long films: a record "L<hour>" for the film (YouTube, Facebook) and,
+   once it has gone out, a record "T<hour>" for its teaser (YouTube Shorts,
+   Instagram, TikTok, X), so the teaser can point to the film */
+const LONG_NETS = ["youtube", "facebook", "x"];
+const TEASER_NETS = ["youtube", "instagram", "tiktok"];
+export async function openLong(date, key, opts = {}) {
+  const d = await dials();
+  const pick = opts.film ? film(opts.film) : (await nextLong(1))[0];
+  if (!pick) { await log("empty", { date, hour: key, note: "no long film is waiting" }); return null; }
+  const rec = { date, hour: key, kind: "long", film: pick.id, title: pick.yt_title || pick.title, verdict: pick.verdict, nets: LONG_NETS, status: "queued", results: {}, at: new Date().toISOString(), by: opts.by || "schedule" };
+  rec.words = await compose(pick, d);
+  await writeSlot(rec);
+  await log("queued", { film: pick.id, date, hour: key, mode: d.mode, kind: "long" });
+  return rec;
+}
+export async function openTeaser(date, key, longId, opts = {}) {
+  const d = await dials();
+  const l = film(longId); const t = l && l.teaser ? film(l.teaser) : null;
+  if (!t) return null;
+  const av = await available();
+  if (!av.films[t.id]) { await log("empty", { date, hour: key, note: "the teaser " + t.id + " is not on the release yet" }); return null; }
+  const rec = { date, hour: key, kind: "teaser", film: t.id, title: t.title, verdict: t.verdict, nets: TEASER_NETS, status: "queued", results: {}, at: new Date().toISOString(), by: opts.by || "schedule" };
+  rec.words = await compose(t, d);
+  await writeSlot(rec);
+  await log("queued", { film: t.id, date, hour: key, mode: d.mode, kind: "teaser" });
+  return rec;
+}
+async function longDue(d, date, hour, now, ctx, out) {
+  const L = d.long || {};
+  if (!L.on || !(L.days || []).includes(now.getUTCDay())) return;
+  const H = Number(L.hour); if (!(hour >= H && hour - H < 4)) return;
+  const lk = "L" + hh(H), tk = "T" + hh(H);
+  const rec = await readSlot(date, lk);
+  if (!rec) {
+    if (ctx.left() < 150e3 || !(await claim(date, lk))) return;
+    const r = await openLong(date, lk);
+    out.long = r && d.mode === "auto" ? await sendRecord(r, { began: Date.now(), budget: ctx.left() - 20e3 }) : r;
+    return;
+  }
+  if (["queued", "sending", "pending"].includes(rec.status) || (await readSlot(date, tk))) return;
+  if (ctx.left() < 90e3 || !(await claim(date, tk))) return;
+  const t = await openTeaser(date, tk, rec.film);
+  out.teaser = t && d.mode === "auto" ? await sendRecord(t, { began: Date.now(), budget: ctx.left() - 15e3 }) : t;
+}
+
 export async function runDue(opts = {}) {
   const began = Date.now(), budget = opts.budget || 280e3;
   const ctx = { left: () => budget - (Date.now() - began) };
@@ -177,6 +223,7 @@ export async function runDue(opts = {}) {
       if (rec && d.mode === "auto") out.slot = await sendRecord(rec, { began, budget });
       else out.slot = rec;
     }
+    try { await longDue(d, date, hour, now, ctx, out); } catch (e) { out.longError = errText(e); await log("failed", { note: "long films: " + errText(e) }); }
   }
   if (ctx.left() > 90e3) out.healed = await heal(ctx);
   return out;
@@ -193,7 +240,10 @@ export async function postNow(filmId, by = "owner") {
   const now = new Date(), date = today(now);
   const hour = hh(now.getUTCHours()) + "m" + hh(now.getUTCMinutes());
   if (!(await claim(date, hour))) throw new Error("a post is already being sent this minute");
-  const rec = await openSlot(date, hour, { film: filmId, by });
+  const f = film(filmId);
+  const rec = f && f.kind === "long" ? await openLong(date, hour, { film: filmId, by })
+            : f && f.kind === "teaser" ? await openTeaser(date, hour, f.long, { by })
+            : await openSlot(date, hour, { film: filmId, by });
   if (!rec) throw new Error("nothing to post");
   return sendRecord(rec);
 }
@@ -222,6 +272,21 @@ export async function calendar(daysBack = 7, daysAhead = 3) {
       upcoming.push({ date: dt, hour: hh(h), at: new Date(at).toISOString(), film: next[i] ? next[i].id : null, title: next[i] ? next[i].title : "nothing finished yet" });
       i++;
     }
+  }
+  /* and the long films still to come */
+  const L = d.long || {};
+  if (L.on && (L.days || []).length) {
+    const nl = await nextLong(6, { taken: recs.map(r => r.film) });
+    let j = 0;
+    for (let day = 0; day <= Math.max(daysAhead, 7) && j < nl.length; day++) {
+      const when = new Date(Date.now() + day * 864e5), dt = today(when);
+      if (!L.days.includes(new Date(dt + "T12:00:00Z").getUTCDay())) continue;
+      const at = Date.parse(dt + "T" + hh(L.hour) + ":00:00Z");
+      if (at <= Date.now() || recs.some(r => r.date === dt && r.hour === "L" + hh(L.hour))) continue;
+      upcoming.push({ date: dt, hour: "L" + hh(L.hour), kind: "long", at: new Date(at).toISOString(), film: nl[j].id, title: "Long film: " + (nl[j].yt_title || nl[j].title) });
+      j++;
+    }
+    upcoming.sort((a, b) => String(a.at).localeCompare(String(b.at)));
   }
   return { records: recs.reverse(), upcoming };
 }

@@ -1,4 +1,4 @@
-/* Residual Continuum · the Studio, the AI (the Director)
+/* Residual Continuum · the Studio, the AI (The Explorer)
    ===========================================================================
    The console's AI. It reads the whole state of the studio (the plan, what
    the render farm has finished, what went out where, the dials, the
@@ -18,7 +18,7 @@
 --------------------------------------------------------------------------- */
 import crypto from "node:crypto";
 import { chatFree, extractJSON } from "./_models.js";
-import { kv, kvReady, K, kget, kset, dials, setDials, plan, film, nextFilms, available, farmRuns, readLog, shape, NETS, clip, log, errText, siteUrl } from "./_studio.js";
+import { kv, kvReady, K, kget, kset, dials, setDials, plan, film, nextFilms, nextLong, longFilms, available, farmRuns, readLog, shape, NETS, clip, log, errText, siteUrl } from "./_studio.js";
 
 const RULES = `House rules for every word you write for Residual Continuum:
 - British spelling. Never an em dash or an en dash: use commas, colons or full stops.
@@ -81,6 +81,9 @@ export async function snapshot() {
     films: { planned: p.films.length, rendered: Object.keys(av.films).length, posted: (done || []).length, held: skip || [], pinned: pins || [] },
     next: (await nextFilms(8, { avail: av })).map(f => ({ id: f.id, title: f.title, verdict: f.verdict, order: f.order })),
     waitingForRender: p.films.filter(f => !av.films[f.id]).slice(0, 12).map(f => f.id),
+    longFilms: { planned: longFilms().length, onRelease: longFilms().filter(f => av.films[f.id]).length, teasersOnRelease: longFilms().filter(f => f.teaser && av.films[f.teaser]).length,
+                 next: (await nextLong(4, { avail: av })).map(f => ({ id: f.id, title: f.yt_title || f.title, verdict: f.verdict })),
+                 schedule: "UTC weekdays " + (d.long.days || []).join(",") + " (0 = Sunday) at " + d.long.hour + ":00: the film to YouTube and Facebook, then its teaser to YouTube Shorts, Instagram and TikTok" },
     networks: nets.map(n => ({ net: n.net, connected: n.connected, who: n.who, appReady: n.ready, on: d.nets[n.net] !== false })),
     recent: cal.records.slice(0, 10).map(r => ({ date: r.date, hour: r.hour, film: r.film, status: r.status,
       nets: Object.fromEntries(Object.entries(r.results || {}).map(([k, v]) => [k, v.ok ? "ok" + (v.private ? " (private)" : "") : v.pending ? "pending" : v.skipped ? "not connected" : "failed: " + clip(v.error || "", 80)])) })),
@@ -99,6 +102,7 @@ const TOOLS = `Actions you may ask for (each with a short "why"):
 - {"tool":"caption","args":{"id":"<film id>","net":"<network>","text":"..."}}   set a network's words for a film
 - {"tool":"write_captions","args":{"id":"<film id>"}} have the AI write every network's words for a film
 - {"tool":"set_slots","args":{"hours":[14,22]}}       posting hours, UTC
+- {"tool":"set_long","args":{"on":true,"days":[1,3,6],"hour":18}}   the long films' weekdays (UTC, 0 = Sunday) and hour
 - {"tool":"set_network","args":{"net":"<network>","on":true}}
 - {"tool":"ai_captions","args":{"on":true}}           AI writes captions before each post
 - {"tool":"set_mode","args":{"mode":"off|approve|auto"}}   (always waits for the owner)
@@ -124,6 +128,7 @@ export async function doAction(a, by = "owner") {
     }
     case "write_captions": { const f = film(need(args.id)); const out = await captionsFor(f); await log("ai", { note: "wrote captions for " + f.id + " (" + Object.keys(out).join(", ") + ")" }); return { ok: true, wrote: Object.keys(out) }; }
     case "set_slots": await setDials({ slots: args.hours }); break;
+    case "set_long": { const cur = (await dials()).long; await setDials({ long: { on: args.on == null ? cur.on : !!args.on, days: args.days || cur.days, hour: args.hour == null ? cur.hour : args.hour } }); break; }
     case "set_network": await setDials({ nets: { [args.net]: !!args.on } }); break;
     case "ai_captions": await setDials({ aiCaptions: !!args.on }); break;
     case "set_mode": await setDials({ mode: args.mode }); break;
@@ -163,7 +168,7 @@ export async function chat(message) {
   let history = [];
   try { history = ((await kv([["LRANGE", K.chat, "0", "13"]]))[0] || []).map(s => JSON.parse(s)).reverse(); } catch { }
   const snap = await snapshot();
-  const sys = `You are the Director of the Residual Continuum studio: the AI that runs the console with its owner, Sam. Residual Continuum publishes short, continuous animated films that weigh history's mysteries fairly (every claim sourced, every verdict graded). The poster sends one film per slot to every connected network.
+  const sys = `You are The Explorer, the AI of the Residual Continuum studio: you run the publishing with its owner, Sam, so that he never has to post anything by hand. Residual Continuum publishes continuous animated films that weigh history's mysteries fairly (every claim sourced, every verdict graded): short films (vertical, about 2 minutes) twice a day to every connected network, and long deep dives (16:9, about 10 minutes) on set weekdays to YouTube and Facebook, each followed by its vertical teaser on YouTube Shorts, Instagram and TikTok.
 
 What you do: answer Sam clearly and briefly; spot problems (a network failing, nothing rendered, a token expired, a slot empty) and say what to do; plan the posting order for reach (strong hooks first, variety of Files, a ledger film after the last case of its File); write and fix captions; and act through the actions below. Never claim a post went out unless the state says ok. Never invent numbers.
 
