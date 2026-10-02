@@ -163,6 +163,7 @@ async function load(room, force) {
   if (!location.hash.startsWith("#" + room)) history.replaceState(null, "", "#" + room);
   const R = { overview: roomOverview, explorer: roomExplorer, visitors: roomVisitors, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
   try { await R(force); } catch (e) { if (e.message !== "locked") $("#main").innerHTML = `<div class="card"><h2>Something went wrong</h2><p class="muted">${esc(e.message)}</p></div>`; }
+  if (!S.ov) getOv().catch(() => {});   /* the header's mode pill, on every room */
 }
 async function getOv(force) { if (!S.ov || force) S.ov = await api("overview"); paintMode(); return S.ov; }
 function paintMode() {
@@ -471,6 +472,8 @@ async function roomExplorer(force) {
   $("#xThink").onclick = async e => { e.target.disabled = true; e.target.textContent = "Thinking… (up to 3 min)"; try { await api("explorer_think", {}); toast("It thought: see Today's thinking"); } catch (err) { toast(err.message); } S.ov = null; roomExplorer(true); };
   $("#xGoals").onclick = () => editGoals(x);
   const rv = $("#xReview"); if (rv) rv.onclick = async e => { e.target.disabled = true; e.target.textContent = "Reviewing… (up to 4 min)"; try { await api("explorer_review", {}); toast("Weekly review done"); } catch (err) { toast(err.message); } roomExplorer(true); };
+  const ta = $("#xTopicsAll"); if (ta) ta.onclick = async () => { try { const j = await api("explorer_topics"); $("#xTopicsList").innerHTML = `<div class="tbl" style="max-height:360px;margin-top:8px"><table><thead><tr><th>Film</th><th>Article</th><th style="text-align:right">a day</th></tr></thead><tbody>${j.rows.map(r => `<tr><td class="small"><a href="#" data-topic="${esc(r.film)}|${esc(r.article)}">${esc(r.film)}</a></td><td class="small">${esc(r.article || "·")}</td><td class="small" style="text-align:right">${r.avg7 == null ? "·" : fmt(r.avg7)}</td></tr>`).join("")}</tbody></table></div>`;
+    $$("[data-topic]").forEach(a => a.onclick = e => { e.preventDefault(); const [f, art] = a.dataset.topic.split("|"); $("#xTopicFilm").value = f; $("#xTopicArt").value = art === "-" ? "" : art; $("#xTopicArt").focus(); }); } catch (err) { toast(err.message); } };
   const tf = $("#xTopic"); if (tf) tf.onsubmit = async e => { e.preventDefault(); try { await api("explorer_topic", { film: $("#xTopicFilm").value.trim(), article: $("#xTopicArt").value.trim() }); toast("Saved: read on the next turn"); } catch (err) { toast(err.message); } };
   $("#xNotesSave").onclick = async e => { e.target.disabled = true; try { await api("explorer_notes", { text: $("#xNotes").value }); toast("Saved: it reads them from its next thought"); } catch (err) { toast(err.message); } roomExplorer(true); };
   $$("[data-forget]").forEach(a => a.onclick = async ev => { ev.preventDefault(); const [kind, id] = a.dataset.forget.split("|"); try { await api("explorer_forget", { kind, id }); } catch (err) { toast(err.message); } roomExplorer(true); });
@@ -509,7 +512,8 @@ function trendCard(t) {
     ${(t.rising || []).length ? `<div class="small muted" style="margin:6px 0 2px">In the news</div>${t.rising.slice(0, 6).map(row).join("")}` : ""}
     ${(t.biggest || []).length ? `<div class="small muted" style="margin:10px 0 2px">The biggest audiences</div>${t.biggest.slice(0, 5).map(row).join("")}` : `<p class="muted small">The radar reads about 40 films each time it reads the numbers.</p>`}
     <details style="margin-top:10px"><summary>Fix a film's Wikipedia article (${t.mapped} matched, ${t.unmatched} without one)</summary>
-      <form id="xTopic" class="row" style="flex-wrap:nowrap;margin-top:8px"><input id="xTopicFilm" placeholder="film id, e.g. roswell-mogul"><input id="xTopicArt" placeholder="article, e.g. Roswell incident"><button class="btn">Save</button></form></details></div>`;
+      <form id="xTopic" class="row" style="flex-wrap:nowrap;margin-top:8px"><input id="xTopicFilm" placeholder="film id, e.g. roswell-mogul"><input id="xTopicArt" placeholder="article, e.g. Roswell incident"><button class="btn">Save</button></form>
+      <button class="btn tiny" id="xTopicsAll" style="margin-top:8px">Show every film's article</button><div id="xTopicsList"></div></details></div>`;
 }
 function voiceCard(v, t) {
   const notes = t && t.analysis && (t.analysis.audience || []);
