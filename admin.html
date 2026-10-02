@@ -352,7 +352,7 @@ async function roomDirector(force) {
 
 /* ------------------------------------------------- The Explorer's room */
 const fmt = n => n == null ? "·" : Math.abs(n) >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1) + "M" : Math.abs(n) >= 1e4 ? (n / 1e3).toFixed(n >= 1e5 ? 0 : 1) + "k" : Number(n).toLocaleString();
-const KIND = { think: "thought", sense: "senses", learn: "learned", milestone: "milestone", trouble: "trouble", order: "work order", experiment: "experiment", playbook: "playbook", version: "upgrade", goal: "goals" };
+const KIND = { think: "thought", sense: "senses", learn: "learned", milestone: "milestone", trouble: "trouble", order: "work order", experiment: "experiment", playbook: "playbook", version: "upgrade", goal: "goals", note: "your notes" };
 const OUTCOME = { done: "ok", proposed: "wait", stopped: "bad", "already waiting": "", failed: "bad", filed: "wait", "already open": "", started: "ok", revised: "ok" };
 function spark(series, key) {
   const pts = series.filter(p => p[key] != null);
@@ -434,12 +434,17 @@ async function roomExplorer(force) {
 
   <div class="grid g2" style="margin-bottom:14px">
     <div class="card"><h2>What it has learned <span class="pill tiny">${(x.insights || []).length}</span></h2>
-      ${(x.insights || []).length ? x.insights.map(i => `<div class="act"><span class="chip ${i.confidence === "high" ? "ok" : i.confidence === "medium" ? "wait" : ""}">${esc(i.confidence)}</span><div class="small">${esc(i.text)}<div class="tiny muted">${esc(i.evidence || "")} · ${ago(i.updated || i.at)}</div></div></div>`).join("") : `<p class="muted small">Nothing yet: it learns only what the numbers support, and it needs a few days of them.</p>`}
-      ${running.length || judged.length ? `<h3 style="font-size:16px;margin:14px 0 6px">Experiments</h3>${[...running, ...judged].map(e => `<div class="act"><span class="chip ${e.status === "running" ? "wait" : e.result === "worked" ? "ok" : e.result === "did not work" ? "bad" : ""}">${esc(e.status === "running" ? "running" : e.result)}</span><div class="small"><b>${esc(e.name)}</b><div class="muted">${esc(e.change)} · measure: ${esc(e.measure)} · judged ${esc(e.judge_on)}</div>${e.note ? `<div class="tiny muted">${esc(e.note)}</div>` : ""}</div></div>`).join("")}` : ""}</div>
+      ${(x.insights || []).length ? x.insights.map(i => `<div class="act"><span class="chip ${i.confidence === "high" ? "ok" : i.confidence === "medium" ? "wait" : ""}">${esc(i.confidence)}</span><div class="small">${esc(i.text)}<div class="tiny muted">${esc(i.evidence || "")} · ${ago(i.updated || i.at)} · <a href="#" data-forget="insight|${esc(i.id)}">remove</a></div></div></div>`).join("") : `<p class="muted small">Nothing yet: it learns only what the numbers support, and it needs a few days of them.</p>`}
+      ${running.length || judged.length ? `<h3 style="font-size:16px;margin:14px 0 6px">Experiments</h3>${[...running, ...judged].map(e => `<div class="act"><span class="chip ${e.status === "running" ? "wait" : e.result === "worked" ? "ok" : e.result === "did not work" ? "bad" : ""}">${esc(e.status === "running" ? "running" : e.result)}</span><div class="small"><b>${esc(e.name)}</b><div class="muted">${esc(e.change)} · measure: ${esc(e.measure)} · judged ${esc(e.judge_on)}</div>${e.note ? `<div class="tiny muted">${esc(e.note)}</div>` : ""}${e.status === "running" ? `<div class="tiny"><a href="#" data-forget="experiment|${esc(e.id)}">stop it</a></div>` : ""}</div></div>`).join("")}` : ""}</div>
     <div class="card"><h2>Its playbook ${x.playbook && x.playbook.v ? `<span class="pill tiny">v${x.playbook.v} · ${ago(x.playbook.at)}</span>` : ""}</h2>
       ${x.playbook && x.playbook.text ? `<div class="small" style="white-space:pre-wrap;line-height:1.6">${esc(x.playbook.text)}</div>${x.playbook.why ? `<p class="tiny muted">Why this version: ${esc(x.playbook.why)}</p>` : ""}` : `<p class="muted small">It writes its first playbook at its first thinking.</p>`}
       ${(x.playbooks || []).length ? `<details style="margin-top:10px"><summary>Earlier versions (${x.playbooks.length})</summary>${x.playbooks.map(p => `<div class="item small"><b>v${p.v}</b> <span class="tiny muted">${ago(p.at)}</span><div class="muted" style="white-space:pre-wrap">${esc(p.text)}</div></div>`).join("")}</details>` : ""}</div>
   </div>
+
+  <div class="card" style="margin-bottom:14px"><h2>What you have told it <span class="sp"></span><span class="tiny muted">${x.notes && x.notes.at ? "saved " + ago(x.notes.at) : "the starting facts"}</span></h2>
+    <p class="small muted" style="margin:0 0 8px">Standing facts every role reads before it thinks, and the chat too: what the numbers cannot tell it. True until you change them.</p>
+    <textarea id="xNotes" style="min-height:150px">${esc(x.notes ? x.notes.text : "")}</textarea>
+    <div class="row" style="margin-top:8px"><button class="btn gold" id="xNotesSave">Save</button></div></div>
 
   <div class="card" style="margin-bottom:14px"><h2>Journal <span class="sp"></span></h2>
     <div class="chips" style="margin-bottom:8px"><button class="chip ${!S.xk ? "ok" : ""}" data-xk="">all</button>${Object.entries(KIND).map(([k, l]) => `<button class="chip ${S.xk === k ? "ok" : ""}" data-xk="${k}">${l}</button>`).join("")}</div>
@@ -452,6 +457,8 @@ async function roomExplorer(force) {
   $("#xSense").onclick = async e => { e.target.disabled = true; e.target.textContent = "Reading…"; try { S.x = await api("explorer_sense", {}); toast("Numbers read"); } catch (err) { toast(err.message); } roomExplorer(); };
   $("#xThink").onclick = async e => { e.target.disabled = true; e.target.textContent = "Thinking… (up to 3 min)"; try { await api("explorer_think", {}); toast("It thought: see Today's thinking"); } catch (err) { toast(err.message); } S.ov = null; roomExplorer(true); };
   $("#xGoals").onclick = () => editGoals(x);
+  $("#xNotesSave").onclick = async e => { e.target.disabled = true; try { await api("explorer_notes", { text: $("#xNotes").value }); toast("Saved: it reads them from its next thought"); } catch (err) { toast(err.message); } roomExplorer(true); };
+  $$("[data-forget]").forEach(a => a.onclick = async ev => { ev.preventDefault(); const [kind, id] = a.dataset.forget.split("|"); try { await api("explorer_forget", { kind, id }); } catch (err) { toast(err.message); } roomExplorer(true); });
   $$("[data-xk]").forEach(c => c.onclick = () => { S.xk = c.dataset.xk; roomExplorer(); });
   $$("[data-ord]").forEach(bt => bt.onclick = async () => { const [id, status] = bt.dataset.ord.split("|"); bt.disabled = true; try { await api("explorer_order", { id, status }); } catch (err) { toast(err.message); } roomExplorer(true); });
   wireCommon();
