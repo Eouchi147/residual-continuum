@@ -13,7 +13,7 @@
 import { kv, kvReady, plan, longFilms, clip, errText } from "./_studio.js";
 
 const UA = { "user-agent": "ResidualContinuumStudio/1.0 (https://residualcontinuum.com)", accept: "application/json" };
-export const T = { map: "rc:t:map", pv: "rc:t:pv", cursor: "rc:t:cursor" };
+export const T = { map: "rc:t:map2", pv: "rc:t:pv2", cursor: "rc:t:cursor2" };
 const hobj = raw => { if (Array.isArray(raw)) { const o = {}; for (let i = 0; i < raw.length; i += 2) o[raw[i]] = raw[i + 1]; return o; } return raw || {}; };
 const ymd = t => new Date(t).toISOString().slice(0, 10).replace(/-/g, "");
 async function getJ(url, ms = 8000) {
@@ -27,16 +27,21 @@ async function pool(items, n, fn) {
   return out;
 }
 
-/* the words to search for: the title up to its colon or question mark */
+/* the words to search for: the film's id names its subject plainly ("jebel-irhoud",
+   "nabta-playa"), where titles are written to intrigue ("Morocco's Two Dawns");
+   the title's head is the second try. The Ledger films sum up a File: no article. */
 export function queryFor(f) {
-  const t = String(f.yt_title || f.title || "").replace(/[“”"']/g, "");
-  const head = t.split(/[:?!]/)[0].trim();
-  return head.length >= 4 ? head : t.slice(0, 80);
+  return String(f.id || "").replace(/^lf-/, "").replace(/-\d+$/, "").replace(/-/g, " ").trim();
+}
+const titleHead = f => { const t = String(f.yt_title || f.title || "").replace(/[“”"']/g, ""); const h = t.split(/[:?!·]/)[0].trim(); return h.length >= 4 ? h : t.slice(0, 80); };
+async function search(q) {
+  const j = await getJ("https://en.wikipedia.org/w/api.php?action=query&list=search&srnamespace=0&srlimit=1&srprop=&format=json&srsearch=" + encodeURIComponent(q));
+  const hit = j && j.query && j.query.search && j.query.search[0];
+  return hit ? hit.title : "";
 }
 async function resolve(f) {
-  const j = await getJ("https://en.wikipedia.org/w/api.php?action=query&list=search&srnamespace=0&srlimit=1&srprop=&format=json&srsearch=" + encodeURIComponent(queryFor(f)));
-  const hit = j && j.query && j.query.search && j.query.search[0];
-  return hit ? hit.title : "-";
+  if (/ledger/.test(f.id) || /The Ledger/.test(f.title || "")) return "-";
+  return (await search(queryFor(f))) || (await search(titleHead(f))) || "-";
 }
 async function views(article, now) {
   const end = ymd(now - 864e5), start = ymd(now - 64 * 864e5);
