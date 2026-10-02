@@ -67,6 +67,7 @@ async function overview() {
             posted: longFilms().filter(f => (done || []).includes(f.id)).length, next: (await nextLong(3, { avail: av })).map(f => ({ id: f.id, title: f.yt_title || f.title })) },
     perNet, nets, calendar: cal, farm: runs, log, proposals: props,
     explorer: await import("./_explorer.js").then(async E => { const t = await E.lastThink(); return { ...(await E.brief()), summary: t ? (t.analysis || {}).summary || "" : "", plan: t ? t.plan || "" : "" }; }).catch(() => null),
+    visitors: await import("./_visits.js").then(async Vs => { const v = await Vs.visitSummary(30); return v ? { live: v.live, today: { visits: v.today.visits, uniques: v.today.uniques, pv: v.today.pv }, week: v.week, avgSecs: v.last7.avgSecs, sources: v.last7.sources.slice(0, 5), series: v.series.slice(-14), allTime: v.allTime } : null; }).catch(() => null),
   };
 }
 
@@ -136,7 +137,7 @@ export default async function handler(req, res) {
       return back(r.ok ? "connected " + (r.who || "") : String(r.error || "failed"), r.ok);
     }
 
-    if (["explorer_sense", "explorer_think", "explorer_order", "explorer_forget"].includes(action) && req.method !== "POST") return json(res, 405, { error: "POST only" });
+    if (["explorer_sense", "explorer_think", "explorer_order", "explorer_forget", "explorer_review", "explorer_topic"].includes(action) && req.method !== "POST") return json(res, 405, { error: "POST only" });
     const b = req.method === "POST" ? await readBody(req) : {};
     const A = { ...q, ...b };
     switch (action) {
@@ -185,7 +186,16 @@ export default async function handler(req, res) {
       case "snapshot": return json(res, 200, await snapshot());
       /* The Explorer's room: its mind, its numbers, its record */
       case "explorer": { const E = await import("./_explorer.js"); return json(res, 200, await E.room()); }
-      case "explorer_sense": { const E = await import("./_explorer.js"); await E.sense("asked by Sam"); return json(res, 200, await E.room()); }
+      case "explorer_sense": {
+        const E = await import("./_explorer.js"), T = await import("./_trends.js"), Au = await import("./_audience.js");
+        const r = await E.sense("asked by Sam");
+        await Promise.all([T.senseTrends({ budgetMs: 30e3 }).catch(() => null), Au.listen(r).catch(() => null)]);
+        await E.watch().catch(() => null);
+        return json(res, 200, await E.room());
+      }
+      case "explorer_review": { const E = await import("./_explorer.js"); return json(res, 200, { review: await E.review() }); }
+      case "explorer_topic": { const T = await import("./_trends.js"); if (!film(String(A.film))) return json(res, 404, { error: "no such film" }); return json(res, 200, await T.setTopic(String(A.film), String(A.article || ""))); }
+      case "visitors": { const Vs = await import("./_visits.js"); return json(res, 200, { visitors: await Vs.visitSummary(Math.min(90, Math.max(7, Number(A.days) || 30)), { fresh: !!A.fresh }) }); }
       case "explorer_think": { const E = await import("./_explorer.js"); const r = await E.think(); return json(res, 200, { think: r }); }
       case "explorer_goals": { const E = await import("./_explorer.js"); return json(res, 200, { goals: req.method === "POST" ? await E.setGoals(A.goals || {}) : await E.goals() }); }
       case "explorer_notes": { const E = await import("./_explorer.js"); return json(res, 200, { notes: req.method === "POST" ? await E.setNotes(A.text) : await E.notes() }); }
