@@ -20,9 +20,27 @@ const COOKIE = (v, maxAge) => `rcs=${v}; Path=/; HttpOnly; Secure; SameSite=Lax;
 const RELEASE = /^https:\/\/github\.com\/[^/]+\/[^/]+\/releases\/download\//;
 const HOSTS = [/^github\.com$/, /^objects\.githubusercontent\.com$/, /^release-assets\.githubusercontent\.com$/];
 
-async function door(req, res, id) {
+/* YouTube Studio, in the owner's own browser, may read the films and the
+   thumbnails straight from here to put them in its upload box (YouTube's API
+   keeps uploads private until Google's audit passes) */
+const READERS = ["https://studio.youtube.com"];
+const KINDS = { "": [".mp4", "video/mp4"], "thumb.jpg": [".thumb.jpg", "image/jpeg"] };
+async function door(req, res, id, ext = "") {
+  const origin = String(req.headers.origin || "");
+  if (READERS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Expose-Headers", "content-length, content-range, accept-ranges");
+    if (req.method === "OPTIONS") {
+      res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+      res.setHeader("Access-Control-Allow-Headers", "range");
+      res.setHeader("Access-Control-Max-Age", "86400");
+      res.statusCode = 204; return res.end();
+    }
+  }
   if (!film(id)) return json(res, 404, { error: "no such film" });
-  let url = videoUrl(id);
+  const kind = KINDS[ext]; if (!kind) return json(res, 400, { error: "no such kind of file" });
+  let url = videoUrl(id).replace(/\.mp4$/, kind[0]);
   try {
     const h = await fetch(url, { method: "HEAD", redirect: "manual" });
     const loc = h.headers.get("location"); if (loc && /^https:\/\//.test(loc)) url = loc;
@@ -32,10 +50,10 @@ async function door(req, res, id) {
   const up = await fetch(url, { headers: head });
   if (!up.ok && up.status !== 206) return json(res, up.status === 404 ? 404 : 502, { error: "the render farm has not published this film yet (" + up.status + ")" });
   res.statusCode = up.status;
-  res.setHeader("Content-Type", "video/mp4");
+  res.setHeader("Content-Type", kind[1]);
   res.setHeader("Accept-Ranges", "bytes");
   res.setHeader("Cache-Control", "public, max-age=3600");
-  res.setHeader("Content-Disposition", 'inline; filename="' + id.replace(/[^A-Za-z0-9._-]/g, "") + '.mp4"');
+  res.setHeader("Content-Disposition", 'inline; filename="' + id.replace(/[^A-Za-z0-9._-]/g, "") + kind[0] + '"');
   for (const k of ["content-length", "content-range", "etag", "last-modified"]) { const v = up.headers.get(k); if (v) res.setHeader(k, v); }
   if (req.method === "HEAD") return res.end();
   Readable.fromWeb(up.body).pipe(res);
@@ -102,7 +120,7 @@ export default async function handler(req, res) {
   const action = q.action || "";
   try {
     /* ----------------------------------------------------- public doors */
-    if (action === "video") return await door(req, res, String(q.id || ""));
+    if (action === "video") return await door(req, res, String(q.id || ""), String(q.ext || ""));
     if (action === "me") return json(res, 200, { owner: isOwner(req), setup: await setupState() });
     if (action === "login" && req.method === "POST") {
       const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "?";
