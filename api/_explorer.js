@@ -400,7 +400,7 @@ function evidence(reading, series) {
 
 export async function think(opts = {}) {
   const t0 = Date.now(), calls = [], models = {};
-  const left = opts.left || (() => 270e3 - (Date.now() - t0));
+  const left = opts.left || (() => 280e3 - (Date.now() - t0));
   const D = await import("./_director.js");
   const d = await dials();
   const res = { at: iso(), version: VERSION, models, actions: [], orders: [], errors: [], calls: 0 };
@@ -435,8 +435,8 @@ export async function think(opts = {}) {
 
     /* 2. the Strategist: The Explorer itself */
     const S = await call("strategist", "the Strategist, The Explorer itself. You decide today's moves toward the goals, within your freedoms.",
-      `The studio now:\n${JSON.stringify(state)}\n\nThe Analyst says:\n${JSON.stringify(res.analysis)}\n\nWhat you have learned (insights):\n${JSON.stringify(b.insights)}\n\nYour playbook${b.playbook ? " (v" + b.playbook.v + ")" : " (none yet: write the first one)"}:\n${b.playbook ? b.playbook.text : ""}\n\nGoals (north star: ${b.north}):\n${JSON.stringify(b.goals)}\n\nRunning experiments:\n${JSON.stringify(b.experiments)}\n\nOpen work orders (do not repeat them):\n${JSON.stringify(b.openOrders)}\n\n${D.TOOLS}\n${MORE_TOOLS}\n\nDecide: at most 4 actions, at most 2 work orders, at most one new experiment (only if none is running on the same lever), and a revised playbook only when the evidence calls for it (the whole text, under 1,200 characters: what to post, when, how to word it, what to test next). No action is fine when nothing needs changing. Never ask again for something already waiting for Sam.\n\nAnswer with JSON only: {"plan":"2 to 4 sentences for Sam: what you will do and why","actions":[{"tool":"...","args":{},"why":"..."}],"orders":[{"for":"sam|builder","title":"...","why":"..."}],"experiment":null,"playbook":"","playbook_why":""}\n(experiment, when there is one: {"name":"...","change":"...","measure":"...","judge_on":"YYYY-MM-DD"})`,
-      { max_tokens: 3200, temperature: 0.4, budgetMs: 90e3 });
+      `The studio now:\n${JSON.stringify(state)}\n\nThe Analyst says:\n${JSON.stringify(res.analysis)}\n\nWhat you have learned (insights):\n${JSON.stringify(b.insights)}\n\nYour playbook${b.playbook ? " (v" + b.playbook.v + ")" : " (none yet: write the first one)"}:\n${b.playbook ? b.playbook.text : ""}\n\nGoals (north star: ${b.north}):\n${JSON.stringify(b.goals)}\n\nRunning experiments:\n${JSON.stringify(b.experiments)}\n\nOpen work orders (do not repeat them):\n${JSON.stringify(b.openOrders)}\n\n${D.TOOLS}\n${MORE_TOOLS}\n\nDecide: at most 4 actions, at most 2 work orders, at most one new experiment (only if none is running on the same lever), and a revised playbook only when the evidence calls for it (the whole text, under 1,200 characters: what to post, when, how to word it, what to test next). No action is fine when nothing needs changing. Never ask again for something already waiting for Sam. Be brief: the whole answer under 400 words.\n\nAnswer with JSON only: {"plan":"2 to 4 sentences for Sam: what you will do and why","actions":[{"tool":"...","args":{},"why":"..."}],"orders":[{"for":"sam|builder","title":"...","why":"..."}],"experiment":null,"playbook":"","playbook_why":""}\n(experiment, when there is one: {"name":"...","change":"...","measure":"...","judge_on":"YYYY-MM-DD"})`,
+      { max_tokens: 2600, temperature: 0.4, budgetMs: 130e3, hedgeMs: 15e3 });
     const P = S.value || {};
     res.plan = clip(String(P.plan || ""), 900);
     const rawActs = Array.isArray(P.actions) ? P.actions : [];
@@ -454,9 +454,9 @@ export async function think(opts = {}) {
     const nothing = !acts.length && !ords.length && !exp && !pbText;
     const audits = nothing ? [] : await Promise.all([
       call("editor", "the Editor, an auditor. You guard the house rules, the facts (nothing beyond the films' own data), the voice of Residual Continuum (warm, exact, never sneering, never sensational) and respect for every person and faith.\n" + D.RULES,
-        auditAsk, { exclude: [S.id, ...poolB], max_tokens: 2200, temperature: 0.1, budgetMs: 60e3 }).then(r => ({ who: "editor", v: r.value })).catch(e => ({ who: "editor", error: errText(e) })),
+        auditAsk, { exclude: [S.id, ...poolB], max_tokens: 2200, temperature: 0.1, budgetMs: 75e3 }).then(r => ({ who: "editor", v: r.value })).catch(e => ({ who: "editor", error: errText(e) })),
       call("steward", "the Steward, an auditor. You guard Sam's limits and the constitution's line between what The Explorer may do and what waits for Sam, the platforms' rules (no spam; at most four Shorts a day; YouTube's daily upload cap), efficiency, and whether each item is justified by the evidence and can be measured.",
-        auditAsk, { exclude: [S.id, ...poolA], lastResort: false, max_tokens: 2200, temperature: 0.1, budgetMs: 60e3 }).then(r => ({ who: "steward", v: r.value })).catch(e => ({ who: "steward", error: errText(e) })),
+        auditAsk, { exclude: [S.id, ...poolA], lastResort: false, max_tokens: 2200, temperature: 0.1, budgetMs: 75e3 }).then(r => ({ who: "steward", v: r.value })).catch(e => ({ who: "steward", error: errText(e) })),
     ]);
     const answered = audits.filter(a => a.v && typeof a.v === "object");
     for (const a of audits) if (a.error) res.errors.push(a.who + ": " + a.error);
@@ -513,27 +513,9 @@ export async function think(opts = {}) {
       }
     }
 
-    /* 5. the Archivist: what the evidence taught */
-    if (left() > 40e3) {
-      try {
-        const ins = await insights(), due = (await experiments()).filter(e => e.status === "running" && e.judge_on <= today());
-        const L = await call("archivist", "the Archivist. You keep The Explorer's memory honest: insights that cite their numbers, revised or retired when the evidence changes, and experiments judged when their day comes.",
-          `Insights now:\n${JSON.stringify(ins.map(i => ({ id: i.id, text: i.text, evidence: i.evidence, confidence: i.confidence })))}\n\nToday's analysis:\n${JSON.stringify(res.analysis)}\n\nThe evidence:\n${JSON.stringify({ today: ev.today, days: series.length, filmsMeasured: ev.filmsMeasured, bySeries: ev.bySeries, byVerdict: ev.byVerdict, byPostingHourUTC: ev.byPostingHourUTC, byKind: ev.byKind, topFilms: ev.topFilms.slice(0, 5) })}\n\nExperiments to judge today:\n${JSON.stringify(due)}\n\nWith fewer than 7 days of numbers or fewer than 10 films measured, add at most one insight, with low confidence. Never more than 3 additions. Answer with JSON only: {"add":[{"text":"...","evidence":"the numbers","confidence":"low|medium|high"}],"revise":[{"id":"...","text":"...","evidence":"...","confidence":"..."}],"retire":["id"],"judged":[{"id":"...","result":"worked|did not work|unclear","note":"..."}]}`,
-          { max_tokens: 2200, temperature: 0.2, budgetMs: 50e3 });
-        const v = L.value || {}, conf = c => ["low", "medium", "high"].includes(c) ? c : "low";
-        let next = ins.slice(); const ch = { added: 0, revised: 0, retired: 0, judged: 0 };
-        for (const id of (v.retire || []).slice(0, 5)) { const before = next.length; next = next.filter(i => i.id !== id); if (next.length < before) { ch.retired++; await journal("learn", "Retired an insight", String(id)); } }
-        for (const r of (v.revise || []).slice(0, 5)) { const it = next.find(i => i.id === r.id); const t = clip(String(r.text || ""), 300); if (it && t && !D.BAD.test(t)) { it.text = t; it.evidence = clip(String(r.evidence || it.evidence || ""), 300); it.confidence = conf(r.confidence); it.updated = iso(); ch.revised++; } }
-        for (const r of (v.add || []).slice(0, 3)) { const t = clip(String(r.text || ""), 300); if (!t || D.BAD.test(t) || next.some(i => norm(i.text) === norm(t))) continue; next.unshift({ id: rid(), at: iso(), text: t, evidence: clip(String(r.evidence || ""), 300), confidence: conf(r.confidence) }); ch.added++; await journal("learn", "Learned: " + clip(t, 180), r.evidence || ""); }
-        await kset(X.insights, next.slice(0, 30));
-        if ((v.judged || []).length) {
-          const list = await experiments();
-          for (const j of v.judged) { const e = list.find(x => x.id === j.id && x.status === "running"); if (!e) continue; e.status = "judged"; e.result = ["worked", "did not work", "unclear"].includes(j.result) ? j.result : "unclear"; e.note = clip(String(j.note || ""), 300); e.judged = iso(); ch.judged++; await journal("experiment", "Experiment judged: " + e.name, e.result + ". " + e.note); }
-          await kset(X.experiments, list);
-        }
-        res.learned = ch;
-      } catch (e) { res.errors.push("archivist: " + errText(e)); }
-    } else res.errors.push("archivist: deferred, the run was out of time");
+    /* 5. the Archivist, now if there is time, else on the next hourly run */
+    if (left() > 75e3) { const L = await learn({ left, call, analysis: res.analysis, ev, days: series.length, D }); if (L.error) res.errors.push(L.error); else res.learned = L; }
+    else res.learned = { deferred: true };
   } catch (e) {
     res.errors.push(errText(e));
   }
@@ -547,6 +529,41 @@ export async function think(opts = {}) {
     res.errors.length ? "Trouble: " + res.errors.join("; ") : ""].filter(Boolean).join("\n\n"), { models });
   await log("ai", { note: "The Explorer thought (" + Math.round(res.ms / 1000) + " s, " + res.calls + " model calls): " + did + " done, " + asked + " proposed, " + stopped + " stopped" });
   return res;
+}
+/* the Archivist: what the evidence taught (run after the day's thinking) */
+export async function learn(opts = {}) {
+  const d = today();
+  if (kvReady()) { const got = (await kv([["SET", X.ran("learn", d), iso(), "NX", "EX", "172800"]]))[0]; if (!got) return { skipped: "already learned today" }; }
+  const D = opts.D || await import("./_director.js");
+  const t0 = Date.now(), left = opts.left || (() => 120e3 - (Date.now() - t0));
+  let analysis = opts.analysis, ev = opts.ev, days = opts.days;
+  if (!analysis || !ev) {
+    const last = await lastThink(); analysis = (last && last.analysis) || {};
+    const series = await readSeries(60); days = series.length; ev = evidence(await lastReading(), series);
+  }
+  const call = opts.call || (async (name, role, content, o) => ask(role, content, { ...o, budgetMs: Math.min(o.budgetMs || 60e3, left() - 10e3) }));
+  try {
+    const ins = await insights(), due = (await experiments()).filter(e => e.status === "running" && e.judge_on <= d);
+    const L = await call("archivist", "the Archivist. You keep The Explorer's memory honest: insights that cite their numbers, revised or retired when the evidence changes, and experiments judged when their day comes.",
+      `Insights now:\n${JSON.stringify(ins.map(i => ({ id: i.id, text: i.text, evidence: i.evidence, confidence: i.confidence })))}\n\nToday's analysis:\n${JSON.stringify(analysis)}\n\nThe evidence:\n${JSON.stringify({ today: ev.today, days, filmsMeasured: ev.filmsMeasured, bySeries: ev.bySeries, byVerdict: ev.byVerdict, byPostingHourUTC: ev.byPostingHourUTC, byKind: ev.byKind, topFilms: (ev.topFilms || []).slice(0, 5) })}\n\nExperiments to judge today:\n${JSON.stringify(due)}\n\nWith fewer than 7 days of numbers or fewer than 10 films measured, add at most one insight, with low confidence. Never more than 3 additions. Answer with JSON only: {"add":[{"text":"...","evidence":"the numbers","confidence":"low|medium|high"}],"revise":[{"id":"...","text":"...","evidence":"...","confidence":"..."}],"retire":["id"],"judged":[{"id":"...","result":"worked|did not work|unclear","note":"..."}]}`,
+      { max_tokens: 2200, temperature: 0.2, budgetMs: 60e3 });
+    const v = L.value || {}, conf = c => ["low", "medium", "high"].includes(c) ? c : "low";
+    let next = ins.slice(); const ch = { added: 0, revised: 0, retired: 0, judged: 0, model: L.model };
+    for (const id of (v.retire || []).slice(0, 5)) { const before = next.length; next = next.filter(i => i.id !== id); if (next.length < before) { ch.retired++; await journal("learn", "Retired an insight", String(id)); } }
+    for (const r of (v.revise || []).slice(0, 5)) { const it = next.find(i => i.id === r.id); const t = clip(String(r.text || ""), 300); if (it && t && !D.BAD.test(t)) { it.text = t; it.evidence = clip(String(r.evidence || it.evidence || ""), 300); it.confidence = conf(r.confidence); it.updated = iso(); ch.revised++; } }
+    for (const r of (v.add || []).slice(0, 3)) { const t = clip(String(r.text || ""), 300); if (!t || D.BAD.test(t) || next.some(i => norm(i.text) === norm(t))) continue; next.unshift({ id: rid(), at: iso(), text: t, evidence: clip(String(r.evidence || ""), 300), confidence: conf(r.confidence) }); ch.added++; await journal("learn", "Learned: " + clip(t, 180), r.evidence || ""); }
+    await kset(X.insights, next.slice(0, 30));
+    if ((v.judged || []).length) {
+      const list = await experiments();
+      for (const j of v.judged) { const e = list.find(x => x.id === j.id && x.status === "running"); if (!e) continue; e.status = "judged"; e.result = ["worked", "did not work", "unclear"].includes(j.result) ? j.result : "unclear"; e.note = clip(String(j.note || ""), 300); e.judged = iso(); ch.judged++; await journal("experiment", "Experiment judged: " + e.name, e.result + ". " + e.note); }
+      await kset(X.experiments, list);
+    }
+    const lt = await lastThink(); if (lt && lt.learned && lt.learned.deferred) { lt.learned = ch; await kset(X.think, lt); }
+    return ch;
+  } catch (e) {
+    if (kvReady()) await kv([["DEL", X.ran("learn", d)]]);
+    return { error: errText(e).startsWith("archivist") ? errText(e) : "archivist: " + errText(e) };
+  }
 }
 export async function lastThink() { return kvReady() ? await kget(X.think) : null; }
 export async function thinkHistory(n = 14) {
@@ -569,12 +586,17 @@ export async function tick(ctx, now = new Date()) {
     try { const r = await sense(); out.sensed = r.point; } catch (e) { out.senseError = errText(e); await journal("trouble", "Could not read the numbers", errText(e)); }
   }
   const d = today(now);
-  if (now.getUTCHours() >= THINK_FROM_UTC && ctx.left() > 170e3) {
+  if (now.getUTCHours() >= THINK_FROM_UTC && ctx.left() > 200e3) {
     const got = (await kv([["SET", X.ran("think", d), iso(), "NX", "EX", "172800"]]))[0];
     if (got) {
       const r = await think({ left: ctx.left }); out.thought = { plan: r.plan, actions: r.actions.length, errors: r.errors };
       /* no plan came out (the free models failed): try again next hour, three times a day at most */
       if (!r.plan) { const n = (await kv([["INCR", X.ran("tries", d)], ["EXPIRE", X.ran("tries", d), "172800"]]))[0]; if (n < 3) await kv([["DEL", X.ran("think", d)]]); }
+    }
+    /* the Archivist's turn, when the thinking ran out of time for it */
+    else if (ctx.left() > 90e3) {
+      const lt = await lastThink();
+      if (lt && lt.plan && lt.learned && lt.learned.deferred && today(new Date(lt.at)) === d) out.learned = await learn({ left: ctx.left });
     }
   }
   return out;
