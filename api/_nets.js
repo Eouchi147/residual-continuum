@@ -715,3 +715,18 @@ export async function netStatus(net) {
   return { net, label: n.label, kind: n.kind, ready: n.ready(), vars: n.vars, fields: n.fields || null, via: n.via || null,
            connected: !!t, who: (t && t.who) || "", since: (t && t.savedAt) || "", callback: n.kind === "oauth" ? cb(net) : "" };
 }
+
+/* ------------------------------------------------ The Explorer's senses
+   Read-only calls with the tokens the console's Connect buttons won. They
+   never write anything and never return a token. */
+export async function ytGet(path) {
+  const tok = await ytAccess(); if (!tok.ok) return { ok: false, error: tok.error };
+  const { r, j, t } = await jfetch("https://www.googleapis.com/youtube/v3/" + path, { headers: { authorization: "Bearer " + tok.token } });
+  return r.ok && j ? { ok: true, j } : { ok: false, error: said(j, t, "http " + r.status) };
+}
+export async function metaGet(net, path) {
+  const tk = await getTok(net); if (!tk) return { ok: false, error: net + " is not connected" };
+  const me = net === "instagram" ? tk.igId : tk.pageId;
+  const { r, j, t } = await jfetch(GRAPH + "/" + String(path).replace("{me}", me), { headers: { authorization: "Bearer " + tk.token } });
+  return r.ok && j && !j.error ? { ok: true, j } : { ok: false, error: said(j, t, "http " + r.status) };
+}

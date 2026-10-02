@@ -211,18 +211,21 @@ async function attempt(id, req, signal) {
   let value;
   try { value = req.parse(text); } catch (_) { throw Object.assign(new Error("unusable reply"), { soft: true }); }
   record(id, Date.now() - t0);
-  return { value, model: out.model || id };
+  return { value, model: out.model || id, id };
 }
 
 /**
  * Run a chat completion on the best free model that returns usable output.
  * `parse(text)` must return the parsed value or throw.
- * Returns { value, model }.
+ * Returns { value, model, id } (id: the queue's model id, model: what OpenRouter says served it).
  */
 export async function chatFree({ messages, temperature = 0.2, max_tokens = 900, parse, title,
-  budgetMs = 28_000, hedgeMs = 4_000, maxParallel = 3, effort = "minimal", json = true }) {
+  budgetMs = 28_000, hedgeMs = 4_000, maxParallel = 3, effort = "minimal", json = true, exclude = [], lastResort = true }) {
   const req = { messages, temperature, max_tokens, parse, title, effort, json };
-  const queue = [...(await freeModels()), LAST_RESORT];
+  /* `exclude`: model ids this call must not use (The Explorer's auditors are
+     kept off the model that wrote the plan they check) */
+  const skip = new Set(exclude || []);
+  const queue = [...(await freeModels()).filter((id) => !skip.has(id)), ...(lastResort && !skip.has(LAST_RESORT) ? [LAST_RESORT] : [])];
   const start = Date.now();
 
   return await new Promise((resolve, reject) => {

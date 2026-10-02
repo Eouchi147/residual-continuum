@@ -20,7 +20,7 @@ import crypto from "node:crypto";
 import { chatFree, extractJSON } from "./_models.js";
 import { kv, kvReady, K, kget, kset, dials, setDials, plan, film, nextFilms, nextLong, longFilms, available, farmRuns, readLog, shape, NETS, clip, log, errText, siteUrl } from "./_studio.js";
 
-const RULES = `House rules for every word you write for Residual Continuum:
+export const RULES = `House rules for every word you write for Residual Continuum:
 - British spelling. Never an em dash or an en dash: use commas, colons or full stops.
 - Never "proves", "proof", "undeniable", "definitely", "certainly", "debunked once and for all". Say "suggests", "the evidence points to", "established", "awaiting evidence", "ruled out by the dates".
 - Dates are always hedged ("about", "around", "at least").
@@ -30,8 +30,8 @@ const RULES = `House rules for every word you write for Residual Continuum:
 - Never mention any email address.
 - Keep each film's verdict in its exact words (Established, Strong evidence, Plausible, Mixed record, Open question, Awaiting evidence, Ruled out).`;
 
-const BAD = /[—–]|\bproves?\b|\bproof\b|undeniabl|\bdefinitely\b|\bcertainly\b|@[a-z0-9.-]+\.[a-z]{2,}/i;
-const LIMIT = { youtube: 4800, facebook: 4800, instagram: 2100, tiktok: 2100, threads: 500, x: 250, bluesky: 270, pinterest: 480 };
+export const BAD = /[—–]|\bproves?\b|\bproof\b|undeniabl|\bdefinitely\b|\bcertainly\b|@[a-z0-9.-]+\.[a-z]{2,}/i;
+export const LIMIT = { youtube: 4800, facebook: 4800, instagram: 2100, tiktok: 2100, threads: 500, x: 250, bluesky: 270, pinterest: 480 };
 
 /* ----------------------------------------------- captions, one per network */
 export async function captionsFor(f) {
@@ -89,12 +89,13 @@ export async function snapshot() {
       nets: Object.fromEntries(Object.entries(r.results || {}).map(([k, v]) => [k, v.ok ? "ok" + (v.private ? " (private)" : "") : v.pending ? "pending" : v.skipped ? "not connected" : "failed: " + clip(v.error || "", 80)])) })),
     upcoming: cal.upcoming.slice(0, 6),
     farm: (runs.runs || []).slice(0, 5).map(r => ({ n: r.n, status: r.status, conclusion: r.conclusion, at: r.at })),
+    explorer: await import("./_explorer.js").then(E => E.brief()).catch(() => null),
   };
 }
 
 /* ---------------------------------------------------------------- actions */
-const PUBLISHING = new Set(["post_now", "approve", "set_mode"]);
-const TOOLS = `Actions you may ask for (each with a short "why"):
+export const PUBLISHING = new Set(["post_now", "approve", "set_mode"]);
+export const TOOLS = `Actions you may ask for (each with a short "why"):
 - {"tool":"pin","args":{"id":"<film id>"}}            put a film next in line
 - {"tool":"unpin","args":{"id":"<film id>"}}
 - {"tool":"skip","args":{"id":"<film id>"}}           hold a film back
@@ -108,6 +109,7 @@ const TOOLS = `Actions you may ask for (each with a short "why"):
 - {"tool":"set_mode","args":{"mode":"off|approve|auto"}}   (always waits for the owner)
 - {"tool":"approve","args":{"date":"YYYY-MM-DD","hour":"HH"}}  send a queued slot (always waits for the owner)
 - {"tool":"post_now","args":{"id":"<film id>"}}       post a film right now (always waits for the owner)
+- {"tool":"order","args":{"for":"sam|builder","title":"...","why":"..."}}   a work order: ask Sam or the builders for what you cannot do yourself
 Networks: youtube, tiktok, instagram, facebook, x.`;
 
 export async function doAction(a, by = "owner") {
@@ -132,6 +134,14 @@ export async function doAction(a, by = "owner") {
     case "set_network": await setDials({ nets: { [args.net]: !!args.on } }); break;
     case "ai_captions": await setDials({ aiCaptions: !!args.on }); break;
     case "set_mode": await setDials({ mode: args.mode }); break;
+    case "order": { const E = await import("./_explorer.js"); const o = await E.addOrder({ for: args.for, title: args.title, why: args.why || a.why }, by === "owner" ? "Sam" : "The Explorer"); return { ok: true, order: o }; }
+    case "set_goal": {
+      const E = await import("./_explorer.js"); const g = await E.goals();
+      const id = String(args.id || "").slice(0, 40) || "g" + Date.now().toString(36);
+      const keep = g.goals.filter(x => x.id !== id), was = g.goals.find(x => x.id === id) || {};
+      await E.setGoals({ north: g.north, goals: [...keep, { ...was, id, label: args.label || was.label, metric: args.metric || was.metric, target: args.target ?? was.target, note: args.note || was.note, by: args.by || was.by }] });
+      break;
+    }
     case "approve": return { ok: true, record: await P.approve(args.date, args.hour) };
     case "post_now": return { ok: true, record: await P.postNow(need(args.id), by) };
     default: throw new Error("unknown action " + a.tool);
@@ -148,7 +158,7 @@ export async function proposals() {
   else for (const v of Object.values(raw)) { try { list.push(JSON.parse(v)); } catch { } }
   return list.sort((a, b) => String(b.at).localeCompare(String(a.at)));
 }
-async function propose(a) {
+export async function propose(a) {
   const id = crypto.randomBytes(6).toString("hex");
   const p = { id, tool: a.tool, args: a.args || {}, why: clip(a.why || "", 300), at: new Date().toISOString() };
   await kv([["HSET", K.props, id, JSON.stringify(p)]]);
@@ -168,7 +178,12 @@ export async function chat(message) {
   let history = [];
   try { history = ((await kv([["LRANGE", K.chat, "0", "13"]]))[0] || []).map(s => JSON.parse(s)).reverse(); } catch { }
   const snap = await snapshot();
-  const sys = `You are The Explorer, the AI of the Residual Continuum studio: you run the publishing with its owner, Sam, so that he never has to post anything by hand. Residual Continuum publishes continuous animated films that weigh history's mysteries fairly (every claim sourced, every verdict graded): short films (vertical, about 2 minutes) twice a day to every connected network, and long deep dives (16:9, about 10 minutes) on set weekdays to YouTube and Facebook, each followed by its vertical teaser on YouTube Shorts, Instagram and TikTok.
+  const { CONSTITUTION } = await import("./_explorer.js");
+  const sys = `${CONSTITUTION}
+
+In this conversation you talk with Sam in the console. Your memory (goals and their progress, the latest numbers, insights, playbook, running experiments, open work orders) is in the state below under "explorer"; use it, and say when a number is not readable yet.
+
+You are The Explorer, the AI of the Residual Continuum studio: you run the publishing with its owner, Sam, so that he never has to post anything by hand. Residual Continuum publishes continuous animated films that weigh history's mysteries fairly (every claim sourced, every verdict graded): short films (vertical, about 2 minutes) twice a day to every connected network, and long deep dives (16:9, about 10 minutes) on set weekdays to YouTube and Facebook, each followed by its vertical teaser on YouTube Shorts, Instagram and TikTok.
 
 What you do: answer Sam clearly and briefly; spot problems (a network failing, nothing rendered, a token expired, a slot empty) and say what to do; plan the posting order for reach (strong hooks first, variety of Files, a ledger film after the last case of its File); write and fix captions; and act through the actions below. Never claim a post went out unless the state says ok. Never invent numbers.
 

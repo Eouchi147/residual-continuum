@@ -226,6 +226,11 @@ export async function runDue(opts = {}) {
     try { await longDue(d, date, hour, now, ctx, out); } catch (e) { out.longError = errText(e); await log("failed", { note: "long films: " + errText(e) }); }
   }
   if (ctx.left() > 90e3) out.healed = await heal(ctx);
+  /* The Explorer's heartbeat: it reads the numbers every six hours and thinks once a day */
+  if (!opts.noExplorer) {
+    try { const E = await import("./_explorer.js"); out.explorer = await E.tick(ctx, now); }
+    catch (e) { out.explorerError = errText(e); await log("failed", { note: "The Explorer: " + errText(e) }); }
+  }
   return out;
 }
 

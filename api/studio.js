@@ -66,6 +66,7 @@ async function overview() {
     long: { planned: longFilms().length, rendered: longFilms().filter(f => av.films[f.id]).length, teasers: longFilms().filter(f => f.teaser && av.films[f.teaser]).length,
             posted: longFilms().filter(f => (done || []).includes(f.id)).length, next: (await nextLong(3, { avail: av })).map(f => ({ id: f.id, title: f.yt_title || f.title })) },
     perNet, nets, calendar: cal, farm: runs, log, proposals: props,
+    explorer: await import("./_explorer.js").then(async E => { const t = await E.lastThink(); return { ...(await E.brief()), summary: t ? (t.analysis || {}).summary || "" : "", plan: t ? t.plan || "" : "" }; }).catch(() => null),
   };
 }
 
@@ -135,6 +136,7 @@ export default async function handler(req, res) {
       return back(r.ok ? "connected " + (r.who || "") : String(r.error || "failed"), r.ok);
     }
 
+    if (["explorer_sense", "explorer_think", "explorer_order"].includes(action) && req.method !== "POST") return json(res, 405, { error: "POST only" });
     const b = req.method === "POST" ? await readBody(req) : {};
     const A = { ...q, ...b };
     switch (action) {
@@ -181,6 +183,12 @@ export default async function handler(req, res) {
       case "stats": return json(res, 200, await ytStats());
       case "probe_fb_long": { const { probeFbLong } = await import("./_nets.js"); return json(res, 200, await probeFbLong(String(A.id || "lf-demo"))); }
       case "snapshot": return json(res, 200, await snapshot());
+      /* The Explorer's room: its mind, its numbers, its record */
+      case "explorer": { const E = await import("./_explorer.js"); return json(res, 200, await E.room()); }
+      case "explorer_sense": { const E = await import("./_explorer.js"); await E.sense("asked by Sam"); return json(res, 200, await E.room()); }
+      case "explorer_think": { const E = await import("./_explorer.js"); const r = await E.think(); return json(res, 200, { think: r }); }
+      case "explorer_goals": { const E = await import("./_explorer.js"); return json(res, 200, { goals: req.method === "POST" ? await E.setGoals(A.goals || {}) : await E.goals() }); }
+      case "explorer_order": { const E = await import("./_explorer.js"); return json(res, 200, { order: A.id ? await E.closeOrder(String(A.id), String(A.status || "done"), String(A.note || "")) : await E.addOrder({ for: A.for, title: A.title, why: A.why }, "Sam") }); }
       case "refresh": await available({ fresh: true }); return json(res, 200, { ok: true });
       default: return json(res, 400, { error: "unknown action" });
     }
