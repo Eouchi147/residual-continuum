@@ -75,7 +75,7 @@ footer{color:var(--muted);text-align:center;font-size:12px;padding:30px 0 0}
   <button class="btn" id="logoutBtn" style="display:none">Lock</button>
 </header>
 <nav class="tabs" id="tabs" style="display:none">
-  <button data-room="overview" class="on">Overview</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="director">Director (AI)</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
+  <button data-room="overview" class="on">Overview</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="director">The Explorer (AI)</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
 </nav>
 <main id="main"></main>
 <div class="drawer" id="drawer"><div class="scrim" data-close></div><div class="sheet" id="sheet"></div></div>
@@ -97,7 +97,7 @@ async function api(action, body, params) {
 function toast(msg, ms = 3800) { const t = document.createElement("div"); t.className = "toast"; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), ms); }
 const when = iso => { if (!iso) return ""; const d = new Date(iso); return d.toLocaleString(undefined, { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); };
 const ago = iso => { if (!iso) return ""; const s = (Date.now() - Date.parse(iso)) / 1000; if (s < 90) return "just now"; if (s < 5400) return Math.round(s / 60) + " min ago"; if (s < 129600) return Math.round(s / 3600) + " h ago"; return Math.round(s / 86400) + " d ago"; };
-const slotTime = (date, hour) => { const h = String(hour).slice(0, 2), m = /m(\d\d)/.exec(hour); return new Date(date + "T" + h + ":" + (m ? m[1] : "00") + ":00Z"); };
+const slotTime = (date, hour) => { const h = String(hour).replace(/^[A-Z]/, "").slice(0, 2), m = /m(\d\d)/.exec(hour); const t = new Date(date + "T" + h + ":" + (m ? m[1] : "00") + ":00Z"); return isNaN(t) ? new Date(date + "T12:00:00Z") : t; };
 function chipFor(net, r) {
   if (!r) return "";
   const name = NETS[net] || net;
@@ -158,7 +158,7 @@ async function roomOverview(force) {
   }).join("");
   $("#main").innerHTML = `
   ${setupBanner(o.setup)}
-  ${props.length ? `<div class="card" style="margin-bottom:14px"><h2>The AI asks <span class="pill">${props.length}</span></h2>${props.map(propCard).join("")}</div>` : ""}
+  ${props.length ? `<div class="card" style="margin-bottom:14px"><h2>The Explorer asks <span class="pill">${props.length}</span></h2>${props.map(propCard).join("")}</div>` : ""}
   <div class="grid g4" style="margin-bottom:14px">
     <div class="card kpi"><div class="n">${f.planned}</div><div class="l">Films planned</div></div>
     <div class="card kpi"><div class="n">${f.rendered}</div><div class="l">Rendered by the farm</div></div>
@@ -180,7 +180,7 @@ async function roomOverview(force) {
       <div class="small muted" style="margin-bottom:6px">Posting hours (UTC · yours: ${o.dials.slots.map(h => new Date(Date.UTC(2026, 0, 1, h)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })).join(", ") || "none"})</div>
       <div class="hours" id="hours">${Array.from({ length: 24 }, (_, h) => `<button data-h="${h}" class="${o.dials.slots.includes(h) ? "on" : ""}">${String(h).padStart(2, "0")}</button>`).join("")}</div>
       <div style="height:12px"></div>
-      <div class="row sb"><span class="small muted">The AI</span><div class="seg" id="aiSeg"><button data-a="propose" class="${o.dials.ai === "propose" ? "on" : ""}">Proposes</button><button data-a="act" class="${o.dials.ai === "act" ? "on" : ""}">Acts (not posting)</button></div></div>
+      <div class="row sb"><span class="small muted">The Explorer</span><div class="seg" id="aiSeg"><button data-a="propose" class="${o.dials.ai === "propose" ? "on" : ""}">Proposes</button><button data-a="act" class="${o.dials.ai === "act" ? "on" : ""}">Acts (not posting)</button></div></div>
       <div style="height:10px"></div>
       <label class="row small"><input type="checkbox" id="aiCap" style="width:auto" ${o.dials.aiCaptions ? "checked" : ""}> AI writes each network's caption before a post</label>
     </div>
@@ -188,6 +188,9 @@ async function roomOverview(force) {
   <div style="height:14px"></div>
   <div class="card"><h2>Networks</h2><div class="nets">${nets}</div></div>
   <div style="height:14px"></div>
+  ${o.long ? `<div class="card"><h2>Long films <span class="pill tiny">${o.long.posted}/${o.long.planned} out · ${o.long.rendered} rendered · ${o.long.teasers} teasers</span></h2>
+    <p class="small muted" style="margin:0 0 8px">${o.dials.long && o.dials.long.on ? `Every ${(o.dials.long.days || []).map(x => ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][x]).join(", ")} at ${new Date(Date.UTC(2026, 0, 1, o.dials.long.hour)).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} (your time): the film to YouTube and Facebook, then its teaser to YouTube Shorts, Instagram and TikTok.` : "The long films are paused."}</p>
+    <div class="list">${(o.long.next || []).map(x => `<div class="item"><a href="#" data-film="${esc(x.id)}">${esc(x.title)}</a></div>`).join("") || `<p class="muted small">No long film is waiting.</p>`}</div></div><div style="height:14px"></div>` : ""}
   <div class="grid g2">
     <div class="card"><h2>Next up</h2><div class="timeline">${up.length ? up.map(u => `<div class="tl"><div class="small muted">${when(u.at)}</div><div>${u.film ? `<a href="#" data-film="${esc(u.film)}">${esc(u.title)}</a>` : `<span class="muted">${esc(u.title)}</span>`}</div></div>`).join("") : `<p class="muted small">No posting hours are set.</p>`}</div></div>
     <div class="card"><h2>Lately</h2><div class="list">${recs.length ? recs.map(recRow).join("") : `<p class="muted small">Nothing has gone out yet.</p>`}</div></div>
@@ -295,10 +298,10 @@ async function roomDirector(force) {
   const o = await getOv(force);
   const props = o.proposals || [];
   $("#main").innerHTML = `<div class="grid g2" style="grid-template-columns:minmax(0,2fr) minmax(0,1fr)">
-  <div class="card"><h2>The Director <span class="pill tiny">free models, via OpenRouter</span></h2>
+  <div class="card"><h2>The Explorer <span class="pill tiny">free models, via OpenRouter</span></h2>
     <div class="chat" id="chat">${S.chat.length ? S.chat.map(m => `<div class="msg ${m.role}">${esc(m.content)}${m.role === "assistant" ? `<div class="meta">${esc(m.model || "")}${(m.done || []).length ? " · did: " + m.done.map(d => d.tool + (d.error ? " (" + d.error + ")" : "")).join(", ") : ""}${(m.props || []).length ? " · " + m.props.length + " proposal(s)" : ""}</div>` : ""}</div>`).join("") : `<p class="muted">Ask anything about the studio: what goes out next, why a network failed, how to plan the week. It can also act: reorder, hold, write captions, change the hours. Anything that publishes waits for your yes.</p>`}</div>
     <div class="chips" style="margin:12px 0 8px">${["What is going out next, and is everything ready?", "Plan the next 7 days for the most reach", "Why did the last post fail anywhere?", "Write fresh captions for the next film", "What do I still need to connect?"].map(s => `<button class="chip" data-ask="${esc(s)}">${esc(s)}</button>`).join("")}</div>
-    <form id="cf" class="row" style="flex-wrap:nowrap"><textarea id="cm" placeholder="Talk to the Director…" style="min-height:48px;height:48px"></textarea><button class="btn gold">Send</button></form></div>
+    <form id="cf" class="row" style="flex-wrap:nowrap"><textarea id="cm" placeholder="Talk to The Explorer…" style="min-height:48px;height:48px"></textarea><button class="btn gold">Send</button></form></div>
   <div class="card"><h2>Waiting for you <span class="pill">${props.length}</span></h2>${props.length ? props.map(propCard).join("") : `<p class="muted small">No proposals.</p>`}</div></div>`;
   const box = $("#chat"); box.scrollTop = box.scrollHeight;
   const send = async text => {
