@@ -194,6 +194,7 @@ export default async function handler(req, res) {
         return json(res, 200, await E.room());
       }
       case "explorer_review": { const E = await import("./_explorer.js"); return json(res, 200, { review: await E.review() }); }
+      case "explorer_topics": { const T = await import("./_trends.js"); const t = await T.trends(); return json(res, 200, { rows: t.rows.map(r => ({ film: r.film, title: r.title, article: r.article, avg7: r.avg7, spike: r.spike, posted: r.posted })) }); }
       case "explorer_topic": { const T = await import("./_trends.js"); if (!film(String(A.film))) return json(res, 404, { error: "no such film" }); return json(res, 200, await T.setTopic(String(A.film), String(A.article || ""))); }
       case "visitors": { const Vs = await import("./_visits.js"); return json(res, 200, { visitors: await Vs.visitSummary(Math.min(90, Math.max(7, Number(A.days) || 30)), { fresh: !!A.fresh }) }); }
       case "explorer_think": { const E = await import("./_explorer.js"); const r = await E.think(); return json(res, 200, { think: r }); }
