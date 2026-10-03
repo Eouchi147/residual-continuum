@@ -257,7 +257,7 @@ export function baseText(f) {
 /* Each network gets its own words. The plan's caption already carries the
    verdict; the sources and the link are added where a network can hold them. */
 export function shape(f, net, custom) {
-  if (f && (f.kind === "long" || f.kind === "teaser")) return shapeLong(f, net, custom);
+  if (f && (f.kind === "long" || f.kind === "teaser" || f.kind === "clip")) return shapeLong(f, net, custom);
   const link = siteUrl();
   const tags = tagsOf(f);
   const cap = String(custom || baseText(f)).replace(/\bresidualcontinuum\.com\b/g, SITE());
@@ -297,11 +297,14 @@ export function shape(f, net, custom) {
 }
 
 /* A long film carries its full YouTube description (chapters, sources); its
-   teaser points to it. "{long_url}" is filled in when the teaser is sent, from
-   wherever the long film went out on YouTube. */
+   teaser points to it, and so does each of its chapter clips (kind "clip", a
+   Short of its own with its own words and the film's sources). "{long_url}" is
+   filled in when the teaser or clip is sent, from wherever the long film went
+   out on YouTube. */
 function shapeLong(f, net, custom) {
   const link = siteUrl(), tags = tagsOf(f);
   const cap = String(custom || f.caption || "").replace(/\bresidualcontinuum\.com\b/g, SITE());
+  const src = f.kind === "clip" && f.sources ? "Sources (the full film): " + f.sources : "";
   const ytTags = [...new Set(["Residual Continuum", "history", "archaeology", "documentary", ...tags.map(x => x.slice(1))])].slice(0, 15);
   if (f.kind === "long") {
     switch (net) {
@@ -316,11 +319,11 @@ function shapeLong(f, net, custom) {
     case "youtube": {
       let t = String(f.title || f.hook).replace(/\s+/g, " ").trim(); const tail = " #Shorts";
       if (t.length + tail.length > 100) t = clip(t, 100 - tail.length);
-      return { title: t + tail, description: [cap, "Watch the full deep dive: {long_url}", "Every case, with its sources: " + link, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 4900), tags: ytTags };
+      return { title: t + tail, description: [cap, "Watch the full deep dive: {long_url}", src, "Every case, with its sources: " + link, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 4900), tags: ytTags };
     }
     case "instagram": return { text: [cap, "The full deep dive is on our YouTube channel: link in bio.", tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 2150) };
-    case "tiktok": return { text: [String(f.title), "The full deep dive is on our YouTube channel, Residual Continuum.", tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 2150) };
-    case "facebook": return { text: [cap, link, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 5000) };
+    case "tiktok": return { text: [f.kind === "clip" ? cap : String(f.title), "The full deep dive is on our YouTube channel, Residual Continuum.", tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 2150) };
+    case "facebook": return { text: [cap, src, link, tags.join(" ")].filter(Boolean).join("\n\n").slice(0, 5000) };
     case "x": return { text: clip(String(f.title) + " Verdict: " + f.verdict + ".", 240) };
     default: return { text: cap };
   }

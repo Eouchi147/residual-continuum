@@ -112,7 +112,7 @@ const youtube = {
     const tok = await ytAccess(); if (!tok.ok) return { ok: false, error: tok.error, fatal: tok.fatal };
     if (f.kind === "long") return ytLong(f, w, tok.token, ctx, null);
     let desc = w.description;
-    if (f.kind === "teaser") desc = await teaserDesc(f, desc);
+    if (f.kind === "teaser" || f.kind === "clip") desc = await teaserDesc(f, desc);
     let bytes; try { bytes = await filmBytes(f.id); } catch (e) { return { ok: false, error: errText(e) }; }
     const meta = { snippet: { title: w.title, description: desc, tags: w.tags, categoryId: "27", defaultLanguage: "en", defaultAudioLanguage: "en" },
                    status: { privacyStatus: "public", selfDeclaredMadeForKids: false, embeddable: true } };
@@ -194,7 +194,7 @@ async function ytThumb(videoId, id, token) {
     headers: { authorization: "Bearer " + token, "content-type": "image/jpeg" }, body: img });
   if (!u.ok) { const t = await u.text().catch(() => ""); throw new Error("thumbnail: " + clip(t, 120)); }
 }
-/* a teaser's description points to its long film on YouTube, once it is there */
+/* a teaser's (or a chapter clip's) description points to its long film on YouTube, once it is there */
 async function teaserDesc(f, desc) {
   let url = "";
   if (kvReady() && f.long) { try { const v = (await kv([["HGET", K.posted, f.long + "|youtube"]]))[0]; if (v) url = JSON.parse(v).url || ""; } catch { } }
@@ -248,7 +248,9 @@ const facebook = {
   exchange: code => metaExchange(code, "facebook"),
   async send(f, w, ctx) {
     const t = await getTok("facebook"); if (!t) return { ok: false, skipped: "Facebook is not connected" };
-    if (f.kind === "long") return fbLong(f, w, t, ctx, null);
+    /* Reels through the API take 3 to 90 seconds: a longer vertical film (a
+       chapter clip) goes up as a Page video, which Facebook shows as a reel */
+    if (f.kind === "long" || Number(f.dur) > 88) return fbLong(f, w, t, ctx, null);
     const st = await jfetch(`${GRAPH}/${t.pageId}/video_reels`, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + t.token }, body: JSON.stringify({ upload_phase: "start" }) });
     if (!st.ok || !st.j || !st.j.video_id || !st.j.upload_url) return { ok: false, error: "Facebook start: " + said(st.j, st.t, "http " + st.r.status) };
     const up = await jfetch(st.j.upload_url, { method: "POST", headers: { authorization: "OAuth " + t.token, file_url: doorUrl(f.id) } });
