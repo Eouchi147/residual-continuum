@@ -1,0 +1,47 @@
+{
+ "id": "2026-10-04",
+ "date": "2026-10-04",
+ "title": "When the Neighbors Are the Community",
+ "kicker": "Community Archaeology",
+ "dek": "A Scout Group steps into the role of heritage community at one of Rome's most urbanized archaeological sites, testing whether the concept can survive contact with a modern city.",
+ "body": [
+  "The districts around Ostia Antica are not the pastoral countryside you might imagine. They are large, socially differentiated but contiguous built-up areas: Ostia, Acilia, Axa Casal Palocco. A highly urbanized zone. The kind of place where the neat idea of a heritage community starts to wobble. Who is the community? Everyone lives here, but everyone is different, and the archaeological park sits inside a city, not beside a village.",
+  "Into this context steps a pilot project. A Scout Group, working in collaboration with the Archaeological Park of Ancient Ostia, becomes the first group to test direct involvement of the local community in the site's research and dissemination. The project is described as experimental. It is part of a broader research program on the methodology and techniques of cultural entertainment, in the field of Public Archaeology.",
+  "The word experimental is doing a lot of work here. The project does not claim to have solved the problem of who a heritage community is when that community is a patchwork of urban neighborhoods with different social profiles. It acknowledges the difficulty explicitly. The concept of a heritage community, as used in public archaeology, assumes a group that shares a relationship with a place. In Ostia's hinterland, that relationship is fractured by density, by social differentiation, by the sheer fact that the ruins are a neighbor, not a landmark.",
+  "The Scout Group is the pilot. The study positions this as a starting point, not a conclusion. The aim is to move from research to dissemination, to find a method by which people who live next to a two-thousand-year-old port can participate in its story rather than simply pass through it. The collaboration with the Park gives the project institutional backing and access to the site itself.",
+  "What the project tests is whether a structured, small-scale engagement model can function in a setting where the traditional assumptions of community archaeology do not hold. The Scout Group offers a ready-made social structure, a shared identity, and a commitment to collective activity. Whether that transfers to the wider, more heterogeneous population of the surrounding districts is the open question the project is designed to explore.",
+  "The study is a methodological one. It is not reporting a new find, a new date, or a new interpretation of the Roman port. It is reporting on a process: how to bring a community into the life of a site when that community is a city. The value of the work lies in the experiment itself, in documenting what works and what does not when the heritage community is not a village but a sprawl of apartment blocks and shopping centers."
+ ],
+ "doesnt_show": "This does not yet show whether the Scout Group model scales to the wider urban population, or whether participation changes how residents actually relate to the site over time.",
+ "settle": "A follow-up evaluation measuring sustained engagement, retention, or shift in public understanding among the surrounding districts would settle whether the pilot approach holds.",
+ "firm": "solid",
+ "related": [
+  "unpublished-finds"
+ ],
+ "source": {
+  "name": "Il capitale culturale. Studies on the Value of Cultural Heritage",
+  "url": "https://doi.org/10.13138/2039-2362/3008",
+  "title": "From Research to Dissemination. An Experimental Project of Community Archaeology at the Archaeological Park of Ancient Ostia / Dalla ricerca alla divulgazione. Un Progetto sperimentale di archeologia di comunità al Parco Archeologico di Ostia Antica",
+  "date": "2026-09-30"
+ },
+ "refs": [
+  {
+   "doi": "10.13138/2039-2362/3008",
+   "title": "From Research to Dissemination. An Experimental Project of Community Archaeology at the Archaeological Park of Ancient Ostia / Dalla ricerca alla divulgazione. Un Progetto sperimentale di archeologia di comunità al Parco Archeologico di Ostia Antica",
+   "container": "Il capitale culturale. Studies on the Value of Cultural Heritage",
+   "year": 2024,
+   "authors": [
+    "Valeria Di Cola",
+    "Marina Lo Blundo"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Panoramica_Teatro_di_Ostia.jpg/1280px-Panoramica_Teatro_di_Ostia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Panoramica_Teatro_di_Ostia.jpg",
+  "licence": "CC BY-SA 3.0",
+  "title": "Panoramica Teatro di Ostia.jpg",
+  "credit": "Livioandronico2013"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
