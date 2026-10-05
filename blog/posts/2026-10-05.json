@@ -1,0 +1,45 @@
+{
+ "id": "2026-10-05",
+ "date": "2026-10-05",
+ "title": "The Scouts at Ostia: A New Way to Bring the Ancient City to Its Neighbours",
+ "kicker": "public archaeology",
+ "dek": "Around Ostia Antica the ancient city is swallowed by modern housing. A pilot project with a Scout Group tests whether community archaeology can work where no clear heritage community exists.",
+ "body": [
+  "The Archaeological Park of Ancient Ostia sits in a zone that is almost entirely built up. The districts of Ostia, Acilia and Casal Palocco form large, socially differentiated but contiguous urban areas. The people who live there are not, in the usual sense, a heritage community. They are neighbours, commuters, families. That is the problem the project starts from.",
+  "The study, published in Il capitale culturale, describes an experimental project of community archaeology designed to test direct involvement of the local community residing around the archaeological site. The pilot partner is a Scout Group, working in collaboration with the Archaeological Park of Ancient Ostia. The framing is methodological: it is part of broader research on the techniques of cultural entertainment in the field of public archaeology.",
+  "What makes this unusual is the starting point. Most community archaeology projects assume a pre-existing relationship between a place and the people who live near it. Here the authors argue that relationship does not naturally exist. The ancient city is a tourist destination and a research site, but the residents of the surrounding districts have no inherited stake in it. The project tries to build that stake from scratch.",
+  "The Scout Group serves as the pilot because it already provides a structure for group activity, outdoor learning and a sense of shared purpose. The collaboration with the Park gives the project institutional access and credibility. The study positions this as an experiment, not a finished model. The question is whether the method transfers to other urbanized contexts where the heritage site and the local population have no historical bond.",
+  "What the paper does not yet show is whether this approach produces any measurable change in how residents relate to the ancient city. The text describes the design and the rationale. It is a methodological contribution, a test of whether community archaeology can be applied where the usual assumptions about a heritage community break down.",
+  "The broader implication is that public archaeology has been slow to address sites that sit inside dense modern urban fabric rather than in rural or semi-rural settings. Ostia is one of the largest Roman sites in the world, and it is ringed by apartment blocks. If the method works here, it could apply to any ancient city whose modern neighbours have no ancestral connection to the ground beneath their feet."
+ ],
+ "doesnt_show": "The paper does not yet report outcomes, participant feedback, or evidence that the pilot changed how residents perceive or engage with the site. It is a design and rationale study, not a results report.",
+ "settle": "A follow-up study measuring changes in local engagement, visitation, or self-identified connection to the site after sustained participation would settle whether the method works.",
+ "firm": "plausible",
+ "related": [],
+ "source": {
+  "name": "Il capitale culturale. Studies on the Value of Cultural Heritage",
+  "url": "https://doi.org/10.13138/2039-2362/3008",
+  "title": "From Research to Dissemination. An Experimental Project of Community Archaeology at the Archaeological Park of Ancient Ostia / Dalla ricerca alla divulgazione. Un Progetto sperimentale di archeologia di comunità al Parco Archeologico di Ostia Antica",
+  "date": "2026-09-30"
+ },
+ "refs": [
+  {
+   "doi": "10.13138/2039-2362/3008",
+   "title": "From Research to Dissemination. An Experimental Project of Community Archaeology at the Archaeological Park of Ancient Ostia / Dalla ricerca alla divulgazione. Un Progetto sperimentale di archeologia di comunità al Parco Archeologico di Ostia Antica",
+   "container": "Il capitale culturale. Studies on the Value of Cultural Heritage",
+   "year": 2024,
+   "authors": [
+    "Valeria Di Cola",
+    "Marina Lo Blundo"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Panoramica_Teatro_di_Ostia.jpg/1280px-Panoramica_Teatro_di_Ostia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Panoramica_Teatro_di_Ostia.jpg",
+  "licence": "CC BY-SA 3.0",
+  "title": "Panoramica Teatro di Ostia.jpg",
+  "credit": "Livioandronico2013"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
