@@ -34,6 +34,7 @@ main{max-width:1240px;margin:0 auto;padding:18px 18px 110px}
 .seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:3px;max-width:100%;overflow-x:auto;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}
 .seg button{background:none;border:0;padding:6px 12px;border-radius:9px;color:var(--muted);font-weight:500;font-size:13px;white-space:nowrap;flex:none}.seg button.on{background:var(--gold);color:#1a1510}
 .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.row.sb{justify-content:space-between}
+.eg{border-top:1px solid var(--line);padding:10px 0}.eg textarea{min-height:64px;margin-top:6px}.egd{border-top:1px solid var(--line);padding:8px 0}.egd summary{cursor:pointer}.egrow{gap:4px 8px;padding:5px 0;align-items:baseline}.egrow a{overflow-wrap:anywhere}.egrow .tiny{min-width:0;flex-basis:100%;padding-left:22px}
 .ttbox{margin-top:12px;padding:14px 16px}.ttgrid{display:grid;grid-template-columns:170px minmax(0,1fr);gap:16px;align-items:start}.ttgrid video{width:100%;aspect-ratio:9/16;border-radius:10px;background:#000;object-fit:contain}
 .ttav{width:22px;height:22px;border-radius:50%;vertical-align:middle;margin-right:6px;object-fit:cover}.ttck{gap:6px}.ttck.off{opacity:.45}
 @media (max-width:640px){.ttgrid{grid-template-columns:1fr}.ttgrid video{max-width:200px}}
@@ -106,7 +107,7 @@ details>summary{cursor:pointer;color:var(--muted);font-size:13px}details[open]>s
   <button class="btn" id="logoutBtn" style="display:none">Lock</button>
 </header>
 <nav class="tabs" id="tabs" style="display:none">
-  <button data-room="overview" class="on">Overview</button><button data-room="explorer">The Explorer</button><button data-room="visitors">Visitors</button><button data-room="director">Talk</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
+  <button data-room="overview" class="on">Overview</button><button data-room="explorer">The Explorer</button><button data-room="engage">Engage</button><button data-room="visitors">Visitors</button><button data-room="director">Talk</button><button data-room="schedule">Schedule</button><button data-room="films">Films</button><button data-room="networks">Networks</button><button data-room="log">Log</button>
 </nav>
 <main id="main"></main>
 <div class="drawer" id="drawer"><div class="scrim" data-close></div><div class="sheet" id="sheet"></div></div>
@@ -164,7 +165,7 @@ function setupList(s) {
 async function load(room, force) {
   S.room = room; $$("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.room === room));
   if (!location.hash.startsWith("#" + room)) history.replaceState(null, "", "#" + room);
-  const R = { overview: roomOverview, explorer: roomExplorer, visitors: roomVisitors, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
+  const R = { overview: roomOverview, explorer: roomExplorer, engage: roomEngage, visitors: roomVisitors, schedule: roomSchedule, films: roomFilms, director: roomDirector, networks: roomNetworks, log: roomLog }[room] || roomOverview;
   try { await R(force); } catch (e) { if (e.message !== "locked") $("#main").innerHTML = `<div class="card"><h2>Something went wrong</h2><p class="muted">${esc(e.message)}</p></div>`; }
   if (!S.ov) getOv().catch(() => {});   /* the header's mode pill, on every room */
 }
@@ -295,6 +296,44 @@ async function roomSchedule(force) {
       <p class="tiny muted" style="margin-top:10px">The film for each slot is decided when the slot comes: pinned films first, then the plan's order, among the films the farm has finished.</p></div>
     <div class="card"><h2>Gone out and waiting</h2><div class="list">${recs.map(recRow).join("") || `<p class="muted small">Nothing yet.</p>`}</div></div></div>
     ${FOOT}`;
+  wireCommon();
+}
+
+/* The Engage room: what the Explorer found and drafted, what it answered on its own, and the people and
+   groups to follow and join by hand (platforms do not let an app follow, join or comment on others' posts) */
+const EG_NETS = [["youtube", "YouTube channels"], ["instagram", "Instagram"], ["tiktok", "TikTok"], ["facebook_groups", "Facebook groups"], ["facebook_pages", "Facebook pages"], ["reddit", "Reddit"], ["x", "X"]];
+const egAgo = iso => { const h = Math.round((Date.now() - Date.parse(iso)) / 3600e3); return !iso ? "" : h < 1 ? "just now" : h < 48 ? h + " h ago" : Math.round(h / 24) + " days ago"; };
+async function roomEngage() {
+  const g = await api("engage");
+  const items = (g.list.items || []).filter(i => i.status === "new");
+  const done = g.done || {}, C = g.community || {};
+  const key = (n, x) => n + "|" + (x.handle || x.name);
+  $("#main").innerHTML = `
+  <div class="card"><div class="row sb"><h2 style="margin:0">Today's conversations</h2><div class="row"><span class="tiny muted">${g.list.at ? "updated " + egAgo(g.list.at) + " · " + (g.list.read || 0) + " new videos read" : "not run yet"}</span><button class="btn tiny" id="egRun">Find now</button></div></div>
+    <p class="small muted">New videos on our subjects from the channels in the community map, each with a comment drafted for you. <b>Open + copy</b> puts the comment on your clipboard and opens the video: paste it, change anything you like, post it. About 3 minutes a day.</p>
+    ${items.length ? items.map(i => `<div class="eg" data-id="${esc(i.id)}"><div class="row sb"><b class="small">${esc(i.channel)}</b><span class="tiny muted">${egAgo(i.published)}</span></div>
+      <a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.title)}</a>
+      <textarea class="egc" rows="3">${esc(i.comment || "")}</textarea>
+      <div class="tiny muted">${i.filmTitle ? "Our related case: " + esc(i.filmTitle) + (i.sources ? " · " + esc(i.sources) : "") : "No related case of ours"}${i.comment ? "" : " · no draft: the free AI models were busy, write a line yourself or skip"}</div>
+      <div class="row" style="margin-top:6px"><button class="btn gold tiny" data-eg-open="${esc(i.id)}" data-url="${esc(i.url)}">Open + copy</button><button class="btn tiny" data-eg-mark="done|${esc(i.id)}">Done</button><button class="btn tiny" data-eg-mark="skip|${esc(i.id)}">Skip</button></div></div>`).join("") : `<p class="muted">Nothing waiting. The Explorer looks every day at 11:00 UTC.</p>`}
+  </div>
+  <div class="card"><div class="row sb"><h2 style="margin:0">Replies on our posts</h2><label class="row small" style="gap:6px"><input type="checkbox" id="egAuto" style="width:auto" ${g.repliesOn ? "checked" : ""}> Answer on its own</label></div>
+    <p class="small muted">Every three hours the Explorer reads new comments under our Facebook and Instagram posts and answers real questions and thoughtful remarks, at most 10 a day, within the house rules. Anything about faith, politics, health, the law or a person comes to you below instead.${(g.replies.errors || []).length ? `<br><span style="color:var(--amber)">Last check: ${esc(g.replies.errors.join(" · "))}</span>` : ""}</p>
+    <div class="row" style="margin-bottom:8px"><button class="btn tiny" id="egReply">Check comments now</button><span class="tiny muted" id="egReplyOut"></span></div>
+    ${(g.flags.items || []).length ? `<h3 style="font-size:16px;margin:10px 0 6px">For you</h3>` + g.flags.items.map(f => `<div class="eg"><div class="tiny muted">${esc(f.net)} · ${esc(f.film)} · ${esc(f.why || "")}</div><div class="small">"${esc(f.comment)}"</div><div class="row" style="margin-top:4px"><button class="btn tiny" data-eg-mark="flag|${esc(f.id)}">Dealt with</button></div></div>`).join("") : ""}
+    ${(g.replies.items || []).length ? `<h3 style="font-size:16px;margin:10px 0 6px">Answered</h3>` + g.replies.items.slice(0, 12).map(r => `<div class="eg"><div class="tiny muted">${esc(r.net)} · ${egAgo(r.at)}</div><div class="small muted">"${esc(r.comment)}"</div><div class="small">We said: ${esc(r.reply)}</div></div>`).join("") : `<p class="tiny muted">No answers yet.</p>`}
+  </div>
+  <div class="card"><h2 style="margin:0 0 6px">Follow and join</h2>
+    <p class="small muted">Once, by hand: platforms do not let an app follow people or join groups. Open each one, follow or join, then tick it. Groups show their rule on sharing our own films.</p>
+    ${EG_NETS.map(([n, label]) => { const xs = C[n] || []; const k = xs.filter(x => done[key(n, x)]).length; return `<details class="egd"><summary><b>${label}</b> <span class="tiny muted">${k} of ${xs.length} done</span></summary>${xs.map(x => `<label class="row egrow"><input type="checkbox" style="width:auto" data-eg-com="${esc(key(n, x))}" ${done[key(n, x)] ? "checked" : ""}> <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}${x.handle ? " " + esc(x.handle) : ""}</a> <span class="tiny muted">${esc(x.why || "")}${x.self_promo_rule ? " · Rule: " + esc(x.self_promo_rule) : ""}</span></label>`).join("")}</details>`; }).join("")}
+    ${C.hashtags ? `<p class="tiny muted" style="margin-top:10px">Hashtags: TikTok ${esc((C.hashtags.tiktok || []).join(" "))} · Instagram ${esc((C.hashtags.instagram || []).join(" "))}</p>` : ""}
+  </div>${FOOT}`;
+  $$("[data-eg-open]").forEach(b => b.onclick = async () => { const box = b.closest(".eg"); const t = $(".egc", box).value; try { await navigator.clipboard.writeText(t); toast("Comment copied: paste it under the video"); } catch { toast("Copy did not work: select the text and copy it"); } window.open(b.dataset.url, "_blank", "noopener"); });
+  $$("[data-eg-mark]").forEach(b => b.onclick = async () => { const [st, id] = b.dataset.egMark.split("|"); try { await api("engage_mark", { kind: st === "flag" ? "flag" : "item", id, status: st }); } catch (e) { toast(e.message); } roomEngage(); });
+  $$("[data-eg-com]").forEach(c => c.onchange = async () => { try { await api("engage_mark", { kind: "community", id: c.dataset.egCom, status: c.checked ? "done" : "undo" }); } catch (e) { toast(e.message); } });
+  $("#egAuto").onchange = async e => { try { await api("engage_dial", { on: e.target.checked }); toast(e.target.checked ? "Answers on its own" : "Stopped answering"); } catch (err) { toast(err.message); } };
+  $("#egRun").onclick = async e => { e.target.disabled = true; e.target.textContent = "Looking…"; try { const r = (await api("engage_run", { what: "list" })).result; toast("Found " + r.picked + " (read " + r.read + ")"); } catch (err) { toast(err.message); } roomEngage(); };
+  $("#egReply").onclick = async e => { e.target.disabled = true; $("#egReplyOut").textContent = "Reading comments…"; try { const r = (await api("engage_run", { what: "replies" })).result; $("#egReplyOut").textContent = r.off ? "Answering is off" : r.limit ? "Today's 10 answers are done" : `${r.read} new comments, ${r.sent} answered` + ((r.errors || []).length ? " · " + r.errors.join(" · ") : ""); } catch (err) { $("#egReplyOut").textContent = err.message; } e.target.disabled = false; };
   wireCommon();
 }
 
