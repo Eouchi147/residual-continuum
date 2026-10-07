@@ -280,6 +280,10 @@ export default async function handler(req, res) {
         const G = await import("./_engage.js"); const t0 = Date.now(), ctx = { left: () => 250e3 - (Date.now() - t0) };
         return json(res, 200, { result: A.what === "replies" ? await G.replyRound(ctx, { force: true }) : await G.buildEngage(ctx) });
       }
+      case "engage_redraft": {
+        if (req.method !== "POST") return json(res, 405, { error: "POST only" });
+        const G = await import("./_engage.js"); return json(res, 200, await G.redraft(String(A.id || "")));
+      }
       case "engage_dial": {
         if (req.method !== "POST") return json(res, 405, { error: "POST only" });
         return json(res, 200, { dials: await setDials({ replies: A.on === true }) });
