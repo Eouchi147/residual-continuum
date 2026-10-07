@@ -13,7 +13,7 @@
 import { Readable } from "node:stream";
 import { env, kv, kvReady, K, kget, kset, json, readBody, isOwner, isCron, passwordOk, makeSession, dials, setDials, plan, film,
          available, farmRuns, readLog, nextFilms, nextLong, longFilms, videoUrl, randomState, pkce, siteUrl, errText, NETS, shape } from "./_studio.js";
-import { NETWORKS, netStatus } from "./_nets.js";
+import { NETWORKS, netStatus, TT_AUDIT, TT_STANDING } from "./_nets.js";
 import { runDue, calendar, approve, reject, retry, postNow, readSlot, postedTo, compose } from "./_poster.js";
 import { chat, chatHistory, proposals, decide, doAction, captionsFor, snapshot } from "./_director.js";
 
@@ -218,6 +218,56 @@ export default async function handler(req, res) {
         const t0 = Date.now();
         const r = await NETWORKS.youtube.send(f, { ...shape(f, "youtube"), privacy: "private" }, { left: () => 250e3 - (Date.now() - t0) });
         return json(res, 200, { result: { ok: !!r.ok, id: r.id || "", private: !!r.private, note: r.note || "", error: r.error || "", ms: Date.now() - t0 } });
+      }
+      /* TikTok, from a film's TikTok panel (TikTok's Content Sharing Guidelines): first the account and the
+         choices TikTok allows it today, then one post with the owner's own choices, sent only when he
+         presses Post. A public post is recorded so the scheduler never sends the film twice; a private one
+         (Only me, as TikTok makes every post before its audit) is not. */
+      case "tt_creator": {
+        const T = NETWORKS.tiktok;
+        if (!T || !T.ready()) return json(res, 200, { ok: false, error: "TikTok's app keys are not in Vercel yet" });
+        const ci = await T.creator();
+        return json(res, 200, { ...ci, auditPassed: (await kget(TT_AUDIT)) || "", standing: (await kget(TT_STANDING)) || null });
+      }
+      case "tt_post": {
+        if (req.method !== "POST") return json(res, 405, { error: "POST only" });
+        const f = film(String(A.id)); if (!f || f.kind === "long") return json(res, 400, { error: "choose a vertical film" });
+        if (A.consent !== true) return json(res, 400, { error: "press Post to TikTok to send it" });
+        const T = NETWORKS.tiktok; if (!T || !T.ready()) return json(res, 400, { error: "TikTok is not set up" });
+        const s = { privacy: String(A.privacy || ""), comment: A.comment === true, duet: A.duet === true, stitch: A.stitch === true, brandOrganic: A.brandOrganic === true, brandContent: A.brandContent === true };
+        const r = await T.post(f, s, String(A.caption || "").slice(0, 2200));
+        if (r.ok && r.publishId) await kset("rc:tt:pub:" + r.publishId, { id: f.id, privacy: s.privacy, at: new Date().toISOString() }, 14 * 86400);
+        return json(res, 200, { result: { ok: !!r.ok, publishId: r.publishId || "", error: r.error || "" } });
+      }
+      case "tt_status": {
+        const T = NETWORKS.tiktok; const pid = String(A.pid || ""); if (!T || !pid) return json(res, 400, { error: "no post to follow" });
+        const x = await T.status(pid);
+        const postId = (x.publicaly_available_post_id && x.publicaly_available_post_id[0]) ? String(x.publicaly_available_post_id[0]) : "";
+        if (x.status === "PUBLISH_COMPLETE") {
+          const m = await kget("rc:tt:pub:" + pid);
+          if (m && m.id && m.privacy && m.privacy !== "SELF_ONLY" && !m.noted) {
+            await kv([["HSET", K.posted, m.id + "|tiktok", JSON.stringify({ date: new Date().toISOString().slice(0, 10), slot: "console", id: postId || pid, url: "", at: new Date().toISOString(), by: "console" })]]);
+            await kset("rc:tt:pub:" + pid, { ...m, noted: true }, 14 * 86400);
+          }
+        }
+        return json(res, 200, { status: String(x.status || ""), reason: String(x.fail_reason || x.error || ""), postId });
+      }
+      /* the choices scheduled TikTok posts use, saved by the owner once TikTok has audited the app */
+      case "tt_standing": {
+        if (req.method !== "POST") return json(res, 200, { standing: (await kget(TT_STANDING)) || null });
+        if (!(await kget(TT_AUDIT))) return json(res, 400, { error: "TikTok has not audited the app yet: scheduled TikTok posts wait for it" });
+        if (A.clear === true) { await kv([["DEL", TT_STANDING]]); return json(res, 200, { standing: null }); }
+        const ci = await NETWORKS.tiktok.creator(); if (!ci.ok) return json(res, 400, { error: ci.error });
+        const st = { privacy: String(A.privacy || ""), comment: A.comment === true && !ci.commentOff, duet: A.duet === true && !ci.duetOff, stitch: A.stitch === true && !ci.stitchOff, at: new Date().toISOString(), by: "owner" };
+        if (!ci.options.includes(st.privacy)) return json(res, 400, { error: "choose who can watch, from TikTok's options" });
+        await kset(TT_STANDING, st);
+        return json(res, 200, { standing: st });
+      }
+      /* set when TikTok's audit of the app has passed (or undone) */
+      case "tt_audit": {
+        if (req.method !== "POST") return json(res, 200, { auditPassed: (await kget(TT_AUDIT)) || "" });
+        if (A.passed === true) await kset(TT_AUDIT, new Date().toISOString().slice(0, 10)); else await kv([["DEL", TT_AUDIT]]);
+        return json(res, 200, { auditPassed: (await kget(TT_AUDIT)) || "" });
       }
       /* a film that went out on a network by hand (YouTube Studio, while the
          API audit is pending): recorded so the poster never sends it twice */

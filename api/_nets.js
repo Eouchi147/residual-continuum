@@ -19,7 +19,7 @@
    - Meta fetches the video itself and wants a plain video/mp4 that does not
      redirect, so it is given this site's own door (/api/studio?action=video).
 --------------------------------------------------------------------------- */
-import { env, SITE, siteUrl, sleep, errText, getTok, putTok, kv, kvReady, K, videoUrl, doorUrl, clip, today, available } from "./_studio.js";
+import { env, SITE, siteUrl, sleep, errText, getTok, putTok, kv, kvReady, kget, K, videoUrl, doorUrl, clip, today, available } from "./_studio.js";
 
 const cb = net => "https://" + SITE() + "/studio/callback/" + net;
 const form = o => new URLSearchParams(Object.entries(o).filter(([, v]) => v != null && v !== "")).toString();
@@ -565,8 +565,23 @@ const x = {
 };
 
 /* ================================================================= TikTok */
+/* Content Posting API, Direct Post, the film's bytes pushed in chunks (FILE_UPLOAD: no URL to verify).
+   TikTok's rules for apps that post (developers.tiktok.com/doc/content-sharing-guidelines) are kept here:
+   - creator_info is asked before every post: the account's name, the privacy levels it allows today,
+     whether comments, Duets and Stitches are off on the account, and the longest video it may post;
+   - from the console, nothing is sent before the owner has chosen who can watch and which interactions
+     are allowed (no defaults) and has pressed Post: his express consent, post by post;
+   - until TikTok audits the app, TikTok makes every post from it private (Only me) for good and only
+     takes posts to a private account, so the scheduler leaves TikTok alone until the audit has passed
+     (rc:tt:audit) and the owner has saved his choices for scheduled posts (rc:tt:standing). */
 const TT = "https://open.tiktokapis.com/v2";
+export const TT_AUDIT = "rc:tt:audit", TT_STANDING = "rc:tt:standing";
 const ttReady = () => !!(env("TIKTOK_CLIENT_KEY") && env("TIKTOK_CLIENT_SECRET"));
+const ttErr = (x, fallback) => {
+  const e = x && x.j && x.j.error;
+  const m = e && typeof e === "object" && e.code && e.code !== "ok" ? (e.message ? e.message + " (" + e.code + ")" : e.code) : "";
+  return clip(String(m || (x && x.j && x.j.error_description) || fallback || ("http " + (x && x.r ? x.r.status : "?"))), 220);
+};
 async function ttAccess() {
   const t = await getTok("tiktok"); if (!t) return { ok: false, skipped: "TikTok is not connected" };
   if (t.access && t.accessExp > Date.now() + 60e3) return { ok: true, token: t.access };
@@ -576,54 +591,89 @@ async function ttAccess() {
   await putTok("tiktok", { ...t, access: j.access_token, refresh: j.refresh_token || t.refresh, accessExp: Date.now() + (Number(j.expires_in || 86400) - 120) * 1000 });
   return { ok: true, token: j.access_token };
 }
+/* what TikTok allows this account today (scope video.publish) */
+async function ttCreator(token) {
+  const x = await jfetch(TT + "/post/publish/creator_info/query/", { method: "POST", headers: { "content-type": "application/json; charset=UTF-8", authorization: "Bearer " + token }, body: "{}" });
+  const d = x.j && x.j.data;
+  if (!x.ok || !d || !Array.isArray(d.privacy_level_options)) return { ok: false, error: "TikTok creator info: " + ttErr(x) };
+  return { ok: true, nickname: String(d.creator_nickname || ""), username: String(d.creator_username || ""), avatar: String(d.creator_avatar_url || ""),
+    options: d.privacy_level_options.map(String), commentOff: !!d.comment_disabled, duetOff: !!d.duet_disabled, stitchOff: !!d.stitch_disabled,
+    maxSec: Number(d.max_video_post_duration_sec) || 0 };
+}
 async function ttStatus(tok, pid) {
   const { j } = await jfetch(TT + "/post/publish/status/fetch/", { method: "POST", headers: { "content-type": "application/json; charset=UTF-8", authorization: "Bearer " + tok }, body: JSON.stringify({ publish_id: pid }) });
   return (j && j.data) || {};
 }
+/* one video, with the owner's choices s = {privacy, comment, duet, stitch, brandOrganic, brandContent} */
+async function ttPublish(token, f, s, caption) {
+  let bytes; try { bytes = await filmBytes(f.id); } catch (e) { return { ok: false, error: errText(e) }; }
+  const CH = 10 * 1024 * 1024, n = Math.max(1, Math.floor(bytes.length / CH));
+  const init = await jfetch(TT + "/post/publish/video/init/", { method: "POST", headers: { "content-type": "application/json; charset=UTF-8", authorization: "Bearer " + token }, body: JSON.stringify({
+    post_info: { title: String(caption || "").slice(0, 2200), privacy_level: s.privacy, disable_comment: !s.comment, disable_duet: !s.duet, disable_stitch: !s.stitch,
+      video_cover_timestamp_ms: 2500, brand_content_toggle: !!s.brandContent, brand_organic_toggle: !!s.brandOrganic },
+    source_info: { source: "FILE_UPLOAD", video_size: bytes.length, chunk_size: n === 1 ? bytes.length : CH, total_chunk_count: n } }) });
+  const d = init.j && init.j.data;
+  if (!init.ok || !d || !d.upload_url) return { ok: false, error: "TikTok: " + ttErr(init) };
+  for (let k = 0; k < n; k++) {
+    const a = k * CH, b = k === n - 1 ? bytes.length : a + CH;
+    const up = await fetch(d.upload_url, { method: "PUT", headers: { "content-type": "video/mp4", "content-range": `bytes ${a}-${b - 1}/${bytes.length}`, "content-length": String(b - a) }, body: bytes.subarray(a, b) });
+    if (!up.ok && up.status !== 206 && up.status !== 201) return { ok: false, error: "TikTok upload, part " + (k + 1) + " of " + n + ": http " + up.status };
+  }
+  return { ok: true, publishId: String(d.publish_id || "") };
+}
+/* the owner's choices checked against what TikTok allows today */
+function ttCheck(ci, s) {
+  if (!s.privacy || !ci.options.includes(s.privacy)) return "choose who can watch, from TikTok's options for this account";
+  if (s.brandContent && s.privacy === "SELF_ONLY") return "branded content cannot be private (Only me)";
+  if ((s.comment && ci.commentOff) || (s.duet && ci.duetOff) || (s.stitch && ci.stitchOff)) return "that interaction is turned off on the TikTok account";
+  return "";
+}
 const tiktok = {
   label: "TikTok", kind: "oauth", vars: ["TIKTOK_CLIENT_KEY", "TIKTOK_CLIENT_SECRET"],
   ready: ttReady,
-  connectUrl: st => "https://www.tiktok.com/v2/auth/authorize/?" + form({ client_key: env("TIKTOK_CLIENT_KEY"), scope: "user.info.basic,video.publish,video.upload", response_type: "code", redirect_uri: cb("tiktok"), state: st }),
+  connectUrl: st => "https://www.tiktok.com/v2/auth/authorize/?" + form({ client_key: env("TIKTOK_CLIENT_KEY"), scope: "user.info.basic,video.publish", response_type: "code", redirect_uri: cb("tiktok"), state: st }),
   async exchange(code) {
     const { r, j, t } = await jfetch(TT + "/oauth/token/", { method: "POST", headers: { "content-type": "application/x-www-form-urlencoded" },
       body: form({ client_key: env("TIKTOK_CLIENT_KEY"), client_secret: env("TIKTOK_CLIENT_SECRET"), code, grant_type: "authorization_code", redirect_uri: cb("tiktok") }) });
     if (!r.ok || !j || !j.access_token) return { ok: false, error: said(j, t, "http " + r.status) };
-    let who = ""; try { const m = await jfetch(TT + "/user/info/?fields=display_name,username", { headers: { authorization: "Bearer " + j.access_token } }); who = m.j && m.j.data && m.j.data.user ? "@" + (m.j.data.user.username || m.j.data.user.display_name) : ""; } catch { }
-    await putTok("tiktok", { access: j.access_token, refresh: j.refresh_token, accessExp: Date.now() + (Number(j.expires_in || 86400) - 120) * 1000, who });
+    let who = ""; try { const ci = await ttCreator(j.access_token); if (ci.ok) who = "@" + (ci.username || ci.nickname); } catch { }
+    await putTok("tiktok", { access: j.access_token, refresh: j.refresh_token, accessExp: Date.now() + (Number(j.expires_in || 86400) - 120) * 1000, who, scope: String(j.scope || "") });
     return { ok: true, who };
   },
+  /* for the console's TikTok panel */
+  async creator() { const a = await ttAccess(); if (!a.ok) return { ok: false, error: a.error || a.skipped }; return ttCreator(a.token); },
+  async post(f, s, caption) {
+    const a = await ttAccess(); if (!a.ok) return { ok: false, error: a.error || a.skipped };
+    const ci = await ttCreator(a.token); if (!ci.ok) return ci;
+    const bad = ttCheck(ci, s); if (bad) return { ok: false, error: bad };
+    return ttPublish(a.token, f, s, caption);
+  },
+  async status(pid) { const a = await ttAccess(); if (!a.ok) return { error: a.error || a.skipped }; return ttStatus(a.token, pid); },
+  /* the scheduler: only after TikTok's audit, with the choices the owner saved for scheduled posts */
   async send(f, w, ctx) {
+    const passed = await kget(TT_AUDIT);
+    if (!passed) return { ok: false, skipped: "TikTok keeps posts from apps it has not audited private for good: scheduled TikTok posts wait for the audit" };
+    const st = await kget(TT_STANDING);
+    if (!st || !st.privacy) return { ok: false, skipped: "save the choices for scheduled TikTok posts in a film's TikTok panel first" };
     const a = await ttAccess(); if (!a.ok) return a;
-    const H = { "content-type": "application/json; charset=UTF-8", authorization: "Bearer " + a.token };
-    const ci = await jfetch(TT + "/post/publish/creator_info/query/", { method: "POST", headers: H, body: "{}" });
-    const opts = (ci.j && ci.j.data && ci.j.data.privacy_level_options) || [];
-    const privacy = opts.includes("PUBLIC_TO_EVERYONE") ? "PUBLIC_TO_EVERYONE" : (opts[0] || "SELF_ONLY");
-    let bytes; try { bytes = await filmBytes(f.id); } catch (e) { return { ok: false, error: errText(e) }; }
-    const CH = 10 * 1024 * 1024, n = Math.max(1, Math.floor(bytes.length / CH));
-    const init = await jfetch(TT + "/post/publish/video/init/", { method: "POST", headers: H, body: JSON.stringify({
-      post_info: { title: w.text.slice(0, 2150), privacy_level: privacy, disable_duet: false, disable_comment: false, disable_stitch: false, video_cover_timestamp_ms: 2500 },
-      source_info: { source: "FILE_UPLOAD", video_size: bytes.length, chunk_size: n === 1 ? bytes.length : CH, total_chunk_count: n } }) });
-    const d = init.j && init.j.data;
-    if (!init.ok || !d || !d.upload_url) return { ok: false, error: "TikTok init: " + said(init.j && init.j.error, init.t, "http " + init.r.status) };
-    for (let k = 0; k < n; k++) {
-      const s = k * CH, e = k === n - 1 ? bytes.length : s + CH;
-      const up = await fetch(d.upload_url, { method: "PUT", headers: { "content-type": "video/mp4", "content-range": `bytes ${s}-${e - 1}/${bytes.length}`, "content-length": String(e - s) }, body: bytes.subarray(s, e) });
-      if (!up.ok && up.status !== 206 && up.status !== 201) return { ok: false, error: "TikTok upload chunk " + (k + 1) + ": http " + up.status };
-    }
-    const note = privacy !== "PUBLIC_TO_EVERYONE" ? "TikTok posted it as " + privacy + ": the TikTok app has not passed TikTok's audit yet" : undefined;
+    const ci = await ttCreator(a.token); if (!ci.ok) return ci;
+    const s = { privacy: st.privacy, comment: !!st.comment && !ci.commentOff, duet: !!st.duet && !ci.duetOff, stitch: !!st.stitch && !ci.stitchOff };
+    const bad = ttCheck(ci, s); if (bad) return { ok: false, error: "TikTok: " + bad + " (choose again in the console)" };
+    const p = await ttPublish(a.token, f, s, w.text); if (!p.ok) return p;
+    const priv = s.privacy === "SELF_ONLY";
     for (let i = 0; i < 10 && (!ctx || ctx.left() > 15e3); i++) {
       await sleep(5000);
-      const st = await ttStatus(a.token, d.publish_id);
-      if (st.status === "PUBLISH_COMPLETE") return { ok: true, id: (st.publicaly_available_post_id && st.publicaly_available_post_id[0]) || d.publish_id, note, private: !!note };
-      if (st.status === "FAILED") return { ok: false, error: "TikTok refused: " + (st.fail_reason || "failed") };
+      const x = await ttStatus(a.token, p.publishId);
+      if (x.status === "PUBLISH_COMPLETE") return { ok: true, id: (x.publicaly_available_post_id && x.publicaly_available_post_id[0]) || p.publishId, private: priv || undefined };
+      if (x.status === "FAILED") return { ok: false, error: "TikTok refused: " + (x.fail_reason || "failed") };
     }
-    return { ok: false, pending: { tt: d.publish_id }, note: note || "TikTok is still processing" };
+    return { ok: false, pending: { tt: p.publishId, priv }, note: "TikTok is still processing" };
   },
   async finish(p) {
     const a = await ttAccess(); if (!a.ok) return a;
-    const st = await ttStatus(a.token, p.tt);
-    if (st.status === "PUBLISH_COMPLETE") return { ok: true, id: (st.publicaly_available_post_id && st.publicaly_available_post_id[0]) || p.tt };
-    if (st.status === "FAILED") return { ok: false, error: "TikTok refused: " + (st.fail_reason || "failed") };
+    const x = await ttStatus(a.token, p.tt);
+    if (x.status === "PUBLISH_COMPLETE") return { ok: true, id: (x.publicaly_available_post_id && x.publicaly_available_post_id[0]) || p.tt, private: p.priv || undefined };
+    if (x.status === "FAILED") return { ok: false, error: "TikTok refused: " + (x.fail_reason || "failed") };
     return { ok: false, pending: p };
   },
 };
