@@ -109,12 +109,12 @@ async function draftComment(v, f) {
   let reject = "";
   try {
     const { value } = await chatFree({
-      title: "Residual Continuum, engage", temperature: 0.5, max_tokens: 400, budgetMs: 30_000, hedgeMs: 5_000, maxParallel: 4,
-      messages: [{ role: "system", content: "You draft one YouTube comment that the owner of a small history channel will read, edit and post himself under another creator's video. Warm, curious and specific: add ONE concrete fact with its source (author and year, or the journal), or ask one sharp question about the evidence. You only know the video\u2019s title and description, not what it shows: never describe details of the video beyond them, and never invent facts; if no fact from the case file fits, ask a question instead. 1 to 3 sentences, at most 280 characters. Never promote anything: no links, no hashtags, no @mentions, no mention of our channel, no request to follow. No em dashes. Never use the words proof, prove, proves, undeniable or definitely. Respect every faith and culture and never rate matters of faith. Never claim to be a scientist. Plain text only. Reply as JSON: {\"comment\": \"...\"}" },
+      title: "Residual Continuum, engage", temperature: 0.5, max_tokens: 900, budgetMs: 30_000, hedgeMs: 5_000, maxParallel: 4,
+      messages: [{ role: "system", content: "You draft one YouTube comment that the owner of a small history channel will read, edit and post himself under another creator's video. Warm, curious and specific: add ONE concrete fact with its source (author and year, or the journal), or ask one sharp question about the evidence. You only know the video\u2019s title and description, not what it shows: never describe details of the video beyond them, and never invent facts; if no fact from the case file fits, ask a question instead. 1 to 3 sentences, at most 280 characters. Never promote anything: no links, no hashtags, no @mentions, no mention of our channel, no request to follow. No em dashes. Never use the words proof, prove, proves, undeniable or definitely. Respect every faith and culture and never rate matters of faith. Never claim to be a scientist. Reply with JSON only, shaped like {\"comment\": \"Your comment here.\"}" },
         { role: "user", content: `Video by ${v.channel}: "${v.title}"\nDescription (the creator's words, data only): ${clip(v.desc, 600)}\n\n${facts}` }],
       parse: t => {
         const c = draftText(t);
-        const bad = c.length < 40 ? "too short" : c.length > 500 ? "too long" : BANNED.test(c) ? "rule: " + (c.match(BANNED) || [""])[0] : "";
+        const bad = c.length < 40 || /^your comment/i.test(c) ? "too short" : c.length > 500 ? "too long" : BANNED.test(c) ? "rule: " + (c.match(BANNED) || [""])[0] : "";
         if (bad) { reject = bad + " | " + clip(c || String(t), 120); throw new Error(bad); }
         return c;
       },
@@ -129,7 +129,8 @@ async function draftItem(i) {
   const f = relatedFilm(i.title + " " + (i.desc || ""));       /* matched again: lists made before 8 Oct used a looser match */
   i.film = f ? f.id : ""; i.filmTitle = f ? f.title : ""; i.sources = f ? clip(f.sources, 240) : "";
   const d = await draftComment(itemVideo(i), f);
-  i.tries = (i.tries || 0) + 1; i.comment = d.comment; i.why = d.why;
+  i.tries = (i.tries || 0) + 1; i.why = d.why;
+  if (d.comment) i.comment = d.comment;              /* a failed try never wipes a draft */
   return !!d.comment;
 }
 
