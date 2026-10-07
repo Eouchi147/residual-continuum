@@ -220,7 +220,43 @@ export function shapeArticle(o, storyLen = 0) {
   return { ...o, body };
 }
 
-async function write(item, story, refs, budgetMs = 150_000) {
+const JSON_SHAPE = `Write the article. Return ONLY JSON:
+{"title": "<= 80 chars, a hook, sentence case, no colon",
+ "kicker": "2-3 words",
+ "dek": "1-2 sentences, <= 240 chars",
+ "body": ["5 to 8 paragraphs of plain text, 60-120 words each"],
+ "doesnt_show": "1-2 sentences: what this does not show yet",
+ "settle": "1 sentence: what would settle it",
+ "firm": "solid | strong | plausible | contested",
+ "related": ["0-3 case ids from the list that this bears on"],
+ "image_terms": "3-6 concrete words for an image search (place, object, site)",
+ "image_place": "1-3 words: the site or region name only, for a second image search"}`;
+const PLAIN_SHAPE = `Write the article in plain text, in exactly this form, each label in capitals at the start of its line:
+TITLE: at most 80 characters, a hook, sentence case, no colon
+KICKER: 2-3 words
+DEK: 1-2 sentences, at most 240 characters
+BODY:
+5 to 8 paragraphs of 60-120 words each, separated by blank lines
+DOESNT_SHOW: 1-2 sentences, what this does not show yet
+SETTLE: 1 sentence, what would settle it
+FIRM: one word, solid or strong or plausible or contested
+RELATED: 0-3 case ids from the list, separated by commas, or none
+IMAGE_TERMS: 3-6 concrete words for an image search (place, object, site)
+IMAGE_PLACE: 1-3 words, the site or region name only`;
+
+/* Fallback answer shape: labelled plain text, for models that stumble on long JSON strings. */
+const LABELS = "TITLE|KICKER|DEK|BODY|DOESNT_SHOW|DOES NOT SHOW|SETTLE|FIRM|RELATED|IMAGE_TERMS|IMAGE_PLACE";
+export function parseLabelled(t) {
+  const s = String(t).replace(/```[a-z]*\n?/gi, "");
+  const grab = (k) => { const m = s.match(new RegExp("^[ \\t]*[*#]*[ \\t]*" + k + "[ \\t]*[*]*[ \\t]*:[ \\t]*(.*)$", "im")); return m ? m[1].replace(/^\*+\s*/, "").replace(/\s*\*+$/, "").trim() : ""; };
+  const b = s.match(new RegExp("^[ \\t]*[*#]*[ \\t]*BODY[ \\t]*[*]*[ \\t]*:[ \\t]*\\n?([\\s\\S]*?)(?=^[ \\t]*[*#]*[ \\t]*(?:" + LABELS + ")[ \\t]*[*]*[ \\t]*:|(?![\\s\\S]))", "im"));
+  const rel = grab("RELATED");
+  return { title: grab("TITLE"), kicker: grab("KICKER"), dek: grab("DEK"), body: b ? b[1].trim() : "",
+    doesnt_show: grab("DOESNT_SHOW") || grab("DOES NOT SHOW"), settle: grab("SETTLE"), firm: grab("FIRM").toLowerCase().replace(/[^a-z]/g, ""),
+    related: /^(none|-)?$/i.test(rel) ? [] : rel.split(/[,;\s]+/).filter(Boolean), image_terms: grab("IMAGE_TERMS"), image_place: grab("IMAGE_PLACE") };
+}
+
+async function write(item, story, refs, budgetMs = 150_000, plain = false) {
   const caseList = cases.map((c) => `${c[0]}: ${c[1]}`).join("\n");
   const refTxt = refs.length ? refs.map((r) => `DOI ${r.doi}: ${r.title} (${r.container} ${r.year})`).join("\n") : "none verified";
   const { value } = await chatFree({
@@ -241,18 +277,9 @@ ${refTxt}
 CASES ON THIS SITE (id: title)
 ${caseList}
 
-Write the article. Return ONLY JSON:
-{"title": "<= 80 chars, a hook, sentence case, no colon",
- "kicker": "2-3 words",
- "dek": "1-2 sentences, <= 240 chars",
- "body": ["5 to 8 paragraphs of plain text, 60-120 words each"],
- "doesnt_show": "1-2 sentences: what this does not show yet",
- "settle": "1 sentence: what would settle it",
- "firm": "solid | strong | plausible | contested",
- "related": ["0-3 case ids from the list that this bears on"],
- "image_terms": "3-6 concrete words for an image search (place, object, site)",
- "image_place": "1-3 words: the site or region name only, for a second image search"}` }],
-    parse: (t) => shapeArticle(extractJSON(t), story.text.length),
+${plain ? PLAIN_SHAPE : JSON_SHAPE}` }],
+    json: !plain,
+    parse: (t) => shapeArticle(plain ? parseLabelled(t) : extractJSON(t), story.text.length),
   });
   return value;
 }
@@ -330,7 +357,7 @@ export default async function handler(req, res) {
       console.error("draft: writer failed once:", String(e.message || e).slice(0, 200));
       const left = 285_000 - (Date.now() - t0);                 /* maxDuration 300 s */
       if (left < 60_000) throw e;
-      d = await write(item, story, refs, Math.min(110_000, left - 25_000));
+      d = await write(item, story, refs, Math.min(110_000, left - 25_000), true);   /* plain text this time */
     }
     const body = d.body.map(clean).filter((p) => p.length > 40);
     const ids = new Set(cases.map((c) => c[0]));
