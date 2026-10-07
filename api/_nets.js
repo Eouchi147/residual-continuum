@@ -111,22 +111,11 @@ const youtube = {
     if (kvReady()) { const used = Number((await kv([["GET", K.ytday(day)]]))[0] || 0); if (used >= 6) return { ok: false, error: "YouTube's daily upload quota is spent", quota: true }; }
     const tok = await ytAccess(); if (!tok.ok) return { ok: false, error: tok.error, fatal: tok.fatal };
     if (f.kind === "long") return ytLong(f, w, tok.token, ctx, null);
+    /* Shorts, teasers and clips go up the same resumable way: a multipart upload of a 70 to 80 MB film
+       is refused by YouTube ("Internal error encountered", 7 Oct 2026) */
     let desc = w.description;
     if (f.kind === "teaser" || f.kind === "clip") desc = await teaserDesc(f, desc);
-    let bytes; try { bytes = await filmBytes(f.id); } catch (e) { return { ok: false, error: errText(e) }; }
-    const meta = { snippet: { title: w.title, description: desc, tags: w.tags, categoryId: "27", defaultLanguage: "en", defaultAudioLanguage: "en" },
-                   status: { privacyStatus: w.privacy === "private" ? "private" : "public", selfDeclaredMadeForKids: false, embeddable: true } };
-    const bd = "rc" + Date.now().toString(36);
-    const body = Buffer.concat([Buffer.from("--" + bd + "\r\ncontent-type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) + "\r\n--" + bd + "\r\ncontent-type: video/mp4\r\n\r\n"), bytes, Buffer.from("\r\n--" + bd + "--\r\n")]);
-    const { r, j, t } = await jfetch("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=multipart&part=snippet,status",
-      { method: "POST", headers: { authorization: "Bearer " + tok.token, "content-type": "multipart/related; boundary=" + bd, "content-length": String(body.length) }, body });
-    if (!r.ok || !j || !j.id) return { ok: false, error: "YouTube refused: " + said(j, t, "http " + r.status), quota: /quota/i.test(t) };
-    if (kvReady()) { try { await kv([["INCR", K.ytday(day)], ["EXPIRE", K.ytday(day), "172800"]]); } catch { } }
-    const out = { ok: true, id: j.id, url: "https://youtube.com/shorts/" + j.id };
-    const p = j.status && j.status.privacyStatus;
-    if (w.privacy === "private") { out.private = true; out.note = "uploaded as private, as asked"; }
-    else if (p && p !== "public") { out.private = true; out.note = "YouTube kept it " + p + ": the Google project has not passed YouTube's API audit, so only you can see it"; }
-    return out;
+    return ytLong(f, { ...w, description: desc }, tok.token, ctx, null, true);
   },
   async finish(p, ctx, rec) {
     if (!p || !p.yt) return { ok: false, error: "nothing to finish" };
@@ -143,25 +132,26 @@ const youtube = {
   },
 };
 
-/* A long film goes up with YouTube's resumable upload, 32 MB at a time; if the
+/* Every film goes up with YouTube's resumable upload, 32 MB at a time; if the
    run runs short of time the session is kept and the next run carries on
-   from where YouTube says it stopped. */
+   from where YouTube says it stopped. A long film then gets its own thumbnail. */
 const YT_PIECE = 32 * 1024 * 1024;                       // a multiple of 256 KiB, as YouTube asks
-async function ytLong(f, w, token, ctx, state) {
+async function ytLong(f, w, token, ctx, state, short) {
   const st = state ? { ...state } : null;
   let s = st;
+  const isShort = !!(short || (st && st.short));
   try {
     if (!s) {
       const total = await filmSize(f.id);
       const meta = { snippet: { title: w.title, description: w.description, tags: w.tags, categoryId: "27", defaultLanguage: "en", defaultAudioLanguage: "en" },
-                     status: { privacyStatus: "public", selfDeclaredMadeForKids: false, embeddable: true } };
+                     status: { privacyStatus: w.privacy === "private" ? "private" : "public", selfDeclaredMadeForKids: false, embeddable: true } };
       const r = await fetch("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status", { method: "POST",
         headers: { authorization: "Bearer " + token, "content-type": "application/json; charset=UTF-8", "x-upload-content-length": String(total), "x-upload-content-type": "video/mp4" },
         body: JSON.stringify(meta) });
       const t = await r.text().catch(() => "");
       const loc = r.headers.get("location");
       if (!r.ok || !loc) { let j = null; try { j = JSON.parse(t); } catch { } return { ok: false, error: "YouTube refused: " + said(j, t, "http " + r.status), quota: /quota/i.test(t) }; }
-      s = { session: loc, offset: 0, total, began: new Date().toISOString() };
+      s = { session: loc, offset: 0, total, began: new Date().toISOString(), short: isShort, priv: w.privacy === "private" };
       if (kvReady()) { try { await kv([["INCR", K.ytday(today())], ["EXPIRE", K.ytday(today()), "172800"]]); } catch { } }
     }
     const src = {};
@@ -173,10 +163,11 @@ async function ytLong(f, w, token, ctx, state) {
       if (r.status === 308) { const rg = r.headers.get("range"); s.offset = rg ? Number(rg.split("-")[1]) + 1 : a + buf.length; try { await r.body?.cancel(); } catch { } continue; }
       const t = await r.text().catch(() => ""); let j = null; try { j = JSON.parse(t); } catch { }
       if (r.ok && j && j.id) {
-        const out = { ok: true, id: j.id, url: "https://www.youtube.com/watch?v=" + j.id };
+        const out = { ok: true, id: j.id, url: isShort ? "https://youtube.com/shorts/" + j.id : "https://www.youtube.com/watch?v=" + j.id };
         const pv = j.status && j.status.privacyStatus;
-        if (pv && pv !== "public") { out.private = true; out.note = "YouTube kept it " + pv + ": the Google project has not passed YouTube's API audit, so only you can see it"; }
-        try { await ytThumb(j.id, f.id, token); out.thumb = true; } catch (e) { out.thumbNote = errText(e); }
+        if (s.priv) { out.private = true; out.note = "uploaded as private, as asked"; }
+        else if (pv && pv !== "public") { out.private = true; out.note = "YouTube kept it " + pv + ": the Google project has not passed YouTube's API audit, so only you can see it"; }
+        if (!isShort) { try { await ytThumb(j.id, f.id, token); out.thumb = true; } catch (e) { out.thumbNote = errText(e); } }
         return out;
       }
       if (r.status === 404 || r.status === 410) return { ok: false, error: "YouTube dropped the upload session; it starts again on a retry" };
