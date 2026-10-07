@@ -231,6 +231,11 @@ export async function runDue(opts = {}) {
     try { const E = await import("./_explorer.js"); out.explorer = await E.tick(ctx, now); }
     catch (e) { out.explorerError = errText(e); await log("failed", { note: "The Explorer: " + errText(e) }); }
   }
+  /* The Engage room: the daily list of conversations, and replies under our own posts every three hours */
+  if (!opts.noExplorer && ctx.left() > 60e3) {
+    try { const G = await import("./_engage.js"); out.engage = await G.tick(ctx, now); }
+    catch (e) { out.engageError = errText(e); await log("failed", { note: "Engage: " + errText(e) }); }
+  }
   return out;
 }
 

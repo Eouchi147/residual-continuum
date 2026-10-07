@@ -269,6 +269,21 @@ export default async function handler(req, res) {
         if (A.passed === true) await kset(TT_AUDIT, new Date().toISOString().slice(0, 10)); else await kv([["DEL", TT_AUDIT]]);
         return json(res, 200, { auditPassed: (await kget(TT_AUDIT)) || "" });
       }
+      /* The Engage room: the daily list, replies under our own posts, the follow-and-join checklist */
+      case "engage": { const G = await import("./_engage.js"); return json(res, 200, await G.room()); }
+      case "engage_mark": {
+        if (req.method !== "POST") return json(res, 405, { error: "POST only" });
+        const G = await import("./_engage.js"); return json(res, 200, await G.mark(String(A.kind || ""), String(A.id || ""), String(A.status || "")));
+      }
+      case "engage_run": {
+        if (req.method !== "POST") return json(res, 405, { error: "POST only" });
+        const G = await import("./_engage.js"); const t0 = Date.now(), ctx = { left: () => 250e3 - (Date.now() - t0) };
+        return json(res, 200, { result: A.what === "replies" ? await G.replyRound(ctx, { force: true }) : await G.buildEngage(ctx) });
+      }
+      case "engage_dial": {
+        if (req.method !== "POST") return json(res, 405, { error: "POST only" });
+        return json(res, 200, { dials: await setDials({ replies: A.on === true }) });
+      }
       /* a film that went out on a network by hand (YouTube Studio, while the
          API audit is pending): recorded so the poster never sends it twice */
       case "mark": {

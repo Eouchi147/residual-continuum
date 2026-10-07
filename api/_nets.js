@@ -197,7 +197,7 @@ async function teaserDesc(f, desc) {
 
 /* ======================================================= Facebook + Instagram */
 const GRAPH = "https://graph.facebook.com/v21.0";
-const META_SCOPE = "pages_show_list,pages_read_engagement,pages_manage_posts,instagram_basic,instagram_content_publish,business_management,read_insights,instagram_manage_insights";
+const META_SCOPE = "pages_show_list,pages_read_engagement,pages_read_user_content,pages_manage_engagement,pages_manage_posts,instagram_basic,instagram_content_publish,instagram_manage_comments,business_management,read_insights,instagram_manage_insights";
 const metaReady = () => !!(env("META_APP_ID") && env("META_APP_SECRET"));
 const META_CONFIG = () => env("META_CONFIG_ID") || "2346928819444598";
 async function metaExchange(code, net) {
@@ -767,6 +767,19 @@ export async function ytGet(path) {
   const tok = await ytAccess(); if (!tok.ok) return { ok: false, error: tok.error };
   const { r, j, t } = await jfetch("https://www.googleapis.com/youtube/v3/" + path, { headers: { authorization: "Bearer " + tok.token } });
   return r.ok && j ? { ok: true, j } : { ok: false, error: said(j, t, "http " + r.status) };
+}
+/* Engage: a reply under a comment on OUR OWN Page post (pages_manage_engagement) or OUR OWN Instagram
+   media (instagram_manage_comments), and nowhere else. Returns the new comment's id, never a token. */
+export async function metaReply(net, commentId, message) {
+  const tk = await getTok(net); if (!tk) return { ok: false, error: net + " is not connected" };
+  if (!/^[0-9_]+$/.test(String(commentId))) return { ok: false, error: "not a comment id" };
+  const path = net === "instagram" ? "/" + commentId + "/replies" : "/" + commentId + "/comments";
+  const { r, j, t } = await jfetch(GRAPH + path, { method: "POST", headers: { authorization: "Bearer " + tk.token, "content-type": "application/x-www-form-urlencoded" }, body: form({ message }) });
+  return r.ok && j && j.id ? { ok: true, id: String(j.id) } : { ok: false, error: said(j, t, "http " + r.status) };
+}
+export async function metaIds() {
+  const f = await getTok("facebook"), i = await getTok("instagram");
+  return { pageId: (f && f.pageId) || "", igId: (i && i.igId) || "", ig: (i && i.who) || "" };
 }
 export async function metaGet(net, path) {
   const tk = await getTok(net); if (!tk) return { ok: false, error: net + " is not connected" };
