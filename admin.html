@@ -323,11 +323,23 @@ async function openFilm(id) {
     <video controls preload="metadata" playsinline src="${esc(j.video)}"></video>
     <div class="chips" style="margin:10px 0">${Object.entries(j.posted || {}).map(([n, r]) => chipFor(n, { ok: true, ...r })).join("") || `<span class="chip">not posted yet</span>`}</div>
     <div class="row"><button class="btn gold" id="postNow">Post now to every network</button><button class="btn" id="aiCaps">AI: write captions</button></div>
+    ${f.kind ? "" : `<div class="row" style="margin-top:8px"><button class="btn" id="ytTest">YouTube API test: upload now as private</button><span class="small muted" id="ytTestOut"></span></div>`}
     <h3 style="margin:18px 0 8px;font-size:18px">The words, per network</h3>
     ${Object.keys(NETS).map(n => { const w = j.words[n] || {}; const t = w.text || w.description || ""; return `<div style="margin-bottom:12px"><div class="row sb"><b class="small">${NETS[n]}</b><span class="tiny muted">${t.length} characters${w.title ? " · title: " + esc(w.title) : ""}</span></div><textarea data-cap="${n}">${esc(t)}</textarea><div class="row" style="margin-top:6px"><button class="btn tiny" data-save="${n}">Save for ${NETS[n]}</button></div></div>`; }).join("")}
     <p class="tiny muted">Sources: ${esc(f.sources)}</p>`;
     $$("[data-close]", $("#sheet")).forEach(b => b.onclick = closeDrawer);
     $("#postNow").onclick = async e => { if (!confirm("Post “" + f.title + "” now to every connected network?")) return; e.target.disabled = true; e.target.textContent = "Posting… (up to 4 minutes)"; try { await api("post_now", { id }); toast("Sent: see Schedule for each network"); } catch (err) { toast(err.message); } openFilm(id); };
+    const yb = $("#ytTest");
+    if (yb) yb.onclick = async e => {
+      const b = e.target, idle = "YouTube API test: upload now as private";
+      if (b.dataset.armed !== "1") { b.dataset.armed = "1"; b.textContent = "Click again to upload it to YouTube (private)"; setTimeout(() => { if (b.dataset.armed === "1" && !b.disabled) { b.dataset.armed = ""; b.textContent = idle; } }, 8000); return; }
+      b.disabled = true; b.dataset.armed = ""; b.textContent = "Uploading through the YouTube Data API…"; $("#ytTestOut").textContent = "";
+      try {
+        const r = (await api("yt_test", { id })).result;
+        $("#ytTestOut").innerHTML = r.ok ? `Uploaded: video <b>${esc(r.id)}</b> · ${r.private ? "private" : "public"} · ${Math.round(r.ms / 1000)} s · <a href="https://studio.youtube.com/video/${encodeURIComponent(r.id)}/edit" target="_blank" rel="noopener">open it in YouTube Studio</a>` : "Not uploaded: " + esc(r.error || "no answer");
+      } catch (err) { $("#ytTestOut").textContent = err.message; }
+      b.disabled = false; b.textContent = idle;
+    };
     $("#aiCaps").onclick = async e => { e.target.disabled = true; e.target.textContent = "Writing…"; try { const r = await api("captions", { id }); toast("Written for " + (Object.keys(r.captions).join(", ") || "no network (the drafts broke the house rules)")); } catch (err) { toast(err.message); } openFilm(id); };
     $$("[data-save]").forEach(b => b.onclick = async () => { const n = b.dataset.save; try { await api("do", { tool: "caption", args: { id, net: n, text: $(`[data-cap="${n}"]`).value } }); toast("Saved for " + NETS[n]); } catch (err) { toast(err.message); } });
   } catch (e) { $("#sheet").innerHTML = `<p>${esc(e.message)}</p><button class="btn" data-close>Close</button>`; $$("[data-close]", $("#sheet")).forEach(b => b.onclick = closeDrawer); }
