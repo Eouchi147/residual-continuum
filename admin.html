@@ -34,6 +34,9 @@ main{max-width:1240px;margin:0 auto;padding:18px 18px 110px}
 .seg{display:inline-flex;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:3px;max-width:100%;overflow-x:auto;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}
 .seg button{background:none;border:0;padding:6px 12px;border-radius:9px;color:var(--muted);font-weight:500;font-size:13px;white-space:nowrap;flex:none}.seg button.on{background:var(--gold);color:#1a1510}
 .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.row.sb{justify-content:space-between}
+.ttbox{margin-top:12px;padding:14px 16px}.ttgrid{display:grid;grid-template-columns:170px minmax(0,1fr);gap:16px;align-items:start}.ttgrid video{width:100%;aspect-ratio:9/16;border-radius:10px;background:#000;object-fit:contain}
+.ttav{width:22px;height:22px;border-radius:50%;vertical-align:middle;margin-right:6px;object-fit:cover}.ttck{gap:6px}.ttck.off{opacity:.45}
+@media (max-width:640px){.ttgrid{grid-template-columns:1fr}.ttgrid video{max-width:200px}}
 .list{display:flex;flex-direction:column}.item{padding:11px 0;border-top:1px solid var(--line)}.item:first-child{border-top:0}
 .chips{display:flex;gap:6px;flex-wrap:wrap}.chip{font-size:11.5px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);text-decoration:none}
 .chip.ok{color:var(--green);border-color:rgba(143,217,176,.35)}.chip.bad{color:var(--red);border-color:rgba(233,138,138,.35)}.chip.wait{color:var(--amber);border-color:rgba(240,198,116,.35)}.chip.priv{color:var(--blue);border-color:rgba(159,208,255,.35)}
@@ -324,6 +327,7 @@ async function openFilm(id) {
     <div class="chips" style="margin:10px 0">${Object.entries(j.posted || {}).map(([n, r]) => chipFor(n, { ok: true, ...r })).join("") || `<span class="chip">not posted yet</span>`}</div>
     <div class="row"><button class="btn gold" id="postNow">Post now to every network</button><button class="btn" id="aiCaps">AI: write captions</button></div>
     ${f.kind ? "" : `<div class="row" style="margin-top:8px"><button class="btn" id="ytTest">YouTube API test: upload now as private</button><span class="small muted" id="ytTestOut"></span></div>`}
+    ${f.kind === "long" ? "" : `<div class="card ttbox" id="ttBox"><div class="row sb"><b>Post to TikTok</b><span class="tiny muted" id="ttWho">Asking TikTok…</span></div><div id="ttBody" class="small muted" style="margin-top:8px"></div></div>`}
     <h3 style="margin:18px 0 8px;font-size:18px">The words, per network</h3>
     ${Object.keys(NETS).map(n => { const w = j.words[n] || {}; const t = w.text || w.description || ""; return `<div style="margin-bottom:12px"><div class="row sb"><b class="small">${NETS[n]}</b><span class="tiny muted">${t.length} characters${w.title ? " · title: " + esc(w.title) : ""}</span></div><textarea data-cap="${n}">${esc(t)}</textarea><div class="row" style="margin-top:6px"><button class="btn tiny" data-save="${n}">Save for ${NETS[n]}</button></div></div>`; }).join("")}
     <p class="tiny muted">Sources: ${esc(f.sources)}</p>`;
@@ -340,11 +344,84 @@ async function openFilm(id) {
       } catch (err) { $("#ytTestOut").textContent = err.message; }
       b.disabled = false; b.textContent = idle;
     };
+    ttPanel(f, j);
     $("#aiCaps").onclick = async e => { e.target.disabled = true; e.target.textContent = "Writing…"; try { const r = await api("captions", { id }); toast("Written for " + (Object.keys(r.captions).join(", ") || "no network (the drafts broke the house rules)")); } catch (err) { toast(err.message); } openFilm(id); };
     $$("[data-save]").forEach(b => b.onclick = async () => { const n = b.dataset.save; try { await api("do", { tool: "caption", args: { id, net: n, text: $(`[data-cap="${n}"]`).value } }); toast("Saved for " + NETS[n]); } catch (err) { toast(err.message); } });
   } catch (e) { $("#sheet").innerHTML = `<p>${esc(e.message)}</p><button class="btn" data-close>Close</button>`; $$("[data-close]", $("#sheet")).forEach(b => b.onclick = closeDrawer); }
 }
-function closeDrawer() { $("#drawer").classList.remove("on"); const v = $("#sheet video"); if (v) v.pause(); }
+function closeDrawer() { $("#drawer").classList.remove("on"); $$("#sheet video").forEach(v => v.pause()); }
+
+/* Post to TikTok, the way TikTok's Content Sharing Guidelines ask an app to (developers.tiktok.com/doc/content-sharing-guidelines):
+   the account it goes to, a preview, an editable caption, who can watch (no default), the interactions (none ticked, greyed out
+   when the account has them off), the commercial content disclosure, TikTok's declaration, and nothing sent until Post is pressed. */
+const TT_LABEL = { PUBLIC_TO_EVERYONE: "Everyone", MUTUAL_FOLLOW_FRIENDS: "Friends", FOLLOWER_OF_CREATOR: "Followers", SELF_ONLY: "Only me" };
+const TT_MUC = "https://www.tiktok.com/legal/page/global/music-usage-confirmation/en", TT_BCP = "https://www.tiktok.com/legal/page/global/bc-policy/en";
+async function ttPanel(f, j) {
+  const box = $("#ttBody"), who = $("#ttWho"); if (!box) return;
+  let c; try { c = await api("tt_creator"); } catch (e) { who.textContent = ""; box.textContent = e.message; return; }
+  if (!c.ok) { who.textContent = ""; box.innerHTML = esc(c.error || "TikTok is not connected") + ` · <a href="#networks">Networks</a>`; return; }
+  who.innerHTML = `${c.avatar ? `<img src="${esc(c.avatar)}" alt="" class="ttav">` : ""}Posting to <b>${esc(c.nickname || c.username)}</b>${c.username ? " (@" + esc(c.username) + ")" : ""}`;
+  const cap = (j.words.tiktok && j.words.tiktok.text) || "";
+  box.classList.remove("muted");
+  box.innerHTML = `<div class="ttgrid">
+    <video id="ttPrev" src="${esc(j.video)}" muted playsinline preload="metadata" controls></video>
+    <div style="min-width:0">
+      <label class="tiny muted" for="ttCap">Caption (you can edit it)</label>
+      <textarea id="ttCap" maxlength="2200">${esc(cap)}</textarea><div class="tiny muted" id="ttCapN"></div>
+      <label class="tiny muted" for="ttPriv" style="display:block;margin-top:10px">Who can watch this video</label>
+      <select id="ttPriv"><option value="" selected disabled>Choose…</option>${c.options.map(o => `<option value="${esc(o)}">${esc(TT_LABEL[o] || o)}</option>`).join("")}</select>
+      <div class="tiny muted" style="margin-top:10px">Allow users to</div>
+      <div class="row small">${[["comment", "Comment", c.commentOff], ["duet", "Duet", c.duetOff], ["stitch", "Stitch", c.stitchOff]].map(([k, l, off]) => `<label class="row ttck${off ? " off" : ""}"><input type="checkbox" id="tt_${k}" style="width:auto" ${off ? "disabled" : ""}> ${l}${off ? " (turned off on this account)" : ""}</label>`).join("")}</div>
+      <label class="row small ttck" style="margin-top:10px"><input type="checkbox" id="ttDisc" style="width:auto"> Disclose video content <span class="tiny muted">This video promotes a brand, a product or a service.</span></label>
+      <div id="ttDiscBox" style="display:none;margin:6px 0 0 22px">
+        <label class="row small ttck"><input type="checkbox" id="ttOwn" style="width:auto"> Your brand <span class="tiny muted">You are promoting yourself or your own business.</span></label>
+        <label class="row small ttck"><input type="checkbox" id="ttPaid" style="width:auto"> Branded content <span class="tiny muted">You are promoting another brand or a third party.</span></label>
+        <div class="tiny" id="ttDiscNote" style="margin-top:4px"></div>
+      </div>
+      <p class="tiny muted" id="ttDecl" style="margin:12px 0 8px"></p>
+      <div class="row"><button class="btn gold" id="ttGo" disabled>Post to TikTok</button><span class="small muted" id="ttOut"></span></div>
+      <p class="tiny muted" id="ttLen" style="margin:6px 0 0"></p>
+      ${c.auditPassed ? `<div class="row" style="margin-top:8px"><button class="btn tiny" id="ttStand">Use these choices for scheduled TikTok posts</button><span class="tiny muted" id="ttStandOut">${c.standing ? "Saved for scheduled posts: " + esc(TT_LABEL[c.standing.privacy] || c.standing.privacy) + (["comment", "duet", "stitch"].filter(k => c.standing[k]).length ? ", allows " + ["comment", "duet", "stitch"].filter(k => c.standing[k]).join(", ") : "") : "Scheduled TikTok posts wait until you save choices here."}</span></div>`
+        : `<p class="tiny muted" style="margin:10px 0 0">Until TikTok audits this app, TikTok shows its posts to the account owner only (Only me), and the account must be set to private. Scheduled TikTok posts wait for the audit.</p>`}
+    </div></div>`;
+  const q = id => $("#" + id, box), out = q("ttOut"), go = q("ttGo");
+  let tooLong = false, sent = false;
+  const sync = () => {
+    const disc = q("ttDisc").checked, own = q("ttOwn").checked, paid = q("ttPaid").checked, pv = q("ttPriv");
+    q("ttDiscBox").style.display = disc ? "block" : "none";
+    const only = pv.querySelector('option[value="SELF_ONLY"]');
+    if (only) { only.disabled = disc && paid; only.textContent = disc && paid ? "Only me (branded content cannot be private)" : "Only me"; if (disc && paid && pv.value === "SELF_ONLY") pv.value = ""; }
+    q("ttDiscNote").textContent = !disc ? "" : !own && !paid ? "You need to say whether this video promotes yourself, a third party, or both." : paid ? "Your video will be labeled as 'Paid partnership'." : "Your video will be labeled as 'Promotional content'.";
+    q("ttDecl").innerHTML = disc && paid ? `By posting, you agree to TikTok's <a href="${TT_BCP}" target="_blank" rel="noopener">Branded Content Policy</a> and <a href="${TT_MUC}" target="_blank" rel="noopener">Music Usage Confirmation</a>.` : `By posting, you agree to TikTok's <a href="${TT_MUC}" target="_blank" rel="noopener">Music Usage Confirmation</a>.`;
+    q("ttCapN").textContent = q("ttCap").value.length + " / 2200";
+    const ready = !!pv.value && (!disc || own || paid) && !tooLong && !sent;
+    go.disabled = !ready;
+    go.title = !pv.value ? "Choose who can watch this video" : disc && !own && !paid ? "You need to indicate if your content promotes yourself, a third party, or both." : tooLong ? "This video is longer than TikTok allows for this account" : "";
+  };
+  ["ttPriv", "ttDisc", "ttOwn", "ttPaid", "tt_comment", "tt_duet", "tt_stitch"].forEach(id => q(id).onchange = sync);
+  q("ttCap").oninput = sync;
+  q("ttPrev").onloadedmetadata = e => { const d = e.target.duration; if (c.maxSec && d > c.maxSec) { tooLong = true; q("ttLen").textContent = `This video is ${Math.round(d)} s long; TikTok allows this account ${c.maxSec} s.`; } else if (d) q("ttLen").textContent = `${Math.round(d)} s · TikTok allows this account up to ${c.maxSec || "?"} s.`; sync(); };
+  sync();
+  const choices = () => { const disc = q("ttDisc").checked; return { privacy: q("ttPriv").value, comment: q("tt_comment").checked, duet: q("tt_duet").checked, stitch: q("tt_stitch").checked, brandOrganic: disc && q("ttOwn").checked, brandContent: disc && q("ttPaid").checked }; };
+  go.onclick = async () => {
+    const ch = choices(); go.disabled = true; go.textContent = "Sending to TikTok…"; out.textContent = "";
+    try {
+      const r = (await api("tt_post", { id: f.id, consent: true, caption: q("ttCap").value, ...ch })).result;
+      if (!r.ok) { out.textContent = "Not sent: " + (r.error || "no answer"); go.textContent = "Post to TikTok"; sync(); return; }
+      sent = true; go.textContent = "Sent";
+      out.textContent = "Sent. It may take a few minutes for TikTok to process the video and show it on your profile.";
+      for (let i = 0; i < 36; i++) {
+        await new Promise(res => setTimeout(res, 5000));
+        let st; try { st = await api("tt_status", null, { pid: r.publishId }); } catch { continue; }
+        if (st.status === "PUBLISH_COMPLETE") { out.textContent = "Posted on TikTok" + (ch.privacy === "SELF_ONLY" ? " (Only me)" : "") + ". It may take a few minutes to show on your profile."; break; }
+        if (st.status === "FAILED") { out.textContent = "TikTok could not post it: " + (st.reason || "failed"); break; }
+        out.textContent = "TikTok is processing the video. It may take a few minutes to show on your profile.";
+      }
+    } catch (err) { out.textContent = err.message; go.textContent = "Post to TikTok"; sent = false; sync(); }
+  };
+  const sb = q("ttStand");
+  if (sb) sb.onclick = async () => { const ch = choices(); if (!ch.privacy) { q("ttStandOut").textContent = "Choose who can watch first."; return; } try { const r = await api("tt_standing", ch); q("ttStandOut").textContent = "Saved for scheduled posts: " + (TT_LABEL[r.standing.privacy] || r.standing.privacy); } catch (err) { q("ttStandOut").textContent = err.message; } };
+}
 
 async function roomDirector(force) {
   if (!S.chat || force) S.chat = (await api("chat_history")).chat;
@@ -616,7 +693,7 @@ async function roomNetworks() {
     instagram: "Connected through Facebook: switch Instagram to a professional account and link it to the Residual Continuum Page, then connect Facebook.",
     threads: "Meta for Developers → the app → Use cases → Threads API → Settings: add this redirect URI; copy the Threads app ID and secret into Vercel.",
     x: "developer.x.com → Projects & Apps → your app → User authentication settings: OAuth 2.0, type Web App, callback URI below, read and write. Copy the OAuth 2.0 Client ID and Secret into Vercel.",
-    tiktok: "developers.tiktok.com → your app → Login Kit redirect URI below; add the Content Posting API (Direct Post). Until TikTok audits the app, posts are private (Only me).",
+    tiktok: "developers.tiktok.com → Manage apps → Residual Continuum Studio (its Sandbox, Studio test, until TikTok reviews the app): Login Kit with the redirect URI below, and the Content Posting API with Direct Post; scopes user.info.basic and video.publish. Until TikTok audits the app, its posts are private (Only me) and the account must be private, so scheduled TikTok posts wait for the audit; post by hand from a film's TikTok panel.",
     pinterest: "developers.pinterest.com → your app → Redirect URIs: add this one. Pinterest gives Trial access first; video pins need Standard access.",
     bluesky: "No app needed: make an app password in Bluesky (Settings → Privacy and security → App passwords) and enter it below.",
   };
