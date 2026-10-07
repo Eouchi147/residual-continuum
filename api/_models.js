@@ -207,7 +207,7 @@ async function attempt(id, req, signal) {
   const out = await r.json();
   if (out.error) throw new Error(`model error ${out.error.code || ""} ${out.error.message || ""}`.trim());
   const text = (out.choices?.[0]?.message?.content || "").trim();
-  if (!text) throw Object.assign(new Error("empty reply"), { soft: true });
+  if (!text) throw Object.assign(new Error("empty reply" + (out.choices?.[0]?.finish_reason ? " (" + out.choices[0].finish_reason + ")" : "")), { soft: true });
   let value;
   try { value = req.parse(text); } catch (_) { throw Object.assign(new Error("unusable reply"), { soft: true }); }
   record(id, Date.now() - t0);

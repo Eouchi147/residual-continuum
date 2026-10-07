@@ -180,7 +180,7 @@ async function pick(cands) {
   const list = cands.map((c, i) => `[${i}] ${c.title} (${c.source}, ${c.date.slice(0, 10)})\n${c.summary.slice(0, 300)}`).join("\n\n");
   try {
     const { value } = await chatFree({
-      title: "Residual Continuum, daily pick", temperature: 0.2, max_tokens: 200, budgetMs: 25_000, hedgeMs: 6_000,
+      title: "Residual Continuum, daily pick", temperature: 0.2, max_tokens: 300, budgetMs: 25_000, hedgeMs: 6_000, effort: "none",
       messages: [{ role: "system", content: VOICE },
         { role: "user", content: `Candidates:\n\n${list}\n\nPick the ONE new discovery a curious reader of this site would find most fascinating and most relevant to the deep human past, ancient monuments, lost knowledge, cataclysms or old myths. Prefer real finds and new measurements over opinion pieces, museum news or dinosaur-only stories, and prefer stories backed by a journal paper. Reply as JSON: {"i": <index>, "why": "<one sentence>"}` }],
       parse: (t) => { const o = extractJSON(t); if (!(o.i >= 0 && o.i < cands.length)) throw new Error("bad index"); return o; },
@@ -224,7 +224,7 @@ async function write(item, story, refs, budgetMs = 150_000) {
   const caseList = cases.map((c) => `${c[0]}: ${c[1]}`).join("\n");
   const refTxt = refs.length ? refs.map((r) => `DOI ${r.doi}: ${r.title} (${r.container} ${r.year})`).join("\n") : "none verified";
   const { value } = await chatFree({
-    title: "Residual Continuum, daily writer", temperature: 0.5, max_tokens: 4000, budgetMs, hedgeMs: 25_000, effort: "low",
+    title: "Residual Continuum, daily writer", temperature: 0.5, max_tokens: 4000, budgetMs, hedgeMs: 25_000, effort: "none",   /* reasoning used up the tokens: empty replies */
     messages: [{ role: "system", content: VOICE },
       { role: "user", content:
 `THE DISCOVERY
