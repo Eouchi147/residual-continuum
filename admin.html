@@ -611,8 +611,8 @@ async function roomNetworks() {
   const n = (await api("networks")).networks;
   const flash = new URLSearchParams(location.hash.split("?")[1] || "");
   const guide = {
-    youtube: "Google Cloud console → APIs & Services → Credentials → the OAuth client (the one NOOR uses works) → add this redirect URI. YouTube Data API v3 must be enabled.",
-    facebook: "Meta for Developers → your app (NOOR's works) → Facebook Login → Settings → Valid OAuth Redirect URIs: add this one. You must be an admin of the app and of the Page. Connecting Facebook also connects the Instagram professional account linked to the Page.",
+    youtube: "Google Cloud console → project residual-continuum-studio → APIs & Services → Credentials → the OAuth client \u201cResidual Continuum Studio\u201d (web application) → add this redirect URI. YouTube Data API v3 must be enabled. Scopes asked: youtube.upload and youtube.readonly.",
+    facebook: "Meta for Developers → the app \u201cResidual Continuum Studio\u201d → Facebook Login → Settings → Valid OAuth Redirect URIs: add this one. You must be an admin of the app and of the Page. Connecting Facebook also connects the Instagram professional account linked to the Page.",
     instagram: "Connected through Facebook: switch Instagram to a professional account and link it to the Residual Continuum Page, then connect Facebook.",
     threads: "Meta for Developers → the app → Use cases → Threads API → Settings: add this redirect URI; copy the Threads app ID and secret into Vercel.",
     x: "developer.x.com → Projects & Apps → your app → User authentication settings: OAuth 2.0, type Web App, callback URI below, read and write. Copy the OAuth 2.0 Client ID and Secret into Vercel.",
