@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Watch · Residual Continuum</title>
+<meta name="description" content="Ten-minute deep dives on the great mysteries of the past: Giza, Atlantis, Göbekli Tepe, the Voynich manuscript and more. Every claim weighed, every source named.">
+<meta name="theme-color" content="#f5f1eb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#141210" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://residualcontinuum.com/watch.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Residual Continuum">
+<meta property="og:title" content="Watch · Residual Continuum">
+<meta property="og:description" content="Ten-minute deep dives on the great mysteries of the past. Every claim weighed, every source named.">
+<meta property="og:url" content="https://residualcontinuum.com/watch.html">
+<meta property="og:image" content="https://residualcontinuum.com/images/watch/lf-under-giza.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,500&display=swap">
+<script>
+/* the site's theme choice (same key as the main page), else the system setting */
+(function () { var t = null; try { t = localStorage.getItem('rc-theme'); } catch (e) {}
+  if (t !== 'dark' && t !== 'light') t = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', t); })();
+</script>
+<style>
+:root{--bg:#f5f1eb;--text:#1a1815;--muted:#6a645c;--accent:#a87b4f;--track:#e8e0d3;--pill:#f0ebe3;
+  --glass:rgba(255,252,245,0.72);--glass2:rgba(255,252,245,0.88);--border:rgba(26,24,21,0.08);
+  --shadow:0 8px 32px rgba(26,24,21,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+  --good:#4f7a5a;--mid:#a87b4f;--low:#9a5b4b;--sheet:#fbf8f3;color-scheme:light}
+:root[data-theme="dark"]{--bg:#141210;--text:#f2ede4;--muted:#a89e8f;--accent:#d9a566;--track:#2b2620;--pill:#221f1a;
+  --glass:rgba(34,30,25,.72);--glass2:rgba(28,25,21,.88);--border:rgba(242,237,228,.10);
+  --shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 12px 32px -14px rgba(0,0,0,.7);
+  --good:#8fc29b;--mid:#d9a566;--low:#d99282;--sheet:#1b1815;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.65;
+  padding:0 16px calc(64px + env(safe-area-inset-bottom))}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--text);color:var(--bg);padding:8px 14px;border-radius:12px;z-index:10}
+.skip:focus{left:16px}
+.wrap{max-width:1080px;margin:0 auto}
+header{padding:40px 0 8px}
+.kicker{font:600 11px Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);text-decoration:none}
+h1,h2,h3,.serif{font-family:Newsreader,Georgia,serif;font-weight:500}
+h1{font-size:clamp(40px,7vw,60px);line-height:1;letter-spacing:-.02em;margin:14px 0 12px}
+.sub{font-size:17px;color:var(--muted);max-width:60ch;line-height:1.55}
+.glass{background:var(--glass);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid var(--border);box-shadow:var(--shadow);border-radius:22px}
+/* the latest film */
+.feature{margin:28px 0 8px;display:grid;grid-template-columns:1fr;overflow:hidden;text-align:left;width:100%;color:inherit;font:inherit;cursor:pointer;padding:0}
+.feature .thumb{border-radius:0}
+.feature .fbody{padding:20px 22px 22px}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.feature h2{font-size:clamp(24px,3.4vw,32px);line-height:1.15;margin:6px 0 10px}
+.feature p{color:var(--muted);font-size:15px;max-width:62ch}
+.feature .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.play{display:inline-flex;align-items:center;gap:8px;background:var(--text);color:var(--bg);border-radius:999px;padding:9px 16px;font:600 13px Inter,sans-serif}
+.play svg{width:12px;height:12px}
+@media (min-width:820px){.feature{grid-template-columns:1.25fr 1fr;align-items:center}.feature .fbody{padding:26px 30px}}
+/* filters */
+.bar{display:flex;gap:8px;overflow-x:auto;padding:22px 2px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.bar::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--border);background:var(--pill);color:var(--text);border-radius:999px;padding:7px 14px;font:500 13px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.chip .n{opacity:.6;margin-left:6px;font-size:12px}
+h3.sec{font-size:24px;margin:30px 0 14px}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.card{display:block;width:100%;padding:0;text-align:left;color:inherit;font:inherit;cursor:pointer;overflow:hidden;transition:transform .15s,box-shadow .15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(26,24,21,0.10)}
+.card:active{transform:scale(.985)}
+.thumb{position:relative;display:block;aspect-ratio:16/9;background:var(--track);overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.badge{position:absolute;right:8px;bottom:8px;background:rgba(20,18,16,.78);color:#f5f1eb;font:600 11px Inter,sans-serif;padding:3px 7px;border-radius:7px;letter-spacing:.02em}
+.soon{position:absolute;left:8px;top:8px;background:var(--glass2);color:var(--text);font:600 11px Inter,sans-serif;padding:4px 9px;border-radius:999px;border:1px solid var(--border);letter-spacing:.04em}
+.card.upcoming img{filter:saturate(.55) brightness(.92)}
+.cbody{padding:14px 16px 16px}
+.meta{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.card h4{font-family:Newsreader,Georgia,serif;font-weight:500;font-size:19px;line-height:1.2;margin:4px 0 10px}
+.verdict{display:inline-flex;align-items:center;gap:6px;font:600 11px Inter,sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:999px;background:var(--pill);color:var(--v,var(--mid));border:1px solid var(--border)}
+.verdict::before{content:"";width:6px;height:6px;border-radius:3px;background:currentColor}
+.v-good{--v:var(--good)}.v-mid{--v:var(--mid)}.v-low{--v:var(--low)}
+.empty{color:var(--muted);padding:12px 2px}
+/* the player */
+dialog{border:0;padding:0;background:transparent;max-width:min(980px,calc(100vw - 24px));width:100%;margin:auto;color:var(--text)}
+dialog::backdrop{background:rgba(14,12,10,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.sheet{background:var(--sheet);border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.35);max-height:calc(100dvh - 24px);overflow-y:auto}
+.frame{position:relative;aspect-ratio:16/9;background:#000}
+.frame iframe,.frame img{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover}
+.frame .wait{position:absolute;left:14px;bottom:14px;background:var(--glass2);color:var(--text);border-radius:14px;padding:8px 12px;font:500 13px Inter,sans-serif;border:1px solid var(--border)}
+.close{position:absolute;right:10px;top:10px;z-index:2;width:36px;height:36px;border-radius:18px;border:1px solid rgba(255,255,255,.25);background:rgba(20,18,16,.6);color:#fff;font:400 22px/1 Inter,sans-serif;cursor:pointer}
+.pbody{padding:20px 22px 24px}
+.pbody h2{font-size:clamp(22px,3vw,30px);line-height:1.15;margin:6px 0 10px}
+.pbody p.blurb{color:var(--muted);max-width:68ch;line-height:1.7;margin-top:10px}
+.when{margin-top:10px;font-size:14px}
+.chs{list-style:none;margin:18px 0 0;border-top:1px solid var(--border)}
+.chs li{border-bottom:1px solid var(--border)}
+.chs button,.chs span.ch{display:flex;gap:14px;width:100%;padding:10px 2px;background:none;border:0;color:inherit;font:inherit;text-align:left}
+.chs button{cursor:pointer}
+.chs button:hover .t{color:var(--accent)}
+.chs .ts{font:600 12px Inter,sans-serif;color:var(--accent);min-width:42px;padding-top:2px;font-variant-numeric:tabular-nums}
+.note{margin-top:16px;font-size:12px;color:var(--muted)}
+footer{max-width:1080px;margin:56px auto 0;padding-top:22px;border-top:1px solid var(--border);text-align:center;color:var(--muted)}
+footer .phrase{font:italic 500 17px/1.4 Newsreader,Georgia,serif}
+footer nav{margin-top:10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+footer nav a{color:var(--muted);text-decoration:none;margin:0 10px}
+footer nav a:hover{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.card,.card:hover{transition:none;transform:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#films">Skip to the films</a>
+<div class="wrap">
+<header>
+  <a class="kicker" href="/">Residual Continuum</a>
+  <h1>Watch</h1>
+  <p class="sub">Ten-minute deep dives, one mystery at a time. Every claim is weighed on the evidence, every source is named, and the verdict says how sure anyone can be.</p>
+</header>
+<main id="films" tabindex="-1">
+  <div id="feature"></div>
+  <div class="bar" role="group" aria-label="Filter by series" id="chips"></div>
+  <section aria-labelledby="now-h"><h3 class="sec" id="now-h">Now showing</h3><div class="grid" id="now"></div></section>
+  <section aria-labelledby="soon-h" id="soon-sec"><h3 class="sec" id="soon-h">Coming soon</h3><div class="grid" id="soon"></div></section>
+</main>
+</div>
+<footer>
+  <p class="phrase">Coherence is the measure, not final demonstration.</p>
+  <nav aria-label="Site"><a href="/">Home</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></nav>
+</footer>
+
+<dialog id="player" aria-labelledby="p-title">
+  <div class="sheet">
+    <div class="frame" id="p-frame"></div>
+    <button class="close" id="p-close" type="button" aria-label="Close">×</button>
+    <div class="pbody">
+      <div class="meta" id="p-meta"></div>
+      <h2 id="p-title"></h2>
+      <span class="verdict" id="p-verdict"></span>
+      <p class="when" id="p-when"></p>
+      <p class="blurb" id="p-blurb"></p>
+      <ol class="chs" id="p-chs" aria-label="Chapters"></ol>
+      <p class="note">The player comes from YouTube in privacy-enhanced mode, and nothing loads from YouTube until you press play.</p>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  "use strict";
+  var FILMS = [{"code":"LF.01","id":"lf-under-giza","title":"Under Giza: the hidden rooms that are real, and the rumours","short":"Under Giza","series":"Under Giza","verdict":"Mixed record","len":"10:50","date":"2026-10-03","at":"2026-10-03T18:00:00Z","vid":"k_phIqKu_e8","hook":"What's really under Giza?","blurb":"Inside the Great Pyramid there is a space nobody has entered, found by particles from space. Under the pyramid next door, a team claims shafts more than half a kilometre deep. In a narrow shaft, a stone door with two copper pins. And out front, a Sphinx that one geologist reads as worn by ancient rain.","ch":[[0,"Introduction"],[33,"Particles from space"],[163,"Pillars under Khafre"],[302,"Doors in the dark"],[411,"The Sphinx and the rain"],[560,"The ledger"]]},{"code":"LF.02","id":"lf-atlantis","title":"Where Did Atlantis Go? Plato, the Ice Age and the Sea Floor","short":"Atlantis: The Whole File, Weighed","series":"Drowned Worlds","verdict":"Ruled out","len":"10:56","date":"2026-10-07","at":"2026-10-07T18:00:00Z","vid":"k-X6XW2vmOU","hook":"Could an empire really sink in one night?","blurb":"One island empire, one ancient source. We follow Atlantis from Plato's Timaeus and Critias, written around 360 BCE, to the end of the Ice Age, the floor of the Atlantic, four places where people have looked for it, and a Greek city that really did sink in Plato's own lifetime.","ch":[[0,"Introduction"],[31,"The only witness"],[132,"A date at the end of the ice"],[223,"No room on the sea floor"],[352,"Three places on the map"],[484,"The city that really sank"],[566,"The weighing"]]},{"code":"LF.03","id":"lf-gobekli","title":"Göbekli Tepe: A Lost Civilisation, a Comet, and What the Stones Say","short":"Göbekli Tepe: What the Stones Say","series":"Before Us","verdict":"Awaiting evidence","len":"10:35","date":"2026-10-14","at":"2026-10-14T18:00:00Z","vid":"Lp3YCB5Xk5M","hook":"Who carved stone giants 11,500 years ago?","blurb":"About eleven and a half thousand years ago, on a hilltop in southeast Turkey, people with no pottery, no metal and no farm animals raised stone giants with arms, hands and belts. Who were they, how do we know when, and what were these rings of pillars for?","ch":[[0,"Introduction"],[25,"Giants on Potbelly Hill"],[153,"Dating a hill of rubble"],[261,"Survivors of a lost world?"],[393,"A comet on the Vulture Stone?"],[535,"The weighing"]]},{"code":"LF.04","id":"lf-sky-fell","title":"Did a Comet Bring Back the Ice Age? The Younger Dryas, Weighed","short":"The Comet and the Cold","series":"The Sky Fell?","verdict":"Awaiting evidence","len":"10:44","date":"2026-10-21","at":"2026-10-21T18:00:00Z","vid":"67y0-Qrx-Jw","hook":"Did a comet bring back the Ice Age?","blurb":"About 12,900 years ago, as the last Ice Age was letting go, the north plunged back into the cold for some 1,200 years: the Younger Dryas. Since 2007 a team of scientists has argued that a comet, or its fragments, set it off and left a thin layer of clues on four continents. Most specialists blame meltwater that stalled the Atlantic.","ch":[[0,"Introduction"],[31,"The cold comes back"],[101,"The comet's case"],[224,"The critics answer"],[363,"Who turned the tap?"],[461,"The first farmers"],[544,"The weighing"]]},{"code":"LF.05","id":"lf-ufo-files","title":"The UFO Files: What Governments Actually Admitted","short":"The UFO Files","series":"The Files","verdict":"Awaiting evidence","len":"10:20","date":"2026-10-05","at":"2026-10-05T18:00:00Z","vid":"NgaT8FbOMtE","hook":"What have governments actually admitted?","blurb":"In 1947, an army base in New Mexico announced it had captured a flying saucer. In 2004, off San Diego, two Navy fighter jets met something white over a churning sea. Around those moments lie eight decades of secret studies, cover stories, sworn testimony and released files.","ch":[[0,"Introduction"],[40,"A saucer in the paper"],[169,"Spy planes and psychic spies"],[306,"The Tic Tac tapes"],[422,"Under oath"],[534,"The ledger"]]},{"code":"LF.06","id":"lf-impossible-stones","title":"Impossible Stones: How Do You Move 1,000 Tonnes?","short":"Impossible Stones","series":"Impossible Stones","verdict":"Mixed record","len":"10:04","date":"2026-10-12","at":"2026-10-12T18:00:00Z","vid":"57xeLHh4Qk4","hook":"How do you move a 1,000-tonne stone?","blurb":"In a quarry in Lebanon lies a block of stone of about 1,650 tonnes, the largest known from the ancient world. In Bolivia, hard grey blocks with razor-sharp inside corners; in Peru, walls so tight a knife blade won't go in. On television they are often called impossible without a lost technology.","ch":[[0,"Introduction"],[36,"Giants in a Roman wall"],[160,"How to move 1,000 tonnes"],[294,"The kit at Puma Punku"],[411,"A jigsaw above Cusco"],[511,"The weighing"]]},{"code":"LF.07","id":"lf-gunung-padang","title":"Gunung Padang: The 'Oldest Pyramid' a Journal Took Back","short":"Gunung Padang: Inside the Hill","series":"Impossible Stones","verdict":"Awaiting evidence","len":"9:41","date":"2026-10-17","at":"2026-10-17T18:00:00Z","vid":"D4Tzzcd5zwo","hook":"Is there a pyramid inside this hill?","blurb":"In 2023, a science journal published an astonishing claim: inside a terraced hill in West Java, Indonesia, lies a buried pyramid begun some 27,000 years ago, deep in the Ice Age. Five months later, the journal and its publisher retracted it. What happened, and what is really inside Gunung Padang?","ch":[[0,"Introduction"],[30,"Five terraces on a hill"],[119,"Stones that cut themselves"],[200,"A pyramid in the scans"],[346,"A date for the soil"],[471,"The weighing"]]},{"code":"LF.08","id":"lf-derinkuyu","title":"Derinkuyu: who dug a city 85 metres under Turkey, and when?","short":"The Cities Under Cappadocia","series":"Underworlds","verdict":"Awaiting evidence","len":"9:50","date":"2026-10-19","at":"2026-10-19T18:00:00Z","vid":"GRTXbbUYxHo","hook":"Who dug a city under the ground?","blurb":"In 1963, in central Turkey, a man knocking through his basement wall found a room he never knew was there. Below it lay a city cut into soft volcanic rock, about 85 metres deep, with stables, wells, a church and doors made of stone wheels. It is one of hundreds of underground shelters in Cappadocia.","ch":[[0,"Introduction"],[37,"Rooms cut from volcanic ash"],[153,"A landscape of hiding places"],[246,"Shelters from the Ice Age?"],[387,"Chapels, raids and refugees"],[502,"The weighing"]]},{"code":"LF.09","id":"lf-ancient-astronauts","title":"Did Aliens Help the Ancients? Six Famous Clues, Weighed","short":"Ancient Astronauts: Six Clues, Weighed","series":"The Method","verdict":"Ruled out","len":"9:55","date":"2026-10-10","at":"2026-10-10T18:00:00Z","vid":"oguPIovclsU","hook":"Did visitors from space help the ancients?","blurb":"A king at the controls of a rocket. A Martian god painted in the Sahara. A light bulb carved in an Egyptian crypt. Runways in the Peruvian desert, grooved spheres three billion years old, and an ancient jar called a battery. Since Erich von Däniken's Chariots of the Gods in 1968, these clues have been the heart of the ancient astronaut theory.","ch":[[0,"Introduction"],[94,"The great Martian god"],[192,"Read the caption"],[334,"Lines in the desert"],[421,"Out of place"],[505,"The weighing"]]},{"code":"LF.10","id":"lf-voynich","title":"The Voynich Manuscript: The Book Nobody on Earth Can Read","short":"The Voynich Manuscript: Message or Nonsense?","series":"Unreadable","verdict":"Open question","len":"9:50","date":"2026-10-24","at":"2026-10-24T18:00:00Z","vid":"6Z7Rp4CuVPo","hook":"Can a book exist that nobody can read?","blurb":"Two hundred and forty pages in an alphabet nobody can read, painted with plants no botanist can name, on calfskin from the early fourteen hundreds. For more than a century, the Voynich manuscript has beaten wartime codebreakers, computers and a parade of claimed solutions.","ch":[[0,"Introduction"],[27,"A letter inside the book"],[153,"Counting the unreadable"],[250,"A century of solutions"],[376,"Beautiful nonsense?"],[500,"The weighing"]]},{"code":"LF.11","id":"lf-troy","title":"Was the Trojan War Real? The Hill of Nine Cities","short":"Troy: The City Behind the Poem","series":"Myths That Came True","verdict":"Strong evidence","len":"10:04","date":"2026-10-26","at":"2026-10-26T18:00:00Z","vid":"qjCyOiVYp6Y","hook":"Was there really a Trojan War?","blurb":"A low hill in northwest Turkey holds nine cities, one on top of another, and high in the stack, a layer of fire from around 1180 BCE. Was this Homer's Troy, and was there really a Trojan War?","ch":[[0,"Introduction"],[33,"A hill of nine cities"],[120,"The walls and the lower town"],[215,"A name in Hittite clay"],[325,"What Homer remembered"],[408,"The fire and the fall"],[526,"The weighing"]]},{"code":"LF.12","id":"lf-sea-peoples","title":"The Sea Peoples: Who Really Ended the Bronze Age?","short":"The Sea Peoples and the End of the Bronze Age","series":"Fallen Worlds","verdict":"Mixed record","len":"9:57","date":"2026-10-28","at":"2026-10-28T18:00:00Z","vid":"0JGWlG4T_tw","hook":"Who brought down the Bronze Age world?","blurb":"Around 1177 BCE, Ramesses III had a sea battle carved on his temple at Medinet Habu: ships with a bird's head at each end, warriors in feathered crowns and horned helmets. In the same decades, palaces from Greece to Syria burned or were abandoned, and the last king of Ugarit wrote that enemy ships had burned his cities.","ch":[[0,"Introduction"],[39,"Raiders from the sea"],[168,"A world on fire"],[285,"Drought, hunger and quakes"],[411,"A web of failures"],[502,"The weighing"]]},{"code":"LF.13","id":"lf-alexandria","title":"What Really Happened to the Library of Alexandria?","short":"The Library of Alexandria: What Really Happened","series":"Unreadable","verdict":"Ruled out","len":"10:10","date":"2026-10-31","at":"2026-10-31T18:00:00Z","vid":"KEB338mY6wA","hook":"How do you lose a whole library?","blurb":"Everyone knows the Library of Alexandria burned in one great fire. The ancient writers tell a stranger, slower story: a king who drove the scholars out, a Roman general's fire in the harbour, a war that wrecked the palace quarter, a temple torn down, and a tale of a caliph's bonfire first written down nearly six centuries late.","ch":[[0,"Introduction"],[33,"Every book in the world"],[147,"Caesar's fire"],[282,"The slow fires"],[373,"A temple and a legend"],[507,"The weighing"]]},{"code":"LF.14","id":"lf-mkultra","title":"MKUltra: The CIA Destroyed the Files. Seven Boxes Survived","short":"MKUltra: The Files That Survived","series":"The Files","verdict":"Established","len":"10:50","date":"2026-11-02","at":"2026-11-02T19:00:00Z","vid":"YJuHFVZs8Zo","hook":"Did the CIA really try to control minds?","blurb":"In 1973, the CIA destroyed the files of MKUltra, its secret programme of drug and behaviour experiments. Four years later, seven forgotten boxes of its financial records turned up anyway: receipts for work at universities, hospitals and prisons, much of it paid through front foundations.","ch":[[0,"Introduction"],[33,"Brain warfare"],[158,"The safe houses"],[252,"Frank Olson"],[345,"Seven boxes"],[439,"Montreal"],[541,"The weighing"]]},{"code":"LF.15","id":"lf-first-americans","title":"Ice Age Footprints: When Did People Reach the Americas?","short":"The First Americans","series":"Before Us","verdict":"Strong evidence","len":"10:26","date":"2026-11-04","at":"2026-11-04T19:00:00Z","vid":"-AfNppXguVE","hook":"When did people first reach the Americas?","blurb":"Small footprints in the mud of a vanished lake in New Mexico, many of them made by teenagers and children in the depths of the last Ice Age. For much of the twentieth century, the textbooks said people reached the Americas only about 13,000 years ago. How did that wall of dates fall, and what still stands?","ch":[[0,"Introduction"],[29,"The Clovis wall"],[113,"A camp in Chile"],[224,"Footprints in the mud"],[355,"Which road?"],[434,"What the genes say"],[533,"The weighing"]]},{"code":"LF.16","id":"lf-arthur","title":"Was King Arthur Real? What the Earliest Sources Say","short":"King Arthur: The Search for the Man","series":"Myths That Came True","verdict":"Open question","len":"10:23","date":"2026-11-07","at":"2026-11-07T19:00:00Z","vid":"-KEbZy9XZbE","hook":"Was there ever a real King Arthur?","blurb":"In 1191, the monks of Glastonbury Abbey said they had dug up a lead cross that read: here lies buried the renowned King Arthur, in the isle of Avalon. Was there ever a real King Arthur?","ch":[[0,"Introduction"],[32,"When Rome left"],[117,"The only witness"],[216,"Arthur appears"],[317,"The making of a king"],[418,"Digging for Camelot"],[519,"The weighing"]]},{"code":"LF.17","id":"lf-vinland","title":"Vikings in America: How a Solar Storm Gave Us the Year","short":"Vinland: The Vikings Before Columbus","series":"Myths That Came True","verdict":"Established","len":"10:03","date":"2026-11-09","at":"2026-11-09T19:00:00Z","vid":"o_P42SGsRoE","hook":"Did Vikings reach America before Columbus?","blurb":"A thousand years ago, someone cut wood with a metal blade at the northern tip of Newfoundland, and a storm on the Sun, frozen in the tree rings, gives us the year: 1021. Did the Norse really reach America nearly five centuries before Columbus? And where was the land of grapes their sagas called Vinland?","ch":[[0,"Introduction"],[32,"Two sagas, one land"],[143,"Bumps in the grass"],[240,"A storm in the tree rings"],[336,"Nuts from the south"],[422,"Too good to be true"],[528,"The weighing"]]},{"code":"LF.18","id":"lf-knossos","title":"Was the Minotaur's Labyrinth Real? The Palace of Knossos","short":"Knossos: The Palace Behind the Myth","series":"Myths That Came True","verdict":"Plausible","len":"10:12","date":"2026-11-11","at":"2026-11-11T19:00:00Z","vid":"Ni3ZvmRgwIw","hook":"Was the Labyrinth a real place?","blurb":"A palace wall on Crete painted with a young acrobat flying over a charging bull. A Greek myth of King Minos, a maze and a monster, half man and half bull. And a clay tablet from the same palace that sends honey to the Mistress of the Labyrinth. Was the Labyrinth a real place?","ch":[[0,"Introduction"],[28,"A monster in a maze"],[141,"Digging for Minos"],[260,"Bulls and double axes"],[345,"Honey for the Labyrinth"],[440,"The volcano next door"],[536,"The weighing"]]},{"code":"LF.19","id":"lf-stargate","title":"The US Paid Psychic Spies for 23 Years. Did It Work?","short":"Stargate: The Pentagon's Psychic Spies","series":"The Files","verdict":"Ruled out","len":"9:56","date":"2026-11-14","at":"2026-11-14T19:00:00Z","vid":"OTtn_74LsO8","hook":"Can a mind see across the world?","blurb":"In the summer of 1974 a former police commissioner at the Stanford Research Institute in California drew a giant crane he had never seen, at a secret Soviet site about 10,000 km away. CIA analysts judged the crane accurate. From 1972 to 1995, the United States government paid for remote viewing: describing distant targets by the mind alone.","ch":[[0,"Introduction"],[43,"The psychic arms race"],[141,"The unit at Fort Meade"],[235,"The judging problem"],[366,"The review of 1995"],[507,"The weighing"]]},{"code":"LF.20","id":"lf-piri-reis","title":"The Piri Reis Map: Did It Show Antarctica Before the Ice?","short":"The Piri Reis Map: Antarctica Before the Ice?","series":"Unreadable","verdict":"Ruled out","len":"9:52","date":"2026-11-16","at":"2026-11-16T19:00:00Z","vid":"IjZ5K4O9P6Y","hook":"Antarctica, drawn before the ice?","blurb":"In 1929, in the library of Topkapı Palace in Istanbul, a piece of a world map turned up: drawn on gazelle skin in 1513 by the Ottoman admiral Piri Reis. Along its bottom edge, a coast runs east below South America. Is it Antarctica, mapped before the ice?","ch":[[0,"Introduction"],[35,"The admiral and his book"],[112,"Twenty charts and Columbus"],[218,"A coast under the ice?"],[317,"Why the coast bends"],[404,"Beneath the ice"],[510,"The weighing"]]},{"code":"LF.21","id":"lf-roswell","title":"The US Army Said It Captured a Flying Saucer. What Was It?","short":"Roswell: What Fell on the Ranch","series":"The Files","verdict":"Ruled out","len":"10:00","date":"2026-11-18","at":"2026-11-18T19:00:00Z","vid":"","hook":"What really fell on that ranch?","blurb":"On 8 July 1947 the army air field at Roswell, New Mexico, told the press it had gained possession of a flying disc, found on a sheep ranch. By the evening it was a weather balloon. Thirty years later the story came back as the world's most famous UFO case: a crashed craft, alien bodies and a cover-up.","ch":[[0,"Introduction"],[41,"A disc in the paper"],[162,"Thirty years later"],[274,"A secret in the sky"],[389,"Dummies, a film and lost files"],[507,"The weighing"]]},{"code":"LF.22","id":"lf-sphinx","title":"Is the Sphinx Older Than the Pharaohs? The Evidence","short":"The Age of the Sphinx","series":"Under Giza","verdict":"Awaiting evidence","len":"10:28","date":"2026-11-21","at":"2026-11-21T19:00:00Z","vid":"","hook":"Was the Sphinx carved before the pharaohs?","blurb":"A lion as long as a jumbo jet, carved out of the bedrock at Giza and worn into deep hollows. Was it carved long before the pharaohs, as the geologist Robert Schoch reads its weathering, or by Khafre's workmen around 2500 BCE?","ch":[[0,"Introduction"],[36,"Cut from the living rock"],[118,"Khafre's building site"],[211,"Written by rain?"],[317,"Salt, sand and silence"],[464,"Dreams, patches and probes"],[547,"The weighing"]]},{"code":"LF.23","id":"lf-herculaneum","title":"How Do You Read a Book of Charcoal? The Herculaneum Scrolls","short":"The Herculaneum Scrolls: The Library Vesuvius Kept","series":"Unreadable","verdict":"Established","len":"10:00","date":"2026-11-23","at":"2026-11-23T19:00:00Z","vid":"","hook":"How do you read a book of charcoal?","blurb":"A lump of charcoal that is a book. In 79 CE Vesuvius buried a Roman villa at Herculaneum and baked its library into rolls of carbon that crumble at a touch: the only library of the Greek and Roman world to survive. For more than 270 years, people have tried to read it.","ch":[[0,"Introduction"],[33,"Books of charcoal"],[126,"Opening the unopenable"],[225,"Unwrapping without touching"],[327,"A word in the dark"],[414,"The first whole scroll"],[518,"The weighing"]]},{"code":"LF.24","id":"lf-yonaguni","title":"Yonaguni's Underwater Pyramid: Carved by People or the Sea?","short":"Yonaguni: The Steps Under the Sea","series":"Drowned Worlds","verdict":"Awaiting evidence","len":"9:47","date":"2026-11-25","at":"2026-11-25T19:00:00Z","vid":"","hook":"Who carved these giant steps under the sea?","blurb":"Off Japan's westernmost island, Yonaguni, giant stone steps drop into the sea: flat terraces, sheer walls, right angles. Some call it a drowned pyramid. We follow it from the diver who found it in 1986, through Masaaki Kimura's case for a carved monument, to the sandstone it is made of, the sea-level clocks that date when it went under, and what a real quarry would have left behind.","ch":[[0,"Introduction"],[27,"Ruins Point"],[107,"The case for a monument"],[187,"Flat layers, straight cracks"],[292,"When the rock was dry"],[405,"What a quarry leaves"],[512,"The weighing"]]},{"code":"LF.25","id":"lf-antikythera","title":"The Antikythera Mechanism: A 2,000-Year-Old Computer","short":"The Antikythera Mechanism: A Cosmos in Bronze","series":"Sky Watchers","verdict":"Established","len":"10:32","date":"2026-11-28","at":"2026-11-28T19:00:00Z","vid":"","hook":"A computer, two thousand years old?","blurb":"A lump of corroded bronze from a shipwreck off the Greek island of Antikythera turned out to hold thirty gear wheels and thousands of tiny Greek letters: a calculator of the sky, made more than two thousand years ago. How did it work, who made it, and is it really out of its time?","ch":[[0,"Introduction"],[28,"A wreck full of statues"],[110,"Counting the teeth"],[200,"Eight tonnes of X-rays"],[339,"The lost planets"],[420,"Out of its time?"],[559,"The weighing"]]},{"code":"LF.26","id":"lf-stonehenge","title":"Stonehenge: Who Built It, How, and Why? Every Claim Weighed","short":"Stonehenge, Stone by Stone","series":"Sky Watchers","verdict":"Established","len":"11:05","date":"2026-11-30","at":"2026-11-30T19:00:00Z","vid":"","hook":"How did this stone get here?","blurb":"At the heart of Stonehenge lies the Altar Stone, a six-tonne slab of sandstone. In 2024, tiny crystals inside it traced it to the far north-east of Scotland, more than 700 km away. Who built Stonehenge, how did its stones get there, and what was it for?","ch":[[0,"Introduction"],[26,"Who built it, and when?"],[136,"Bluestones from Wales"],[249,"A stone from Scotland"],[349,"Moving the giants"],[455,"Sun, ancestors and feasts"],[574,"The weighing"]]},{"code":"LF.27","id":"lf-rapa-nui","title":"Easter Island: Did They Really Destroy Their Own World?","short":"Rapa Nui: Stone Giants and the Last Tree","series":"Fallen Worlds","verdict":"Mixed record","len":"10:02","date":"2026-12-02","at":"2026-12-02T19:00:00Z","vid":"","hook":"Did they destroy their own world?","blurb":"On Rapa Nui, Easter Island, nearly a thousand stone giants stand and lie on an island 24 km long, 3,500 km from South America. A famous story says the islanders cut down every tree, starved, fought and collapsed before any European arrived. Is it true?","ch":[[0,"Introduction"],[33,"A forest of giant palms"],[110,"Giants on the road"],[200,"Counting the people"],[294,"Fifteen ancestors"],[367,"When the ships came"],[440,"A script of their own"],[521,"The weighing"]]},{"code":"LF.28","id":"lf-orion","title":"Are the Pyramids a Map of Orion's Belt? The Evidence","short":"The Orion Correlation","series":"Under Giza","verdict":"Awaiting evidence","len":"10:02","date":"2026-12-05","at":"2026-12-05T19:00:00Z","vid":"","hook":"A map of the stars?","blurb":"Seen from above, the three pyramids of Giza stand like the three stars of Orion's Belt: two in a line, the smallest stepped aside. Robert Bauval's Orion correlation (1989; The Orion Mystery, with Adrian Gilbert, 1994) says the plan copies the belt, and that it remembers the sky of about 10,500 BCE.","ch":[[0,"Introduction"],[35,"Three stars, three pyramids"],[135,"A sky from 10,500 BCE?"],[248,"Shafts aimed at the stars"],[358,"What the builders left"],[452,"Sah, the king's star"],[518,"The weighing"]]},{"code":"LF.29","id":"lf-amazon-cities","title":"The Amazon's Lost Cities: What Lidar Found Under the Trees","short":"The Amazon's Lost Cities: From Legend to Lidar","series":"Myths That Came True","verdict":"Established","len":"10:15","date":"2026-12-07","at":"2026-12-07T19:00:00Z","vid":"","hook":"A city under the trees?","blurb":"Under the rainforest at the foot of the Andes, lasers have found thousands of earthen platforms and roads as straight as a ruler, the oldest about 2,500 years old. Who built towns in a forest that scientists once judged too poor to feed one, and what became of them?","ch":[[0,"Introduction"],[39,"A river of villages"],[127,"The lost city of Z"],[207,"A counterfeit paradise?"],[304,"Causeways in the floodplain"],[405,"The valley of straight roads"],[517,"The weighing"]]},{"code":"LF.30","id":"lf-denisovans","title":"The Denisovans: A Lost People First Known From a Fingertip","short":"The Denisovans","series":"Before Us","verdict":"Established","len":"10:04","date":"2026-12-09","at":"2026-12-09T19:00:00Z","vid":"","hook":"Who were the fingertip people?","blurb":"In 2008, archaeologists in a cave in Siberia found a chip of finger bone the size of a ladybird. Its DNA revealed a human group nobody had ever seen: the Denisovans. Their genes live on in millions of people today, and a Denisovan version of one gene helps Tibetans live at altitude. So who were they?","ch":[[0,"Introduction"],[33,"A cave in Siberia"],[134,"Two peoples, one girl"],[208,"Their genes in us"],[288,"The roof of the world"],[362,"A face from a well"],[438,"How big were they?"],[515,"The weighing"]]},{"code":"LF.31","id":"lf-egypt-tech","title":"Did Ancient Egypt Have Lost Machines? Four Clues, Weighed","short":"Egypt's Lost Machines?","series":"Under Giza","verdict":"Awaiting evidence","len":"10:27","date":"2026-12-12","at":"2026-12-12T19:00:00Z","vid":"","hook":"Did Egypt have lost machines?","blurb":"Under Djoser's Step Pyramid lay tens of thousands of stone vessels, some in rock so hard that copper cannot scratch it. Online scans say some vases are too perfect for human hands. Petrie's granite core from Giza carries a spiral groove he found astonishing. Twenty-four giant boxes fill a tunnel at Saqqara. And one engineer says the Great Pyramid was a power plant. Did ancient Egypt have lost machines?","ch":[[0,"Introduction"],[32,"The impossible vases"],[143,"A spiral in granite"],[220,"Copper, sand and patience"],[306,"Boxes in the dark"],[429,"A power plant?"],[530,"The weighing"]]},{"code":"LF.32","id":"lf-nuclear-war","title":"Was There an Ancient Nuclear War? Five Clues, Weighed","short":"An Ancient Nuclear War?","series":"The Method","verdict":"Ruled out","len":"10:42","date":"2026-12-14","at":"2026-12-14T19:00:00Z","vid":"","hook":"An ancient nuclear war?","blurb":"A beetle of yellow-green glass glows on a jewel made for Tutankhamun. The same glass lies in the Sahara, melted about 29 million years ago. Some modern writers read it, with the black glass of Arabia, the skeletons of Mohenjo-daro, Scotland's melted forts and the natural reactors of Oklo, as traces of a nuclear war before history.","ch":[[0,"Introduction"],[41,"The yellow glass"],[165,"Black glass in Arabia"],[249,"The skeletons of Mohenjo-daro"],[355,"Walls of melted stone"],[428,"A reactor in Gabon"],[543,"The weighing"]]},{"code":"LF.33","id":"lf-green-sahara","title":"When the Sahara Was Green: Hippos, Lakes and a Lost Lineage","short":"When the Sahara Was Green","series":"When the Sahara Was Green","verdict":"Established","len":"10:49","date":"2026-12-16","at":"2026-12-16T19:00:00Z","vid":"","hook":"How did the Sahara turn green?","blurb":"About nine thousand years ago, hippos surfaced in lakes in the middle of what is now the Sahara. For thousands of years, monsoon rains turned the biggest hot desert on Earth green, with a lake in Chad as big as the Caspian Sea. How did it happen, who lived there, and how fast did the rain stop?","ch":[[0,"Introduction"],[28,"A lake as big as a sea"],[126,"The lake at Gobero"],[216,"Swimmers in the desert"],[310,"A lineage no one knew"],[392,"Stones that watched the sun"],[467,"When the rain stopped"],[576,"The weighing"]]},{"code":"LF.34","id":"lf-malta-temples","title":"Older Than the Pyramids: Who Built Malta's Stone Temples?","short":"The Temple Builders of Malta","series":"Underworlds","verdict":"Established","len":"10:40","date":"2026-12-19","at":"2026-12-19T19:00:00Z","vid":"","hook":"Who built this, and when?","blurb":"At dawn on the equinox, the rising sun shines straight through the doorway of Mnajdra, a stone temple on Malta built some five thousand years ago. Malta's temples are older than the pyramids of Giza. Who built them, how do we know when, and why did they stop?","ch":[[0,"Introduction"],[33,"A place of giants"],[104,"Older than the pyramids"],[190,"Temples under the sea?"],[298,"The city of the dead"],[373,"The room that sings"],[475,"The end of the temples"],[550,"The weighing"]]},{"code":"LF.35","id":"lf-carthage","title":"Did Rome Salt Carthage? And Were Its Children Sacrificed?","short":"Carthage: Salt and Ashes","series":"Carthage and Before","verdict":"Mixed record","len":"10:54","date":"2026-12-21","at":"2026-12-21T19:00:00Z","vid":"","hook":"Did Rome salt Carthage?","blurb":"In 146 BCE Rome burned Carthage. Then, the story goes, it ploughed the ruins and sowed the earth with salt. Under the same city lie thousands of urns holding the ashes of babies, and Greek and Roman writers said Carthage sacrificed its children. What do the texts, the ground and the bones really show?","ch":[[0,"Introduction"],[29,"The rise and fall of Carthage"],[132,"Where the salt came from"],[215,"The city under the city"],[287,"Urns and vows"],[383,"What the bones say"],[480,"Kerkouane and Dougga"],[571,"The weighing"]]}];
+  var LIVE_GRACE = 0;                               /* a film is shown as live from its premiere time */
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var VCLASS = { 'Established': 'v-good', 'Strong evidence': 'v-good', 'Plausible': 'v-mid', 'Mixed record': 'v-mid',
+                 'Open question': 'v-mid', 'Awaiting evidence': 'v-mid', 'Ruled out': 'v-low' };
+  var ts = function (s) { var m = Math.floor(s / 60), x = s % 60; return m + ':' + (x < 10 ? '0' : '') + x; };
+  var isLive = function (f) { return !!f.vid && Date.now() >= Date.parse(f.at) + LIVE_GRACE; };
+  var day = function (f, long) {
+    var d = new Date(f.at);
+    return long ? d.toLocaleString(undefined, { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+                : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  };
+  var series = 'All', last = null;
+
+  function card(f) {
+    var live = isLive(f);
+    return '<button type="button" class="card glass' + (live ? '' : ' upcoming') + '" data-id="' + esc(f.id) + '" aria-label="' +
+      esc((live ? 'Play: ' : 'Coming ' + day(f) + ': ') + f.title) + '">' +
+      '<span class="thumb"><img src="images/watch/' + esc(f.id) + '.webp" alt="" width="640" height="360" loading="lazy" decoding="async">' +
+      (live ? '<span class="badge">' + esc(f.len) + '</span>' : '<span class="soon">Premieres ' + esc(day(f)) + '</span>') + '</span>' +
+      '<span class="cbody"><span class="meta">' + esc(f.code) + ' · ' + esc(f.series) + '</span>' +
+      '<h4>' + esc(f.title) + '</h4><span class="verdict ' + (VCLASS[f.verdict] || 'v-mid') + '">' + esc(f.verdict) + '</span></span></button>';
+  }
+
+  function render() {
+    var pick = FILMS.filter(function (f) { return series === 'All' || f.series === series; });
+    var now = pick.filter(isLive).sort(function (a, b) { return Date.parse(b.at) - Date.parse(a.at); });
+    var soon = pick.filter(function (f) { return !isLive(f); }).sort(function (a, b) { return Date.parse(a.at) - Date.parse(b.at); });
+    $('now').innerHTML = now.length ? now.map(card).join('') : '<p class="empty">The first film of this series premieres soon.</p>';
+    $('soon').innerHTML = soon.map(card).join('');
+    $('soon-sec').hidden = !soon.length;
+    var latest = FILMS.filter(isLive).sort(function (a, b) { return Date.parse(b.at) - Date.parse(a.at); })[0];
+    $('feature').innerHTML = latest && series === 'All' ?
+      '<button type="button" class="feature glass" data-id="' + esc(latest.id) + '" aria-label="' + esc('Play the latest deep dive: ' + latest.title) + '">' +
+      '<span class="thumb"><img src="images/watch/' + esc(latest.id) + '.webp" alt="" width="640" height="360" decoding="async" fetchpriority="high"><span class="badge">' + esc(latest.len) + '</span></span>' +
+      '<span class="fbody"><span class="eyebrow">Latest deep dive · ' + esc(latest.series) + '</span><h2>' + esc(latest.title) + '</h2>' +
+      '<p>' + esc(latest.blurb) + '</p><span class="row"><span class="play"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1l9 5-9 5z" fill="currentColor"/></svg>Play</span>' +
+      '<span class="verdict ' + (VCLASS[latest.verdict] || 'v-mid') + '">' + esc(latest.verdict) + '</span></span></span></button>' : '';
+  }
+
+  function chips() {
+    var names = ['All'], seen = {};
+    FILMS.slice().sort(function (a, b) { return a.code < b.code ? -1 : 1; }).forEach(function (f) { if (!seen[f.series]) { seen[f.series] = 1; names.push(f.series); } });
+    $('chips').innerHTML = names.map(function (n) {
+      var c = n === 'All' ? FILMS.length : FILMS.filter(function (f) { return f.series === n; }).length;
+      return '<button type="button" class="chip" aria-pressed="' + (n === series) + '" data-s="' + esc(n) + '">' + esc(n) + '<span class="n">' + c + '</span></button>';
+    }).join('');
+  }
+
+  function frame(f, start) {
+    var box = $('p-frame');
+    if (isLive(f)) {
+      box.innerHTML = '<iframe title="' + esc(f.title) + '" src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(f.vid) +
+        '?autoplay=1&rel=0&modestbranding=1&playsinline=1' + (start ? '&start=' + start : '') + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+    } else {
+      box.innerHTML = '<img src="images/watch/' + esc(f.id) + '.webp" alt=""><span class="wait">Premieres ' + esc(day(f, true)) + '</span>';
+    }
+  }
+
+  function open(id, from) {
+    var f = FILMS.filter(function (x) { return x.id === id; })[0]; if (!f) return;
+    var live = isLive(f); last = from || null;
+    frame(f, 0);
+    $('p-meta').textContent = f.code + ' · ' + f.series + ' · ' + f.len;
+    $('p-title').textContent = f.title;
+    var v = $('p-verdict'); v.className = 'verdict ' + (VCLASS[f.verdict] || 'v-mid'); v.textContent = 'Verdict: ' + f.verdict;
+    $('p-when').textContent = live ? '' : 'Premieres on YouTube ' + day(f, true) + ' (your time).';
+    $('p-blurb').textContent = f.blurb;
+    $('p-chs').innerHTML = f.ch.map(function (c) {
+      var inner = '<span class="ts">' + ts(c[0]) + '</span><span class="t">' + esc(c[1]) + '</span>';
+      return '<li>' + (live ? '<button type="button" data-t="' + c[0] + '" aria-label="' + esc('Play from ' + ts(c[0]) + ', ' + c[1]) + '">' + inner + '</button>' : '<span class="ch">' + inner + '</span>') + '</li>';
+    }).join('');
+    $('p-chs').onclick = function (e) { var b = e.target.closest('button[data-t]'); if (b) frame(f, +b.getAttribute('data-t')); };
+    var d = $('player');
+    if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+    try { history.replaceState(null, '', '#' + f.id); } catch (e) {}
+  }
+
+  function shut() {
+    var d = $('player'); $('p-frame').innerHTML = '';            /* stops the video */
+    if (d.open) { if (d.close) d.close(); else d.removeAttribute('open'); }
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    if (last && last.focus) last.focus();
+  }
+
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest('.card, .feature'); if (c) { open(c.getAttribute('data-id'), c); return; }
+    var ch = e.target.closest('.chip'); if (ch) { series = ch.getAttribute('data-s'); chips(); render(); }
+  });
+  $('p-close').addEventListener('click', shut);
+  $('player').addEventListener('cancel', function (e) { e.preventDefault(); shut(); });
+  $('player').addEventListener('click', function (e) { if (e.target === this) shut(); });
+
+  chips(); render();
+  if (location.hash.length > 1) open(decodeURIComponent(location.hash.slice(1)));
+
+  /* films that reached YouTube after this page was built: their video ids come from the site */
+  if (window.fetch) fetch('/api/studio?action=watch', { headers: { accept: 'application/json' } })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (!d || !Array.isArray(d.films)) return; var changed = false;
+      d.films.forEach(function (x) { FILMS.forEach(function (f) {
+        if (f.id === x.id && /^[A-Za-z0-9_-]{11}$/.test(x.vid || '') && f.vid !== x.vid) { f.vid = x.vid; changed = true; } }); });
+      if (changed) { chips(); render(); }
+    }).catch(function () {});
+  /* a film that premieres while the page is open */
+  var sig = function () { return FILMS.filter(isLive).map(function (f) { return f.id; }).join(); }, was = sig();
+  setInterval(function () { var s = sig(); if (s !== was) { was = s; render(); } }, 5 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
