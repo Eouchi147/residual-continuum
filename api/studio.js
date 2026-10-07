@@ -4,6 +4,7 @@
    networks' OAuth returns and the films' own bytes.
 
    Public:   ?action=video&id=<film>   the film as video/mp4, with ranges
+             ?action=watch             long films live on YouTube (for watch.html)
              ?action=me                is the console unlocked, is it set up
              POST login                {password}
    Cron:     ?action=due               (Authorization: Bearer CRON_SECRET)
@@ -102,6 +103,21 @@ async function planView() {
     rendered: !!av.films[f.id], size: av.films[f.id] ? av.films[f.id].size : 0, posted: D.has(f.id), nets: nets[f.id] || [], held: S.has(f.id), pinned: (pins || []).indexOf(f.id) + 1 }));
 }
 
+/* The Watch page (watch.html): long films that are already public on YouTube, as marked from the console
+   (film id, YouTube video id, premiere date). A premiere still ahead, or a private upload, stays out. */
+async function watchList() {
+  if (!kvReady()) return { films: [] };
+  let posted = (await kv([["HGETALL", K.posted]]))[0] || {};
+  if (Array.isArray(posted)) { const o = {}; for (let i = 0; i < posted.length; i += 2) o[posted[i]] = posted[i + 1]; posted = o; }
+  const today = new Date().toISOString().slice(0, 10), films = [];
+  for (const f of longFilms()) {
+    let r = null; try { r = JSON.parse(posted[f.id + "|youtube"] || "null"); } catch { }
+    if (!r || r.private || !/^[A-Za-z0-9_-]{11}$/.test(r.id || "") || !/^\d{4}-\d\d-\d\d$/.test(r.date || "") || r.date > today) continue;
+    films.push({ id: f.id, vid: r.id, date: r.date });
+  }
+  return { films };
+}
+
 async function ytStats() {
   if (!kvReady()) return {};
   const cached = await kget("rc:ytstats"); if (cached && Date.now() - cached.at < 3600e3) return cached;
@@ -122,6 +138,12 @@ export default async function handler(req, res) {
     /* ----------------------------------------------------- public doors */
     if (action === "video") return await door(req, res, String(q.id || ""), String(q.ext || ""));
     if (action === "me") return json(res, 200, { owner: isOwner(req), setup: await setupState() });
+    if (action === "watch") {
+      const body = await watchList();
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      res.setHeader("Cache-Control", "public, max-age=300, s-maxage=900, stale-while-revalidate=3600");
+      res.statusCode = 200; return res.end(JSON.stringify(body));
+    }
     if (action === "login" && req.method === "POST") {
       const ip = String(req.headers["x-forwarded-for"] || "").split(",")[0].trim() || "?";
       if (kvReady()) {
