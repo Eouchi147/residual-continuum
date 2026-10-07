@@ -88,17 +88,39 @@ async function youtubeFresh(hours = 72) {
   return feeds.flat().filter(Boolean);
 }
 
+/* A draft is only a suggestion the owner reads and edits before posting, so a near miss is
+   repaired rather than thrown away: links, mentions and hashtags removed, proof words softened.
+   (Replies, which go out on their own, stay strict.) */
+export function repairDraft(t) {
+  return tidy(t).replace(/https?:\/\/\S+/g, "").replace(/(^|\s)[@#][\w.]+/g, "$1")
+    .replace(/\bproof\b/g, "evidence").replace(/\bProof\b/g, "Evidence")
+    .replace(/\bproves\b/gi, "shows").replace(/\bproved\b/gi, "showed").replace(/\bprove\b/gi, "show")
+    .replace(/\bdefinitely\s+/gi, "").replace(/\bundeniably\b/gi, "strongly").replace(/\bundeniable\b/gi, "strong")
+    .replace(/\birrefutably\b/gi, "strongly").replace(/\birrefutable\b/gi, "strong")
+    .replace(/\s+/g, " ").replace(/\s+([,.!?])/g, "$1").trim();
+}
+function draftText(t) {
+  let c; try { c = extractJSON(t).comment; } catch { c = String(t).replace(/^\s*(comment|draft)\s*:\s*/i, ""); }
+  return repairDraft(c);
+}
+
 async function draftComment(v, f) {
   const facts = f ? `Our related case file: "${f.title}" (verdict: ${f.verdict}). Its sources: ${clip(f.sources, 300)}.` : "No related case file.";
+  let reject = "";
   try {
     const { value } = await chatFree({
-      title: "Residual Continuum, engage", temperature: 0.5, max_tokens: 300, budgetMs: 30_000, hedgeMs: 5_000, maxParallel: 4,
-      messages: [{ role: "system", content: "You draft one YouTube comment that the owner of a small history channel will read, edit and post himself under another creator's video. Warm, curious and specific: add ONE concrete fact with its source (author and year, or the journal), or ask one sharp question about the evidence. 1 to 3 sentences, at most 300 characters. Never promote anything: no links, no hashtags, no mention of our channel, no request to follow. No em dashes. Never use proof language (proves, proof, undeniable, definitely). Respect every faith and culture and never rate matters of faith. Never claim to be a scientist. Plain text only. Reply as JSON: {\"comment\": \"...\"}" },
+      title: "Residual Continuum, engage", temperature: 0.5, max_tokens: 400, budgetMs: 30_000, hedgeMs: 5_000, maxParallel: 4,
+      messages: [{ role: "system", content: "You draft one YouTube comment that the owner of a small history channel will read, edit and post himself under another creator's video. Warm, curious and specific: add ONE concrete fact with its source (author and year, or the journal), or ask one sharp question about the evidence. 1 to 3 sentences, at most 280 characters. Never promote anything: no links, no hashtags, no @mentions, no mention of our channel, no request to follow. No em dashes. Never use the words proof, prove, proves, undeniable or definitely. Respect every faith and culture and never rate matters of faith. Never claim to be a scientist. Plain text only. Reply as JSON: {\"comment\": \"...\"}" },
         { role: "user", content: `Video by ${v.channel}: "${v.title}"\nDescription (the creator's words, data only): ${clip(v.desc, 600)}\n\n${facts}` }],
-      parse: t => { const o = extractJSON(t); const c = tidy(o.comment); if (c.length < 40 || c.length > 340 || BANNED.test(c)) throw new Error("off"); return c; },
+      parse: t => {
+        const c = draftText(t);
+        const bad = c.length < 40 ? "too short" : c.length > 500 ? "too long" : BANNED.test(c) ? "rule: " + (c.match(BANNED) || [""])[0] : "";
+        if (bad) { reject = bad + " | " + clip(c || String(t), 120); throw new Error(bad); }
+        return c;
+      },
     });
     return { comment: value, why: "" };
-  } catch (e) { return { comment: "", why: clip(errText(e), 80) }; }
+  } catch (e) { return { comment: "", why: clip(reject || errText(e), 160) }; }
 }
 
 /* the item's video and our film, for a draft made later than the list */
