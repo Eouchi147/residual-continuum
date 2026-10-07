@@ -115,7 +115,7 @@ const youtube = {
     if (f.kind === "teaser" || f.kind === "clip") desc = await teaserDesc(f, desc);
     let bytes; try { bytes = await filmBytes(f.id); } catch (e) { return { ok: false, error: errText(e) }; }
     const meta = { snippet: { title: w.title, description: desc, tags: w.tags, categoryId: "27", defaultLanguage: "en", defaultAudioLanguage: "en" },
-                   status: { privacyStatus: "public", selfDeclaredMadeForKids: false, embeddable: true } };
+                   status: { privacyStatus: w.privacy === "private" ? "private" : "public", selfDeclaredMadeForKids: false, embeddable: true } };
     const bd = "rc" + Date.now().toString(36);
     const body = Buffer.concat([Buffer.from("--" + bd + "\r\ncontent-type: application/json; charset=UTF-8\r\n\r\n" + JSON.stringify(meta) + "\r\n--" + bd + "\r\ncontent-type: video/mp4\r\n\r\n"), bytes, Buffer.from("\r\n--" + bd + "--\r\n")]);
     const { r, j, t } = await jfetch("https://www.googleapis.com/upload/youtube/v3/videos?uploadType=multipart&part=snippet,status",
@@ -124,7 +124,8 @@ const youtube = {
     if (kvReady()) { try { await kv([["INCR", K.ytday(day)], ["EXPIRE", K.ytday(day), "172800"]]); } catch { } }
     const out = { ok: true, id: j.id, url: "https://youtube.com/shorts/" + j.id };
     const p = j.status && j.status.privacyStatus;
-    if (p && p !== "public") { out.private = true; out.note = "YouTube kept it " + p + ": the Google project has not passed YouTube's API audit, so only you can see it"; }
+    if (w.privacy === "private") { out.private = true; out.note = "uploaded as private, as asked"; }
+    else if (p && p !== "public") { out.private = true; out.note = "YouTube kept it " + p + ": the Google project has not passed YouTube's API audit, so only you can see it"; }
     return out;
   },
   async finish(p, ctx, rec) {

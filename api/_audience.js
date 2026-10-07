@@ -1,7 +1,7 @@
 /* Residual Continuum · The Explorer's ear: what viewers say
    ===========================================================================
-   Reads the newest comments under our own videos (YouTube; Facebook and
-   Instagram when their permissions allow) once a day. Keeps the words, the
+   Reads the newest comments under our own videos (Facebook and Instagram,
+   when their permissions allow; never YouTube's) once a day. Keeps the words, the
    film, the network, the likes and the day: never a name, a handle or a
    photo. Kept private (rc:x:voice, the newest 120), shown only in the
    console and to the council, who are told the comments are viewers' words
@@ -21,15 +21,10 @@ async function pool(items, n, fn) {
 /* reading: the latest sense() reading, for the list of our videos and their films */
 export async function listen(reading) {
   if (!kvReady() || !reading) return { error: "nothing to listen to yet" };
-  const { ytGet, metaGet } = await import("./_nets.js");
+  const { metaGet } = await import("./_nets.js");
   const got = [], errors = [];
-  /* YouTube: the 15 newest public videos with comments */
-  const yv = ((reading.youtube || {}).list || []).filter(v => v.privacy === "public" && v.comments > 0).slice(0, 15);
-  const yr = await pool(yv, 5, v => ytGet(`commentThreads?part=snippet&videoId=${v.id}&maxResults=20&order=time&textFormat=plainText`));
-  yv.forEach((v, i) => { const r = yr[i];
-    if (!r || !r.ok) { if (r && errors.length < 3) errors.push("YouTube: " + r.error); return; }
-    for (const it of (r.j.items || [])) { const s = ((it.snippet || {}).topLevelComment || {}).snippet || {};
-      got.push({ net: "youtube", vid: v.id, video: clip(v.title, 90), text: clean(s.textDisplay || s.textOriginal), likes: +s.likeCount || 0, replies: +(it.snippet || {}).totalReplyCount || 0, at: s.publishedAt || "" }); } });
+  /* YouTube: comments are NOT read (7 Oct 2026). Our YouTube API client only uploads our films and reads our
+     own channel's statistics, as declared in YouTube's API compliance review: no viewer data. */
   /* Facebook: our videos' comments (needs a permission the app may not have) */
   const fv = ((reading.facebook || {}).list || []).slice(0, 10);
   const fr = await pool(fv, 5, v => metaGet("facebook", v.id + "/comments?fields=message,created_time,like_count&limit=20&order=reverse_chronological"));

@@ -208,6 +208,17 @@ export default async function handler(req, res) {
       case "reject": return json(res, 200, { record: await reject(String(A.date), String(A.hour)) });
       case "retry": return json(res, 200, { record: await retry(String(A.date), String(A.hour), String(A.net)) });
       case "post_now": return json(res, 200, { record: await postNow(String(A.id)) });
+      /* YouTube API demonstration (for YouTube's API compliance review): one Short, uploaded now through the
+         same code as the scheduled poster (OAuth refresh, then videos.insert), but always PRIVATE and kept
+         out of the posting records, so it never stands in for the film's real upload */
+      case "yt_test": {
+        if (req.method !== "POST") return json(res, 405, { error: "POST only" });
+        const f = film(String(A.id)); if (!f || f.kind) return json(res, 400, { error: "choose a Short" });
+        if (!NETWORKS.youtube) return json(res, 400, { error: "YouTube is not set up" });
+        const t0 = Date.now();
+        const r = await NETWORKS.youtube.send(f, { ...shape(f, "youtube"), privacy: "private" }, { left: () => 250e3 - (Date.now() - t0) });
+        return json(res, 200, { result: { ok: !!r.ok, id: r.id || "", private: !!r.private, note: r.note || "", error: r.error || "", ms: Date.now() - t0 } });
+      }
       /* a film that went out on a network by hand (YouTube Studio, while the
          API audit is pending): recorded so the poster never sends it twice */
       case "mark": {
