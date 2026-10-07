@@ -194,11 +194,37 @@ async function pick(cands) {
   }
 }
 
-async function write(item, story, refs) {
+/* The free models answer in many shapes: the body as one string, as objects, in too few
+   paragraphs. Shape it into paragraphs before judging it, so a good article is not thrown away. */
+const sentences = (t) => String(t).match(/[^.!?]+[.!?]+["')\]]*\s*|[^.!?]+$/g) || [String(t)];
+export function shapeArticle(o, storyLen = 0) {
+  if (!o || typeof o !== "object") throw new Error("no article");
+  let body = o.body;
+  if (typeof body === "string") body = body.split(/\n\s*\n|\n(?=\S)/);
+  if (!Array.isArray(body)) throw new Error("incomplete");
+  body = body.flatMap((p) => typeof p === "string" ? [p] : p && typeof p === "object" ? [p.text || p.paragraph || p.content || ""] : [])
+    .map((p) => String(p).replace(/^\s*(?:[-*\u2022]|\d+[.)])\s+/, "").trim()).filter((p) => p.length > 0);
+  /* too few paragraphs but enough words: split the long ones at sentence ends */
+  while (body.length < 5 && body.some((p) => p.split(/\s+/).length > 140)) {
+    const k = body.reduce((m, p, i) => (p.length > body[m].length ? i : m), 0);
+    const ss = sentences(body[k]); if (ss.length < 2) break;
+    const half = Math.ceil(ss.length / 2);
+    body.splice(k, 1, ss.slice(0, half).join("").trim(), ss.slice(half).join("").trim());
+  }
+  if (!o.title || body.length < 4) throw new Error("incomplete");
+  const words = body.join(" ").split(/\s+/).length;
+  if (words < (storyLen > 1500 ? 380 : 260)) throw new Error("too short");
+  const all = [o.title, o.dek, ...body].join(" ");
+  const hits = BANNED.reduce((n, [re]) => n + (all.match(re) || []).length, 0);
+  if (hits > 2) throw new Error("breaks the house rules");   /* let another model write it */
+  return { ...o, body };
+}
+
+async function write(item, story, refs, budgetMs = 150_000) {
   const caseList = cases.map((c) => `${c[0]}: ${c[1]}`).join("\n");
   const refTxt = refs.length ? refs.map((r) => `DOI ${r.doi}: ${r.title} (${r.container} ${r.year})`).join("\n") : "none verified";
   const { value } = await chatFree({
-    title: "Residual Continuum, daily writer", temperature: 0.5, max_tokens: 2400, budgetMs: 150_000, hedgeMs: 25_000, effort: "low",
+    title: "Residual Continuum, daily writer", temperature: 0.5, max_tokens: 4000, budgetMs, hedgeMs: 25_000, effort: "low",
     messages: [{ role: "system", content: VOICE },
       { role: "user", content:
 `THE DISCOVERY
@@ -226,16 +252,7 @@ Write the article. Return ONLY JSON:
  "related": ["0-3 case ids from the list that this bears on"],
  "image_terms": "3-6 concrete words for an image search (place, object, site)",
  "image_place": "1-3 words: the site or region name only, for a second image search"}` }],
-    parse: (t) => {
-      const o = extractJSON(t);
-      if (!o.title || !Array.isArray(o.body) || o.body.length < 4) throw new Error("incomplete");
-      const words = o.body.join(" ").split(/\s+/).length;
-      if (words < (story.text.length > 1500 ? 420 : 300)) throw new Error("too short");
-      const all = [o.title, o.dek, ...o.body].join(" ");
-      const hits = BANNED.reduce((n, [re]) => n + (all.match(re) || []).length, 0);
-      if (hits > 2) throw new Error("breaks the house rules");   /* let another model write it */
-      return o;
-    },
+    parse: (t) => shapeArticle(extractJSON(t), story.text.length),
   });
   return value;
 }
@@ -286,7 +303,7 @@ export default async function handler(req, res) {
   for (const k of ["OPENROUTER_API_KEY", "GITHUB_TOKEN", "GITHUB_REPO"])
     if (!process.env[k]) return res.status(500).json({ error: `missing env var ${k}` });
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10), t0 = Date.now();
   try {
     const index = await readIndex(repo);
     const posts = Array.isArray(index.posts) ? index.posts : [];
@@ -307,7 +324,14 @@ export default async function handler(req, res) {
     if (story.text.length < 600) story.text = [story.text, await readStoryMeta(item.link)].filter(Boolean).join("\n");
     const refs = (await Promise.all(story.dois.map(verifyDoi))).filter(Boolean);
 
-    const d = await write(item, story, refs);
+    let d;
+    try { d = await write(item, story, refs); }
+    catch (e) {
+      console.error("draft: writer failed once:", String(e.message || e).slice(0, 200));
+      const left = 285_000 - (Date.now() - t0);                 /* maxDuration 300 s */
+      if (left < 60_000) throw e;
+      d = await write(item, story, refs, Math.min(110_000, left - 25_000));
+    }
     const body = d.body.map(clean).filter((p) => p.length > 40);
     const ids = new Set(cases.map((c) => c[0]));
     const firm = ["solid", "strong", "plausible", "contested"].includes(d.firm) ? d.firm : "plausible";
@@ -329,6 +353,7 @@ export default async function handler(req, res) {
     ], `Daily discovery ${today}: ${post.title}`);
     return res.status(200).json({ ok: true, title: post.title, source: item.link, story_chars: story.text.length, refs: refs.length, image: !!image, commit: sha });
   } catch (e) {
+    console.error("draft: failed:", String(e.message || e).slice(0, 300));
     return res.status(500).json({ error: String(e.message || e).slice(0, 300) });
   }
 }
