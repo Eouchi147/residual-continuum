@@ -23,7 +23,7 @@ const UA = "Mozilla/5.0 (compatible; ResidualContinuumStudio/1.0; +https://resid
    words are and one of them is in the title (WEAK). Modern politics, war, crime and scripture
    are left out: the house does not comment there. */
 const STRONG = /g[öo]bekli|karahan|younger dryas|atlantis|sphinx|giza|pyramid|megalith|baalbek|puma ?punku|sacsayhuam|sahara|malta|hypogeum|carthage|phoenicia|troy\b|trojan|hittite|knossos|minoan|mycenae|voynich|herculaneum|papyr|roswell|\bufos?\b|\buaps?\b|stargate|denisovan|neanderthal|homo (sapiens|erectus|naledi|floresiensis)|ice age|deluge|tektite|lost civili|archaeolog|bronze age|stone age|neolithic|paleolithic|egypt|pharaoh|\bmaya\b|mayan|\binca\b|incan|olmec|aztec|stonehenge|mammoth|cave art|rock art|first americans|clovis|vinland|viking|norse|king arthur|camelot|sea peoples|rapa nui|easter island|alexandria|piri reis|yonaguni|gunung padang|derinkuyu|underground city|radiocarbon|sumer|babylon|mesopotamia|assyria|indus valley|harappa|nabta|gobero|garamant|tassili|petroglyph|dolmen|menhir|cairn|barrow|hillfort|oppidum|antikythera|nazca|teotihuacan|tiwanaku|caral|angkor|longyou|guyaju|serapeum|saqqara|dendera|abydos|amarna|tutankhamun|nefertiti|khufu|khafre|giants?\b.*(bones|skeleton)/i;
-const WEAK = /ancient|prehistor|excavat|ruins?\b|temple|tomb|burial|skull|fossil|\bdna\b|genome|myth|legend|myster|lost city|forgotten|artifact|artefact|relic|shipwreck|comet|impact crater|flood|library|manuscript|scroll|inscription|hieroglyph|civili[sz]ation|empire|dynasty|kingdom|bronze|iron age|cave|carving|monument|megalith|stone circle/gi;
+const WEAK = /ancient|prehistor|excavat|ruins?\b|temple|tomb|burial|skull|fossil|\bdna\b|genome|myth|legend|myster|lost city|forgotten|artifact|artefact|relic|shipwreck|comet|impact crater|flood|library|manuscript|scroll|inscription|hieroglyph|civili[sz]ation|bronze|iron age|cave|carving|monument|megalith|megastructure|stone circle/gi;
 const OFFTOPIC = /assassinat|\bira\b|nazi|hitler|holocaust|genocide|world war|\bww ?(i{1,2}|[12])\b|wwii|cold war|vietnam|election|president|prime minister|parliament|trump|biden|putin|ukrain|gaza|israel|palestin|terror|murder|serial killer|true crime|crime scene|shooting|slavery|cult leader|bible|biblical|quran|koran|jesus|christ\b|prophet|church|mosque|islam|christian|crucif|noah|moses|ark of the covenant|garden of eden|nephilim|apocalyp|end times/i;
 export function onTopic(title, desc = "") {
   const all = title + " " + desc;
@@ -52,7 +52,7 @@ const unesc = s => String(s || "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").
 /* our film closest to a subject, for the fact a comment or a reply can bring */
 /* words too common to tie a video to one of our films */
 const COMMON = new Set("about above after again against ancient another around because before being below between could documentary documentaries during every first found great history historical however inside legend legends little mysteries mystery never other people really secret secrets shorts since something still story their there these thing things those three through truth under unknown until video weighed weigh where which while world would years yourself verdict sources evidence experts expert theory theories origin origins answers questions question famous strange hidden finally explained discovered discovery real".split(" "));
-function relatedFilm(text) {
+export function relatedFilm(text) {
   const words = new Set((String(text).toLowerCase().match(/[a-zà-ÿ]{5,}/g) || []).filter(w => !COMMON.has(w)));
   let best = null, bs = 0;
   for (const f of plan().films) {
@@ -104,7 +104,8 @@ async function draftComment(v, f) {
 /* the item's video and our film, for a draft made later than the list */
 function itemVideo(i) { return { channel: i.channel, title: i.title, desc: i.desc || "" }; }
 async function draftItem(i) {
-  const f = i.film ? plan().films.find(x => x.id === i.film) : null;
+  const f = relatedFilm(i.title + " " + (i.desc || ""));       /* matched again: lists made before 8 Oct used a looser match */
+  i.film = f ? f.id : ""; i.filmTitle = f ? f.title : ""; i.sources = f ? clip(f.sources, 240) : "";
   const d = await draftComment(itemVideo(i), f);
   i.tries = (i.tries || 0) + 1; i.comment = d.comment; i.why = d.why;
   return !!d.comment;
@@ -118,7 +119,7 @@ export async function fillDrafts(ctx, max = 2) {
   for (const i of todo) { if (ctx && ctx.left() < 40e3) break; if (await draftItem(i)) filled++; }
   if (todo.length) {
     const cur = (await kget(KE.list)) || l;          /* keep marks made while drafting */
-    for (const i of todo) { const c = cur.items.find(x => x.id === i.id); if (c && c.status === "new") Object.assign(c, { comment: i.comment, tries: i.tries, why: i.why }); }
+    for (const i of todo) { const c = cur.items.find(x => x.id === i.id); if (c && c.status === "new") Object.assign(c, { comment: i.comment, tries: i.tries, why: i.why, film: i.film, filmTitle: i.filmTitle, sources: i.sources }); }
     await kset(KE.list, cur);
   }
   return { filled, left: l.items.filter(i => i.status === "new" && !i.comment && (i.tries || 0) < 6).length };
@@ -130,7 +131,7 @@ export async function redraft(id) {
   if (!i) return { ok: false, error: "not in the list" };
   const ok = await draftItem(i);
   const cur = (await kget(KE.list)) || l; const c = cur.items.find(x => x.id === id);
-  if (c) Object.assign(c, { comment: i.comment, tries: i.tries, why: i.why });
+  if (c) Object.assign(c, { comment: i.comment, tries: i.tries, why: i.why, film: i.film, filmTitle: i.filmTitle, sources: i.sources });
   await kset(KE.list, cur);
   return { ok, comment: i.comment, why: i.why };
 }
