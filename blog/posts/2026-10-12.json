@@ -1,0 +1,53 @@
+{
+ "id": "2026-10-12",
+ "date": "2026-10-12",
+ "title": "Neanderthals may have turned birch bark glue into ancient wound medicine",
+ "kicker": "Prehistoric pharmacy",
+ "dek": "Experiments recreating Neanderthal birch tar production show every sample stopped Staphylococcus aureus growth, suggesting the adhesive doubled as a natural antibiotic.",
+ "body": [
+  "A sticky black residue clinging to stone tools at Neanderthal sites across Europe has long been labeled prehistoric glue. Birch tar, made by heating bark in low-oxygen conditions, let early humans haft blades to wooden handles. But the same substance appears in ethnographic records worldwide as a treatment for cuts and infections. Researchers at the University of Cologne, the University of Oxford, the University of Liège, and Cape Breton University asked whether Neanderthals might have known this second use.",
+  "The team recreated two production methods reconstructed from archaeological evidence. One sealed birch bark in an underground pit and heated it to drive off volatile compounds through dry distillation. The other burned bark against a cool stone surface so tar vapors condensed into a collectable film. Both techniques yielded thick, tacky tar using only materials and fire control available to Neanderthals.",
+  "Every tar sample produced by either method inhibited the growth of Staphylococcus aureus in laboratory tests. The bacterium is a common cause of wound infections and includes antibiotic-resistant strains that challenge modern medicine. The effect appeared regardless of which prehistoric technique created the tar, suggesting the antibacterial property is robust across plausible Neanderthal production variants.",
+  "Tjaark Siemssen of the University of Cologne and Oxford University, who led the study published in PLOS One, says the findings suggest antimicrobial properties were present in materials Neanderthals could make and may have been used in a targeted manner. The experiments do not show that Neanderthals applied tar to wounds, only that the material they produced had the capacity to fight bacteria.",
+  "Archaeological traces of birch tar on tools date back at least 200,000 years. Growing evidence of Neanderthal plant use and possible medical care, such as the use of poplar bark containing salicylic acid and the treatment of injuries, makes the medicinal hypothesis plausible. The same substance that improved hunting equipment could have improved survival after the hunt.",
+  "The discovery adds to a shift in how researchers view Neanderthal cognition. Rather than simple glue makers, they appear as people who understood the chemical affordances of their landscape. Birch tar joins a short list of prehistoric substances, including certain clays and fungi, that modern science confirms have bioactive properties.",
+  "Antibiotic resistance today drives a search for new compounds. The study concludes that ethnographic and prehistoric contexts deserve closer scientific investigation for targeted antibiotics. Substances used thousands of years ago may contain chemistry still relevant to modern wound care, though safety and efficacy in humans remain untested."
+ ],
+ "doesnt_show": "The experiments do not demonstrate that Neanderthals recognized the antibacterial effect or deliberately applied birch tar to wounds. Laboratory inhibition of bacteria does not establish safety or effectiveness as a human treatment.",
+ "settle": "Direct evidence such as birch tar residues on wound-related artifacts or in dental calculus from injured individuals would strengthen the medicinal use hypothesis.",
+ "firm": "plausible",
+ "related": [
+  "stone-age-surgery",
+  "other-humans",
+  "kalambo-structure"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261008005256.htm",
+  "title": "Neanderthals may have used prehistoric glue as an ancient antibiotic",
+  "date": "2026-10-11"
+ },
+ "refs": [
+  {
+   "doi": "10.1371/journal.pone.0343618",
+   "title": "Antibacterial properties of experimentally produced birch tar and its medicinal affordances in the Pleistocene",
+   "container": "PLOS One",
+   "year": 2026,
+   "authors": [
+    "Tjaark Siemssen",
+    "Aderonke Oludare",
+    "Marcel Schemmel",
+    "Janos Puschmann",
+    "Matthias Bierenstiel"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Geographical_distribution_of_Neanderthal_archaeological_sites_and_genome-wide_distribution_of_Neanderthal_alleles_in_the_genomes_of_ancient_modern_humans.webp/1280px-Geographical_distribution_of_Neanderthal_archaeological_sites_and_genome-wide_distribution_of_Neanderthal_alleles_in_the_genomes_of_ancient_modern_humans.webp?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Geographical_distribution_of_Neanderthal_archaeological_sites_and_genome-wide_distribution_of_Neanderthal_alleles_in_the_genomes_of_ancient_modern_humans.webp",
+  "licence": "CC BY 4.0",
+  "title": "Geographical distribution of Neanderthal archaeological sites and genome-wide distribution of Neanderthal alleles in the genomes of ancient modern humans.webp",
+  "credit": "Authors of the study: Mateja Hajdinjak, Fabrizio Mafessoni, Laurits Skov, Benjamin Vernot, Alexander Hübner, Qiaomei Fu,"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
