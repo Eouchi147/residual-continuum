@@ -1,0 +1,53 @@
+{
+ "id": "2026-10-14",
+ "date": "2026-10-14",
+ "title": "first adult erectus found 200,000 years early",
+ "kicker": "south africa",
+ "dek": "A 2-million-year-old skull fragment reshapes the origin story of our genus.",
+ "body": [
+  "Archaeologists from La Trobe University have described 18 hominin fossils from South Africa, including a second skull fragment belonging to Homo erectus. The discovery adds stronger evidence that the species was present in southern Africa 2.0 million years ago, about 200,000 years earlier than traditionally believed.",
+  "The fossil collection also includes remains of Paranthropus robustus. Those specimens suggest the species was undergoing gradual evolutionary changes as it adapted to shifting environmental and climatic conditions. The fossils come from Drimolen Main Quarry in South Africa's Cradle of Humankind, one of the world's richest sites for remains of ancient human relatives.",
+  "Researchers from La Trobe, working with colleagues in South Africa and the United States, have now analyzed and described another 18 fossils from the site. Although the quarry was discovered in 1992 and excavated through 2019, many of the fossils recovered there had never been formally described and remained largely unknown to science.",
+  "In research published in Annals of Human Biology, the team reports the first known adult Homo erectus fossil from Drimolen. The specimen is about 2 million years old, making it roughly 200,000 years older than adult Homo erectus fossils discovered elsewhere, including specimens from Dmanisi in Georgia that date to about 1.8 million years ago.",
+  "Homo erectus is the first species of hominin that researchers broadly agree fits within our own genus Homo and is likely directly ancestral to us. Drimolen preserves evidence for the first appearance of this species 2 million years ago; however, the original fossil, DNH 134, belonged to a child aged between two and four, and there was uncertainty about what the adult version may have looked like.",
+  "This paper publishes a new adult fossil attributed to Homo erectus, DNH 127, providing further confirmation that this species first appeared in southern Africa 2 million years ago. The newly described fossils also provide evidence that P. robustus changed over time. Between about 2 million and 1.8 million years ago, the species developed larger teeth and more powerful chewing muscles.",
+  "These two human species shared the same landscape and are both preserved in Drimolen cave. While Homo erectus was developing a larger brain and smaller molar teeth, possibly as a result of eating more meat, P. robustus retained a brain only slightly larger than that of chimpanzees. At the same time, it evolved enormous molars suited to grinding and crushing tough, hard foods, functioning much like a mortar and pestle. These two human species shared the same landscape and are both preserved in Drimolen cave.",
+  "The Drimolen fossils also help researchers compare P. robustus populations separated by about 200,000 years. During this 200,000-year period, P. robustus teeth became even larger, and so did the muscles associated with chewing. Hominin fossils are so rare that generally the differences between them are huge, and researchers are left to make educated guesses regarding what existed in the missing parts of the fossil record. However, the large number of fossils from Drimolen, some of which are published in this paper, allow an unprecedented insight into the micro-evolutionary changes that shaped human ancestors."
+ ],
+ "doesnt_show": "The exact cause of the climatic shifts that drove P. robustus evolution remains unclear, and no direct link between diet change and brain expansion in Homo erectus has been established at this site.",
+ "settle": "Additional adult Homo erectus fossils from contexts older than 2.0 million years would confirm the timing of the species' first appearance.",
+ "firm": "strong",
+ "related": [
+  "other-humans",
+  "ice-age-signs"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261007042113.htm",
+  "title": "Scientists found Homo erectus 200,000 years earlier than expected",
+  "date": "2026-10-08"
+ },
+ "refs": [
+  {
+   "doi": "10.1080/03014460.2026.2725046",
+   "title": "New hominin cranial and mandibular remains from Drimolen Main Quarry, South Africa",
+   "container": "Annals of Human Biology",
+   "year": 2026,
+   "authors": [
+    "Jesse M. Martin",
+    "A. B. Leece",
+    "Stephanie Baker",
+    "Andy I. R. Herries",
+    "David S. Strait"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Hamerkop_eating_fish%2C_South_Africa_-_2023-1.jpg/1280px-Hamerkop_eating_fish%2C_South_Africa_-_2023-1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Hamerkop_eating_fish,_South_Africa_-_2023-1.jpg",
+  "licence": "CC BY-SA 4.0",
+  "title": "Hamerkop eating fish, South Africa - 2023-1.jpg",
+  "credit": "Andy Morffew"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
