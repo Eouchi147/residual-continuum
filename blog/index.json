@@ -1,6 +1,19 @@
 {
- "updated": "2026-10-14T04:30:57.142Z",
+ "updated": "2026-10-15T04:30:59.828Z",
  "posts": [
+  {
+   "id": "2026-10-15",
+   "date": "2026-10-15",
+   "title": "underwater discoveries reveal ancient aboriginal landscape",
+   "kicker": "sea country",
+   "dek": "rising seas drowned more than two million square kilometres of australia's continental shelf, but the archaeological record survived beneath the waves.",
+   "firm": "plausible",
+   "image": {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/9/90/Underwater_Archaeology_Centre.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "title": "Underwater Archaeology Centre.jpg"
+   },
+   "source": "HeritageDaily"
+  },
   {
    "id": "2026-10-14",
    "date": "2026-10-14",
