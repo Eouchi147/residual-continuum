@@ -1,0 +1,51 @@
+{
+ "id": "2026-10-18",
+ "date": "2026-10-18",
+ "title": "a miniature fish among the dead",
+ "kicker": "Neolithic Siberia",
+ "dek": "A tiny stone lure placed in a grave 7,600 years ago rewrites the origins of fishing technology.",
+ "body": [
+  "At Khuzhir-Nuge-IX on the Olkhon shore of Lake Baikal, an oval grave held a body laid on its right side, knees bent, covered with a stone cairn. Red ochre stained the ritual, but beneath the cairn lay a surprise: a 4.85-centimetre-long fish carved from grey shale. The figurine bears a defined back, a carved mouth, and tiny eye notches. A deep circular groove circles its centre, suggesting it once tied to a line.",
+  "The grave goods include a large bone implement and 12 other stone objects. The fish sits apart. Its miniature size and worked detail mark it not as a tool for butchery, but as something made for the water. Comparable lures from the region, found in settlements, date to about 7,400 years ago. This burial pushes the appearance of such objects back by 150 to 200 years, to the very beginning of the Kitoi culture.",
+  "The Kitoi people lived as hunter-fisher communities between 7,000 and 8,000 years ago. Their lives were tuned to the lake: nets, hooks, and now, it seems, artificial lures. That this fish was placed in a formal burial, rather than lost in a midden, shows that fishing gear had taken on meaning beyond the everyday. It may have marked the deceased's skill, their role, or simply their place in a world defined by the lake's resources.",
+  "Yet the evidence stops short of interpretation. The authors, publishing in Archaeology, Ethnography and Anthropology of Eurasia, note that the object's function remains uncertain. Was it a toy, a totem, or a practical lure meant to serve the dead in the afterlife? The grave's poor bone preservation prevents any answer about the individual's sex or age. We know what the object is, but not why it was chosen.",
+  "The discovery does reveal a timeline. By 7,600 years ago, Kitoi mortuary practices already included fishing-related items. The grave at Khuzhir-Nuge-IX is the earliest known example in the region. It supports that the relationship between these Neolithic people and Lake Baikal's fish was not just economic but ritual. The lake gave food, and now we see it gave symbolism too.",
+  "Skepticism is warranted. The groove could have served purposes we cannot reconstruct without more context. The fish shape might be incidental, a convenient pebble worked into form. Without experimental replication or comparative ethnography, the line between tool and totem remains blurred. The authors themselves admit that symbolic meaning cannot be ruled out, but cannot be supports from the data alone.",
+  "What is clear is that the Neolithic of Lake Baikal was more complex than a simple struggle for survival. Technology, belief, and environment were intertwined. A tiny stone fish, buried with care, tells us that even 7,600 years ago, people were thinking about what they left behind. The lake's depths gave up a lure; the grave gave up a question.",
+  "What would settle this is a find that links the lure to a clear context: a fishing settlement with the same type of groove, or a burial with written or oral tradition that names the object. Until then, we have a remarkable artifact, but not a definitive answer. The fish is there. The meaning is still swimming in the dark."
+ ],
+ "doesnt_show": "It does not show whether the fish was used in life before burial, nor does it confirm a symbolic or religious function for the object.",
+ "settle": "A contemporary fishing site with similar lures would confirm practical use; a textual or ethnographic record would confirm symbolic meaning.",
+ "firm": "plausible",
+ "related": [
+  "drowned-coasts",
+  "first-americans",
+  "ice-age-signs"
+ ],
+ "source": {
+  "name": "HeritageDaily",
+  "url": "https://www.heritagedaily.com/2026/10/7600-year-old-stone-fish-found-in-neolithic-burial-at-lake-baikal/159680",
+  "title": "7,600-year-old stone fish found in Neolithic burial at Lake Baikal",
+  "date": "2026-10-16"
+ },
+ "refs": [
+  {
+   "doi": "10.17746/1563-0102.2026.54.3.036-042",
+   "title": "An Early Neolithic Burial with a Miniature Fish-Shaped Bait on the Shore of Lake Baikal",
+   "container": "Archaeology, Ethnology and Anthropology of Eurasia (Russian-language)",
+   "year": 2026,
+   "authors": [
+    "D. E. Kichigin",
+    "A. V. Kharinsky"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Baikal%2C_Cape_Burhan%2C_Olkhon_Island%2C_Lake_Baikal%2C_Russia.jpg/1280px-Baikal%2C_Cape_Burhan%2C_Olkhon_Island%2C_Lake_Baikal%2C_Russia.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Baikal,_Cape_Burhan,_Olkhon_Island,_Lake_Baikal,_Russia.jpg",
+  "licence": "CC BY 4.0",
+  "title": "Baikal, Cape Burhan, Olkhon Island, Lake Baikal, Russia.jpg",
+  "credit": "Vyacheslav Argenberg"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
