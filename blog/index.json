@@ -1,6 +1,19 @@
 {
- "updated": "2026-10-20T04:30:52.965Z",
+ "updated": "2026-10-21T04:30:46.259Z",
  "posts": [
+  {
+   "id": "2026-10-21",
+   "date": "2026-10-21",
+   "title": "300,000-year-old tools found in portugal",
+   "kicker": "prehistoric finds",
+   "dek": "More than 200 stone artefacts recovered from a riverside location in central portugal.",
+   "firm": "plausible",
+   "image": {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Alpiar%C3%A7a_Cegonha_01.jpg/1280px-Alpiar%C3%A7a_Cegonha_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "title": "Alpiarça Cegonha 01.jpg"
+   },
+   "source": "HeritageDaily"
+  },
   {
    "id": "2026-10-20",
    "date": "2026-10-20",
