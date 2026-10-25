@@ -1,0 +1,54 @@
+{
+ "id": "2026-10-25",
+ "date": "2026-10-25",
+ "title": "how prehistoric communities survived a volcanic apocalypse",
+ "kicker": "jōmon resilience",
+ "dek": "A massive eruption 7,300 years ago reshaped lives across Japan, but not all regions fared the same.",
+ "body": [
+  "The Kikai-Akahoya eruption erupted from a submerged volcano 30 kilometres off Kyushu's southern coast, unleashing pyroclastic flows, tsunamis and centuries of ashfall. At the time, jōmon hunter‑gatherers inhabited the archipelago, yet large settlements in southern Kyushu had already vanished, replaced by smaller, mobile camps. The eruption struck a landscape already in flux, making survival a patchwork of loss and adaptation rather than a single catastrophe.",
+  "Archaeologists led by Enrico Crema and Peter Jordan examined radiocarbon dates from 750 years before and after the event, comparing them with pottery, stone tools and ash deposits. In southern and central Kyushu, population decline was substantial, with some areas abandoned entirely. Northern Kyushu and parts of northern Honshu, however, continued to grow, suggesting that geography and resource access determined who thrived and who struggled in the aftermath.",
+  "One key factor was access to the sea. While inland forests and soils remained choked with volcanic material, coastal waters recovered more quickly thanks to ocean currents dispersing ash and contaminant. Marine ecosystems rebounded faster, making fish and shellfish a dependable food source. After the eruption, stone harpoon points spread across northern Kyushu, signalling a shift toward fishing and marine hunting, possibly offshore, as traditional hunting grounds became unreliable.",
+  "Migration also shaped the post‑eruption landscape. Communities fleeing devastated southern regions likely moved north, joining existing groups or establishing new settlements. Slit stone earrings, previously confined to southern Kyushu, appear along the northern coast after the disaster, hinting at new social connections. These displaced people may have exchanged ornaments, traded resources or formed alliances to share the burden of a changed environment.",
+  "The eruption’s impact extended beyond the zones of immediate destruction. Ash fallout affected regions far from the caldera, and populations there may have perished or stagnated while recovery unfolded over generations. Climate disruption, contaminated water and the loss of game such as deer and wild boar compounded hardship for inland groups already dependent on those resources. The catastrophe did not erase jōmon society, but it reshaped its demographic map.",
+  "The study reveals a nuanced survival story: some communities collapsed, others stagnated, and a few grew by turning to the coast and each other. Adaptations in subsistence, social networks and movement allowed prehistoric hunter‑gatherers to persist without modern infrastructure or organised relief. These choices left a lasting imprint on the population and cultural landscape of prehistoric Japan, illustrating how resilience emerges from flexibility in the face of overwhelming natural force.",
+  "The researchers emphasize that the disaster’s consequences were more complex than a simple population crash. Coastal resources, migration and shifting relationships between groups were all part of the response to the Kikai-Akahoya catastrophe. Their work offers a rare window into how people lived, adapted and survived when the world they knew was violently upended millennia before the age of disaster relief."
+ ],
+ "doesnt_show": "The study does not identify exact dates for individual migrations or supports that specific groups moved north.",
+ "settle": "High‑resolution ancient DNA from pre‑ and post‑eruption sites would confirm population movements and genetic shifts.",
+ "firm": "plausible",
+ "related": [
+  "ice-age-signs",
+  "drowned-coasts",
+  "first-americans"
+ ],
+ "source": {
+  "name": "HeritageDaily",
+  "url": "https://www.heritagedaily.com/2026/10/how-prehistoric-communities-survived-a-volcanic-apocalypse/159774",
+  "title": "How prehistoric communities survived a volcanic apocalypse",
+  "date": "2026-10-24"
+ },
+ "refs": [
+  {
+   "doi": "10.1126/sciadv.aeh7197",
+   "title": "Divergent demographic responses to the Kikai-Akahoya volcanic catastrophe in mid-Holocene Japan",
+   "container": "Science Advances",
+   "year": 2026,
+   "authors": [
+    "Enrico R. Crema",
+    "Mitsuhiro Kuwahata",
+    "Junzo Uchiyama",
+    "Ari Junno",
+    "Felix Riede",
+    "Peter D. Jordan"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Terra_Kyushu_20091028.jpg/1280px-Terra_Kyushu_20091028.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Terra_Kyushu_20091028.jpg",
+  "licence": "Public domain",
+  "title": "Terra Kyushu 20091028.jpg",
+  "credit": "NASA"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
