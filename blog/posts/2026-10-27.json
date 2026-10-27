@@ -1,0 +1,64 @@
+{
+ "id": "2026-10-27",
+ "date": "2026-10-27",
+ "title": "Pottery cargo off Turkey may be oldest shipwreck ever found",
+ "kicker": "Early Bronze Age",
+ "dek": "A wreck near Kekova dated to roughly 2700–2400 BCE could push back the record by centuries. Only the jars survive, but their shapes and residues hint at a far-flung trade network.",
+ "body": [
+  "A mound of barnacle-encrusted jars on a rocky slope off Kekova, west of Antalya, is all that remains of a vessel that sank around 4,500 years ago. The wood vanished long ago, eaten by water and time. What survived were dozens of large ovoid amphorae with flat bases, two handles, and a distinctive raised clay belt around the widest part of each jar. Associate Professor Hakan Öniz of Akdeniz University located the site in 2024 after tips from local seafarers, and his team spent four months prying the pottery from the seabed.",
+  "The jars themselves provide the dating. Their shape and manufacturing technique point to the Early Bronze Age, roughly 2700–2400 BCE, making this wreck centuries older than the previous record holder off Dokos, Greece, dated to about 4,200 years ago. The precise range is still under study; earlier or later dates remain possible. A preliminary report has been submitted to the Journal of Maritime Archaeology but has not yet passed peer review.",
+  "Residues visible to the naked eye still cling to the interior surfaces of several amphorae. Scientific analysis is pending, but the team suggests the contents could have been olive oil, wine, or tree resin, commodities that appear in Egyptian texts describing trade through the port of Byblos in the same era. The pyramid age of Giza was underway, and Egypt was importing cedar, tin, lead, lapis lazuli, silver, oils, and resins from across the eastern Mediterranean.",
+  "Silver found in Queen Hetepheres’ bracelets from Giza, dated to around 2600 BCE, has been traced to the Lavrion mines east of Athens. Egyptian ships likely did not make that voyage themselves. Vessels like the Kekova wreck may have formed the missing links in a maritime chain that moved goods from the Aegean to the Levant and onward to the Nile. The ship was hugging the southern Turkish coast when it apparently sought shelter between two islands during a storm and struck the rocks.",
+  "Clay analysis indicates some of the belted jars, or the clay used to make them, may have originated in the Central Jordan Valley. That would mean the ship called at multiple ports before its final run. The cargo shows a level of connectivity across the eastern Mediterranean in the third millennium BCE that textual sources only hint at. Maritime archaeology in these waters is still young, and the coast is littered with unexplored wrecks.",
+  "The discovery does not rewrite the history of seafaring by itself. It adds a single, well-dated data point to a sparse record. No hull timbers survive to reveal construction techniques, ship size, or rigging. The crew’s origin is inferred, not supports. The residue identifications are visual guesses awaiting laboratory confirmation. The dating rests on ceramic typology, not radiocarbon or dendrochronology from the ship itself."
+ ],
+ "doesnt_show": "The wreck does not yet show the ship’s construction, size, or rigging; the crew’s identity; the exact cargo contents; or a confirmed absolute date independent of pottery styles.",
+ "settle": "Radiocarbon dates from any surviving organic residue or short-lived plant material in the jars, plus peer-reviewed publication of the ceramic typology and residue analysis, would settle the date and trade implications.",
+ "firm": "plausible",
+ "related": [
+  "early-seafarers",
+  "sea-peoples",
+  "troy"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261025073036.htm",
+  "title": "Archaeologists may have just found the world's oldest shipwreck",
+  "date": "2026-10-26"
+ },
+ "refs": [
+  {
+   "doi": "10.1007/s11457-026-09532-3",
+   "title": "Preliminary Report on the Early Bronze Age Shipwreck in the Kekova Region of Antalya",
+   "container": "Journal of Maritime Archaeology",
+   "year": 2026,
+   "authors": [
+    "Hakan Öniz",
+    "Ceyda Öztosun"
+   ]
+  },
+  {
+   "doi": "10.1016/j.jasrep.2023.103978",
+   "title": "Analyses of queen Hetepheres’ bracelets from her celebrated tomb in Giza reveals new information on silver, metallurgy and trade in Old Kingdom Egypt, c. 2600 BC",
+   "container": "Journal of Archaeological Science: Reports",
+   "year": 2023,
+   "authors": [
+    "Karin Sowada",
+    "Richard Newman",
+    "Francis Albarède",
+    "Gillan Davis",
+    "Michele R. Derrick",
+    "Timothy D. Murphy",
+    "Damian B. Gore"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://upload.wikimedia.org/wikipedia/commons/b/b5/Kekova_by_Piri_Reis.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+  "page": "https://commons.wikimedia.org/wiki/File:Kekova_by_Piri_Reis.jpg",
+  "licence": "Public domain",
+  "title": "Kekova by Piri Reis.jpg",
+  "credit": "Piri Reis"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
