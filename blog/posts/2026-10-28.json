@@ -1,0 +1,56 @@
+{
+ "id": "2026-10-28",
+ "date": "2026-10-28",
+ "title": "Jordan Valley site pushes human arrival outside Africa back to 1.9 million years",
+ "kicker": "Early migration",
+ "dek": "New dating at 'Ubeidiya matches the age of Dmanisi in Georgia, suggesting multiple toolmaking groups left Africa at roughly the same time.",
+ "body": [
+  "A layer of lake sediment in the Jordan Valley has yielded a date that reshuffles the map of early human dispersal. The 'Ubeidiya site, long known for its Acheulean hand axes and rich fossil fauna, is now shown to be at least 1.9 million years old. That makes it roughly as old as Dmanisi in Georgia, the other anchor for the earliest human presence outside Africa.",
+  "The revision comes from a team led by Prof. Ari Matmon of the Hebrew University of Jerusalem, Prof. Omry Barzilai of the University of Haifa, and Prof. Miriam Belmaker of the University of Tulsa. Earlier estimates had placed the site between 1.2 and 1.6 million years old, based on comparisons with other sites rather than direct measurement. The new study applied three independent dating methods to fresh samples from the formation.",
+  "Cosmogenic isotope burial dating measured rare isotopes that accumulate in rocks at the surface and decay after burial. Paleomagnetic analysis of lake sediments recorded the Matuyama Chron, a period of reversed polarity that began more than two million years ago. Uranium-lead dating of fossil Melanopsis snail shells provided a minimum age for the archaeological layers. All three converged on an age of at least 1.9 million years.",
+  "The cosmogenic data initially threw a curveball. Some rocks gave ages near three million years, far older than the magnetic, fossil, and archaeological evidence allowed. The researchers traced the discrepancy to the Dead Sea rift's violent geology: sediments had been deposited, buried, exhumed, and redeposited along the ancient lakeshore. This recycling meant the rocks carried a burial signal from an earlier cycle, not from the formation of the archaeological layer itself.",
+  "Once the sediment recycling was modeled, the conflicting measurements fell into alignment. The corrected age places 'Ubeidiya and Dmanisi in the same narrow window. Yet the toolkits differ. Dmanisi yields Oldowan-style flakes and cores. 'Ubeidiya produces the large bifacial hand axes of the Acheulean. The contemporaneity suggests two distinct technological traditions moved out of Africa at roughly the same time, possibly carried by different populations.",
+  "The site's fossil assemblage reinforces the picture of a corridor linking Africa and Eurasia. Species with African affinities appear alongside Asian forms, including several now extinct. The lake margin setting would have offered water, game, and raw material for toolmaking, a stable foothold for groups pushing northward through the Levantine corridor.",
+  "The findings do not rest on a single technique. The agreement among cosmogenic burial dating, paleomagnetism, and uranium-lead on snail shells gives the result weight. The study also demonstrates how complex rift-valley geology can inflate cosmogenic ages if sediment recycling goes unrecognized, a caution for other early sites in tectonically active settings."
+ ],
+ "doesnt_show": "The study does not show which hominin species made the tools at 'Ubeidiya, nor does it demonstrate direct contact or interaction between the groups using Oldowan and Acheulean technologies.",
+ "settle": "Hominin fossils from securely dated layers at 'Ubeidiya would identify the toolmakers and test whether multiple populations coexisted in the Levant.",
+ "firm": "strong",
+ "related": [
+  "other-humans",
+  "first-americans",
+  "early-seafarers"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261025073042.htm",
+  "title": "1.9-million-year-old discovery rewrites the story of human evolution",
+  "date": "2026-10-27"
+ },
+ "refs": [
+  {
+   "doi": "10.1016/j.quascirev.2026.109871",
+   "title": "Complex exposure-burial history and Pleistocene sediment recycling in the dead sea rift with implications for the age of the Acheulean site of ‘Ubeidiya",
+   "container": "Quaternary Science Reviews",
+   "year": 2026,
+   "authors": [
+    "A. Matmon",
+    "A. Kuzmenko",
+    "R. Shaar",
+    "P. Nuriel",
+    "A. Hidy",
+    "M. Guillong",
+    "R. Blevis",
+    "N. Wieler"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Tel_Ubeidiya_-_Gristmill.JPG/1280px-Tel_Ubeidiya_-_Gristmill.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Tel_Ubeidiya_-_Gristmill.JPG",
+  "licence": "CC BY-SA 3.0",
+  "title": "Tel Ubeidiya - Gristmill.JPG",
+  "credit": "Hanay"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
