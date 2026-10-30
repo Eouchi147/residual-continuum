@@ -1,0 +1,56 @@
+{
+ "id": "2026-10-30",
+ "date": "2026-10-30",
+ "title": "1.9-million-year-old jordan valley site rewrites human exit timeline",
+ "kicker": "early humans",
+ "dek": "New dating places 'Ubeidiya at the same age as Dmanisi, reshaping the story of our species' first steps beyond Africa.",
+ "body": [
+  "An archaeological site in the Jordan Valley is rewriting the timeline of early human migration. New research shows that 'Ubeidiya is at least 1.9 million years old, placing humans in the region hundreds of thousands of years earlier than previously believed. The revised dating makes 'Ubeidiya, alongside Dmanisi in Georgia, one of the oldest known sites of early human activity outside Africa.",
+  "The research was led by Prof. Ari Matmon of the Hebrew University of Jerusalem, Prof. Omry Barzilai of the University of Haifa, and Prof. Miriam Belmaker of the University of Tulsa. By combining three advanced dating methods, the team established a more reliable timeline for 'Ubeidiya, a site that has played an important role in research on human evolution. Their findings indicate that the site is at least 1.9 million years old, making it one of the earliest known locations where ancient humans lived outside their African homeland.",
+  "The 'Ubeidiya Formation has attracted scientific attention for decades because of its early evidence of the Acheulean stone tool tradition. This technology is known for large tools shaped on both sides, including hand axes. The site also contains a rich collection of animal fossils, representing species originally associated with Africa and Asia, including several that are now extinct.",
+  "To resolve the uncertainty, the researchers collected new samples from the site and analyzed them using three complementary dating techniques. Each provided an independent source of evidence about the age of the ancient deposits. The first technique, called cosmogenic isotope burial dating, uses rare isotopes that form when cosmic rays interact with rocks exposed at Earth's surface. After the rocks become buried, these isotopes decay at known rates. Measuring what remains allows scientists to estimate how long the rocks have been underground.",
+  "The researchers also investigated evidence of Earth's ancient magnetic field recorded in sediments deposited at the bottom of a lake. As these sediments accumulated, they preserved the orientation of the magnetic field at the time. Comparing these records with known magnetic reversals showed that the deposits formed during the Matuyama Chron, a period that began more than two million years ago. A third technique involved fossilized shells from Melanopsis, a genus of freshwater snails found within the sediment. Using uranium-lead dating, the team was able to establish a minimum age for the geological layers containing the ancient stone tools.",
+  "Together, the three approaches pointed to a much older age than earlier estimates. The combined evidence indicates that 'Ubeidiya dates back at least 1.9 million years, significantly changing the timeline of early human settlement beyond Africa. This places the Jordan Valley site at approximately the same age as Dmanisi in Georgia, another major location for understanding early human migration. The similarity in age suggests that ancient human populations were expanding into different regions around the same time.",
+  "The findings also raise intriguing questions about how these early migrations unfolded. Evidence from the two sites suggests that different groups of ancient humans may have carried distinct stone tool technologies out of Africa during overlapping periods. These included the Oldowan tradition, associated with relatively simple stone tools, and the more sophisticated Acheulean tradition, known for carefully shaped tools such as hand axes. Rather than spreading in a single technological sequence, these different approaches to toolmaking may have traveled beyond Africa at roughly the same time as separate groups of early humans entered new environments."
+ ],
+ "doesnt_show": "The exact route these early populations took out of Africa or whether they interacted with local groups already present in the Levant.",
+ "settle": "Direct dating of associated hominin fossils would confirm who these early migrants were.",
+ "firm": "strong",
+ "related": [
+  "ice-age-signs",
+  "first-americans",
+  "other-humans"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261025073042.htm",
+  "title": "1.9-million-year-old discovery rewrites the story of human evolution",
+  "date": "2026-10-27"
+ },
+ "refs": [
+  {
+   "doi": "10.1016/j.quascirev.2026.109871",
+   "title": "Complex exposure-burial history and Pleistocene sediment recycling in the dead sea rift with implications for the age of the Acheulean site of ‘Ubeidiya",
+   "container": "Quaternary Science Reviews",
+   "year": 2026,
+   "authors": [
+    "A. Matmon",
+    "A. Kuzmenko",
+    "R. Shaar",
+    "P. Nuriel",
+    "A. Hidy",
+    "M. Guillong",
+    "R. Blevis",
+    "N. Wieler"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Camels_in_Jordan_valley_%284568207363%29.jpg/1280px-Camels_in_Jordan_valley_%284568207363%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Camels_in_Jordan_valley_(4568207363).jpg",
+  "licence": "CC BY-SA 2.0",
+  "title": "Camels in Jordan valley (4568207363).jpg",
+  "credit": "Ishai Parasol from Israel"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
