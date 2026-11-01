@@ -1,6 +1,19 @@
 {
- "updated": "2026-10-31T04:30:40.379Z",
+ "updated": "2026-11-01T04:30:47.086Z",
  "posts": [
+  {
+   "id": "2026-11-01",
+   "date": "2026-11-01",
+   "title": "A 4,000-year-old wall in Morocco rewrites North Africa's deep history",
+   "kicker": "Oued Beht",
+   "dek": "New excavations reveal the earliest confirmed defensive architecture in North Africa beyond the Nile Valley, showing complex societies connected to the wider Mediterranean.",
+   "firm": "strong",
+   "image": {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Oued_beht_KHEMISSET.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "title": "Oued beht KHEMISSET.jpg"
+   },
+   "source": "ScienceDaily"
+  },
   {
    "id": "2026-10-31",
    "date": "2026-10-31",

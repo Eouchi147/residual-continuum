@@ -1,0 +1,54 @@
+{
+ "id": "2026-11-01",
+ "date": "2026-11-01",
+ "title": "A 4,000-year-old wall in Morocco rewrites North Africa's deep history",
+ "kicker": "Oued Beht",
+ "dek": "New excavations reveal the earliest confirmed defensive architecture in North Africa beyond the Nile Valley, showing complex societies connected to the wider Mediterranean.",
+ "body": [
+  "On a ridge above the Oued Beht river in north-west Morocco, archaeologists have uncovered a massive ditch, rampart and wall system that cuts off the southern tip of the spur. Radiocarbon dates from deposits associated with the structure place its original construction between 4,000 and 3,500 years ago, making it the earliest confirmed defensive construction in North Africa outside Egypt.",
+  "The French archaeologist Armand Ruhlmann first documented a configuration of three walls here in the 1930s, describing a defensive éperon barré with the fourth side protected by the natural scarp. Their precise nature and date remained uncertain until the Oued Beht Archaeological Project excavated the multi-phase system in 2023, clarifying the sequence of ditch, rampart and wall built across the narrow ridge between the river and a ravine.",
+  "Earlier work at Oued Beht had already revealed what is likely the largest agricultural complex ever found in Africa beyond the Nile Valley, dating to around 5,400 to 4,900 years ago. That Final Neolithic phase covered at least ten hectares and produced thousands of polished stone axes, finely made pottery and evidence for barley, wheat and livestock. The new defensive system belongs to a later period when settlement focus shifted from the open northern area to the narrower, more defensible southern ridge.",
+  "Building an embankment and ditch system of this scale required planning, coordination and the mobilization of labor. The study argues this suggests a community capable of organizing complex construction initiatives, pointing to social transformations only tentatively recognized. The structure likely relates to increasing competition over land, resources and control of movement through the landscape rather than to outside invaders.",
+  "The second millennium BC was a dynamic period across the western Mediterranean. In southern Iberia, Argaric societies were developing fortified hilltop settlements with advanced metallurgy and marked social hierarchies. The discoveries at Oued Beht indicate that north-west African communities were connected to these wider Mediterranean networks, participating in broader processes shaping the region rather than developing in isolation.",
+  "The ridge became a focal point again in the medieval period, between the 11th and 13th centuries AD. The same defensive structure was rebuilt, a hamlet or farm was established on a nearby hilltop, and people were buried in a cemetery between the two areas. Oued Beht was not a single-period settlement but a landscape repeatedly selected by different communities across millennia."
+ ],
+ "doesnt_show": "The exact nature of the threats the wall was designed to counter remains unknown, and it is still uncertain whether prehistoric Oued Beht functioned as a permanent village, a seasonal center, or something less familiar.",
+ "settle": "Further excavation of the settlement interior and comparative analysis with contemporary Iberian sites would clarify the social organization and Mediterranean connections of the wall's builders.",
+ "firm": "strong",
+ "related": [
+  "sea-peoples",
+  "drowned-coasts"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261030003022.htm",
+  "title": "A mysterious 4,000-year-old wall is rewriting North Africa’s history",
+  "date": "2026-10-31"
+ },
+ "refs": [
+  {
+   "doi": "10.1017/lis.2026.10037",
+   "title": "Expanding Oued Beht: Final Neolithic, Bronze Age, medieval and later discoveries from excavation and survey in 2023",
+   "container": "Libyan Studies",
+   "year": 2026,
+   "authors": [
+    "Giulio Lucarini",
+    "Youssef Bokbot",
+    "Toby Wilkinson",
+    "Hamza Benattia",
+    "Aïcha Bigoulimen",
+    "Alessia Brucato",
+    "Marlena Cygan",
+    "Lucy Farr"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Oued_beht_KHEMISSET.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+  "page": "https://commons.wikimedia.org/wiki/File:Oued_beht_KHEMISSET.jpg",
+  "licence": "CC BY-SA 4.0",
+  "title": "Oued beht KHEMISSET.jpg",
+  "credit": "Ayoub.khallouq"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
