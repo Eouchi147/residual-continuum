@@ -1,0 +1,55 @@
+{
+ "id": "2026-11-02",
+ "date": "2026-11-02",
+ "title": "A 4,000-Year-Old Wall Rewrites North Africa’s Past",
+ "kicker": "Morocco",
+ "dek": "A massive defensive wall built around 2000 BCE has been uncovered in Morocco, revealing a complex society capable of coordinated labor and territorial defense.",
+ "body": [
+  "In the hills of north-west Morocco, overlooking the Oued Beht river, archaeologists have unearthed a previously unknown defensive structure dating to the second millennium BCE. The wall, part of a ditch and rampart system, cuts across a narrow ridge, sealing off the southern tip. Radiocarbon dating places its construction between 4,000 and 3,500 years ago, making it the earliest known large-scale defensive architecture in North Africa outside the Nile Valley.",
+  "The discovery was made by the Oued Beht Archaeological Project, with new excavations in 2023 revealing the multi-phase construction. The site had been noted since the 1930s by French archaeologist Armand Ruhlmann, who documented a 'barred spur' configuration, but its precise age and function remained unclear. The new findings confirm it was a deliberate defensive work, likely built to control movement and assert power over a strategic landscape.",
+  "The wall’s existence implies a society capable of planning, coordinating labor, and mobilizing resources, traits once assumed absent in the region during this period. It suggests increasing competition over land and resources, rather than invasion by external forces. The structure reflects a shift in settlement strategy: earlier Neolithic activity focused on the open northern area, while the later phase concentrated on the defensible southern ridge.",
+  "This discovery challenges the long-held view of North Africa’s Maghreb as a marginal, poorly understood region. Increasing evidence links north-west African communities to wider Mediterranean networks, including Iberia. The Oued Beht fortifications mirror contemporary developments in southern Spain, where Argaric societies built hilltop settlements with advanced metallurgy and social hierarchies. The wall may be part of a broader transformation in social organization and regional interaction.",
+  "The site also reveals continuity across millennia. After the prehistoric settlement was abandoned, the ridge was reused in the 11th to 13th centuries AD, when the defensive structure was rebuilt, a hamlet established, and a cemetery created. This repeated selection of the same location underscores its enduring strategic value and offers rare insight into rural communities across both prehistoric and medieval eras.",
+  "Environmental evidence from earlier layers shows a farming community cultivating barley and wheat, keeping livestock, and producing thousands of polished stone tools and decorated pottery. While it remains unclear whether Oued Beht was a permanent village or a seasonal center, it was clearly a major focal point in the landscape. The combination of agriculture, craft production, and defensive architecture paints a picture of a complex, organized society."
+ ],
+ "doesnt_show": "The wall does not reveal the specific threats it was built against, nor does it confirm the exact social or political structure of the community that built it. It also does not supports direct contact with Iberian societies, only that similar developments occurred concurrently.",
+ "settle": "Further excavations and comprehensive radiocarbon dating of associated settlements and burial sites would clarify the wall’s purpose, the scale of the community, and its connections to broader Mediterranean networks.",
+ "firm": "strong",
+ "related": [
+  "lost-civilization",
+  "sea-peoples",
+  "atlantis"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261030003022.htm",
+  "title": "A mysterious 4,000-year-old wall is rewriting North Africa’s history",
+  "date": "2026-10-31"
+ },
+ "refs": [
+  {
+   "doi": "10.1017/lis.2026.10037",
+   "title": "Expanding Oued Beht: Final Neolithic, Bronze Age, medieval and later discoveries from excavation and survey in 2023",
+   "container": "Libyan Studies",
+   "year": 2026,
+   "authors": [
+    "Giulio Lucarini",
+    "Youssef Bokbot",
+    "Toby Wilkinson",
+    "Hamza Benattia",
+    "Aïcha Bigoulimen",
+    "Alessia Brucato",
+    "Marlena Cygan",
+    "Lucy Farr"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Oued_beht_KHEMISSET.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+  "page": "https://commons.wikimedia.org/wiki/File:Oued_beht_KHEMISSET.jpg",
+  "licence": "CC BY-SA 4.0",
+  "title": "Oued beht KHEMISSET.jpg",
+  "credit": "Ayoub.khallouq"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}

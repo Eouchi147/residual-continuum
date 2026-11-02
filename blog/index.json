@@ -1,6 +1,19 @@
 {
- "updated": "2026-11-01T04:30:47.086Z",
+ "updated": "2026-11-02T04:31:45.545Z",
  "posts": [
+  {
+   "id": "2026-11-02",
+   "date": "2026-11-02",
+   "title": "A 4,000-Year-Old Wall Rewrites North Africa’s Past",
+   "kicker": "Morocco",
+   "dek": "A massive defensive wall built around 2000 BCE has been uncovered in Morocco, revealing a complex society capable of coordinated labor and territorial defense.",
+   "firm": "strong",
+   "image": {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Oued_beht_KHEMISSET.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "title": "Oued beht KHEMISSET.jpg"
+   },
+   "source": "ScienceDaily"
+  },
   {
    "id": "2026-11-01",
    "date": "2026-11-01",
