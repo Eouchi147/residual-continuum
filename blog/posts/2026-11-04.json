@@ -1,0 +1,54 @@
+{
+ "id": "2026-11-04",
+ "date": "2026-11-04",
+ "title": "A 4000 year old wall in Morocco changes what we knew about North Africa's past",
+ "kicker": "Oued Beht",
+ "dek": "Excavations at a ridge above the Oued Beht river reveal the earliest confirmed defensive construction in North Africa outside Egypt, dating to the second millennium BC.",
+ "body": [
+  "In the hills of north-west Morocco, a ridge above the Oued Beht river holds a wall that was not supposed to be there. For decades, textbooks treated the Maghreb's later prehistory as a blank compared to Iberia or the eastern Mediterranean. A multi-phase ditch, rampart, and wall cut across the narrow southern tip of the ridge, blocking access between the river and a ravine. Radiocarbon dates from deposits tied to the structure place its construction between 4,000 and 3,500 years ago.",
+  "French archaeologist Armand Ruhlmann first noted a configuration of three walls with a natural scarp protecting the fourth side in the 1930s, describing a defensive éperon barré. Their date and nature stayed uncertain until the Oued Beht Archaeological Project returned. New excavations in 2023 clarified the sequence: a built embankment and ditch system that required planning, coordination, and mobilized labor. The study reports this as the earliest known large-scale construction of a probably defensive nature in North Africa beyond the Nile Valley.",
+  "Earlier occupation at Oued Beht, dating to around 5,400 to 4,900 years ago, already showed the largest agricultural complex in Africa outside the Nile Valley. That Final Neolithic phase spread across at least ten hectares, with barley, wheat, livestock, thousands of polished stone axes, and decorated pottery. By the time the wall was built, activity had shifted from the open northern area to the narrower, more defensible southern ridge. The team argues this reflects a shift in settlement strategies.",
+  "The second millennium BC was a dynamic period across the western Mediterranean. In southern Iberia, Argaric societies built fortified hilltop settlements with bronze metallurgy and marked social hierarchies. The Oued Beht wall suggests communities in north-west Africa were connected to these wider networks. The study reports increasing evidence that the Maghreb participated in broader processes shaping the region, not isolated from them. Competition over land, resources, and control of movement may have driven the construction.",
+  "Building such a system implies a community capable of organizing complex projects and more formalized leadership structures. The wall raises questions about what threats it countered. The researchers suggest increasing competition rather than outside invaders. The same ridge became a focal point again in the 11th to 13th centuries AD, when the defensive structure was rebuilt, a hamlet or farm was established on a nearby hilltop, and a cemetery was placed between them.",
+  "The discoveries provide rare insight into rural communities across both prehistoric and medieval times. Oued Beht was not a single-period settlement but a landscape repeatedly selected across millennia. The defensive wall shows coordination of large construction projects and points to social transformations only tentatively beginning to be recognized. As research continues, the site may become key to understanding how Maghreb societies evolved from early farming communities to the medieval rural world."
+ ],
+ "doesnt_show": "The wall's exact defensive purpose and the nature of the threats it faced remain uncertain. The social organization and leadership structures of the builders are inferred, not documented.",
+ "settle": "Further excavation of the enclosed area and associated habitation layers, combined with wider regional survey, would clarify the society that built and used the wall.",
+ "firm": "strong",
+ "related": [
+  "sea-peoples",
+  "nebra-disc"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261030003022.htm",
+  "title": "A mysterious 4,000-year-old wall is rewriting North Africa’s history",
+  "date": "2026-10-31"
+ },
+ "refs": [
+  {
+   "doi": "10.1017/lis.2026.10037",
+   "title": "Expanding Oued Beht: Final Neolithic, Bronze Age, medieval and later discoveries from excavation and survey in 2023",
+   "container": "Libyan Studies",
+   "year": 2026,
+   "authors": [
+    "Giulio Lucarini",
+    "Youssef Bokbot",
+    "Toby Wilkinson",
+    "Hamza Benattia",
+    "Aïcha Bigoulimen",
+    "Alessia Brucato",
+    "Marlena Cygan",
+    "Lucy Farr"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Oued_beht_KHEMISSET.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+  "page": "https://commons.wikimedia.org/wiki/File:Oued_beht_KHEMISSET.jpg",
+  "licence": "CC BY-SA 4.0",
+  "title": "Oued beht KHEMISSET.jpg",
+  "credit": "Ayoub.khallouq"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}

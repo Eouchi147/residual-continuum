@@ -1,6 +1,19 @@
 {
- "updated": "2026-11-03T04:30:51.049Z",
+ "updated": "2026-11-04T04:30:55.402Z",
  "posts": [
+  {
+   "id": "2026-11-04",
+   "date": "2026-11-04",
+   "title": "A 4000 year old wall in Morocco changes what we knew about North Africa's past",
+   "kicker": "Oued Beht",
+   "dek": "Excavations at a ridge above the Oued Beht river reveal the earliest confirmed defensive construction in North Africa outside Egypt, dating to the second millennium BC.",
+   "firm": "strong",
+   "image": {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Oued_beht_KHEMISSET.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "title": "Oued beht KHEMISSET.jpg"
+   },
+   "source": "ScienceDaily"
+  },
   {
    "id": "2026-11-03",
    "date": "2026-11-03",
