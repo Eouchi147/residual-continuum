@@ -1,0 +1,56 @@
+{
+ "id": "2026-11-05",
+ "date": "2026-11-05",
+ "title": "a mysterious 4000 year old wall rewriting north africa's history",
+ "kicker": "archaeology morocco",
+ "dek": "A massive defensive structure reshapes understanding of ancient societies.",
+ "body": [
+  "In the hills of north-west Morocco, overlooking the river that gives the site its name, research at Oued Beht is bringing to light a previously unknown chapter of the region's past. The discovery of a substantial built structure suggests that, during the second millennium BC, communities in north-west Africa were actively shaping their environment. They were also engaging in broader networks of interaction across the Mediterranean world.",
+  "Our new study shows how we uncovered the earliest known large-scale construction of a probably defensive nature in north Africa beyond the Nile Valley. It is about 4000 to 3500 years old. It is not known exactly what threats these wall-like structures were designed to counter. They likely relate to increasing competition over land, resources, and possibly control of movement through the landscape, rather than to invaders. Constructions like these suggest communities felt the need to protect themselves or assert power over strategic locations.",
+  "This discovery pushes back the evidence for organized defensive architecture in the Maghreb and suggests that societies in this region at this time were more complex and structured than previously believed. Our study also reveals how the ridge of Oued Beht would become a focal point again in the medieval period, during the 11th to 13th centuries AD. The same defensive structure was rebuilt, a hamlet or farm was established on a nearby hilltop, and people were buried in a cemetery between the two areas.",
+  "For a long time, the later prehistory of north Africa's Maghreb region has been poorly understood. Compared with neighboring areas such as Iberia in south-western Europe or Athens in the eastern Mediterranean, archaeological evidence was often fragmentary. In the last few years this has changed completely. Excavations at Oued Beht have revealed a large concentration of human activity spread across at least ten hectares. The earliest major phase dates to the mid-fourth and early third millennia BC, or the Final Neolithic period.",
+  "Environmental evidence from plant and animal remains in the prehistoric era indicates a farming community cultivating crops such as barley and wheat. They also exploited wild plants and kept livestock. The site was also an important center of craft production. Thousands of polished stone axes and other tools have been discovered, along with finely made pottery, sometimes decorated with painted patterns. It is still uncertain whether prehistoric Oued Beht functioned as a permanent village, a seasonal center, or something less familiar. But it was clearly a major focus in the landscape of north-west Morocco.",
+  "The presence of potentially ancient earthworks and walls had been noted since the 1930s. The French archaeologist Armand Ruhlmann first documented a configuration of three walls, with the fourth side protected by the natural scarp of the ridge, describing a defensive éperon barré (barred spur). Their precise nature and date remained uncertain until now. New excavations have clarified the existence of a multi-phase ditch, rampart and wall built across a narrow section of the Oued Beht ridge between the river and a ravine. This cut off and protected the ridge's southern tip.",
+  "Radiocarbon dating of deposits associated with these structures gave us the timelines in our study. They place its original construction at a time equivalent to the Bronze Age of the remaining western Mediterranean. This makes it the earliest confirmed defensive construction in north Africa outside Egypt. This structure raises important questions about the society that built it. Building an embankment and ditch system required planning, coordination and the mobilization of labor. This suggests a community capable of organizing complex construction initiatives."
+ ],
+ "doesnt_show": "What specific threats the wall was designed to counter, and whether the site was a permanent village or seasonal center.",
+ "settle": "Further excavation and radiocarbon dating of associated settlements will clarify the wall's function and the society's scale.",
+ "firm": "strong",
+ "related": [
+  "ice-age-signs",
+  "sea-peoples",
+  "gobekli-excavation"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261030003022.htm",
+  "title": "A mysterious 4,000-year-old wall is rewriting North Africa’s history",
+  "date": "2026-10-31"
+ },
+ "refs": [
+  {
+   "doi": "10.1017/lis.2026.10037",
+   "title": "Expanding Oued Beht: Final Neolithic, Bronze Age, medieval and later discoveries from excavation and survey in 2023",
+   "container": "Libyan Studies",
+   "year": 2026,
+   "authors": [
+    "Giulio Lucarini",
+    "Youssef Bokbot",
+    "Toby Wilkinson",
+    "Hamza Benattia",
+    "Aïcha Bigoulimen",
+    "Alessia Brucato",
+    "Marlena Cygan",
+    "Lucy Farr"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Rivers_of_North_-_West_Morocco_OSM.png/1280px-Rivers_of_North_-_West_Morocco_OSM.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Rivers_of_North_-_West_Morocco_OSM.png",
+  "licence": "CC BY-SA 3.0",
+  "title": "Rivers of North - West Morocco OSM.png",
+  "credit": "Hans Braxmeier &amp; Peter in s, Location map:Sting"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
