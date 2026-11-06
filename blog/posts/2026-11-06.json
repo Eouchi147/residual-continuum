@@ -1,0 +1,57 @@
+{
+ "id": "2026-11-06",
+ "date": "2026-11-06",
+ "title": "30000-year-old dna reveals ice age europeans were far more connected than we thought",
+ "kicker": "ancient connections",
+ "dek": "New genetic evidence rewrites how prehistoric Europeans moved, mated, and survived.",
+ "body": [
+  "More than 30000 years ago people living across Ice Age Europe were far more connected than scientists previously believed. New genetic evidence reveals unexpected links between populations separated by enormous distances, challenging the long-held idea that eastern and western European groups remained largely isolated from one another.",
+  "An international research team led by the University of Vienna made the discovery by analyzing ancient DNA from rare human remains and traces of human genetic material preserved in cave sediments. Published in Science Advances the findings provide a new picture of how prehistoric Europeans interacted exchanged genes and maintained populations through thousands of years of dramatic environmental change.",
+  "The research focuses on people associated with one of Europe's major Paleolithic cultures the Gravettian which flourished across the continent roughly 34000 to 25000 years ago. Archaeological discoveries have long suggested that these ancient populations maintained connections over considerable distances. However previous genetic evidence pointed to relatively distinct eastern and western ancestry groups.",
+  "By combining new genetic findings with previously collected DNA researchers uncovered evidence that these groups were more interconnected than expected. They also found signs that certain populations in southwestern Europe maintained their genetic ancestry for thousands of years.",
+  "One of the most revealing discoveries came from the remains of a woman who lived approximately 30000 years ago in what is now southwestern France. Found at Isturitz Cave her remains provided the oldest genome-wide genetic dataset yet obtained from a modern human in southwestern Europe. Her DNA contained a surprising combination of ancestry. Although most of her genetic background was associated with western European populations she also carried ancestry linked to people from central and eastern Europe.",
+  "Using genetic modeling researchers estimated that this mixing between populations occurred approximately 32500 to 31500 years ago. The finding suggests that genetic connections extended across large portions of Europe much earlier than scientists had previously established. Our results show that eastern and western European populations were not as genetically isolated as previously assumed says first author Pere Gelabert Department of Evolutionary Anthropology at the University of Vienna. Gene flow across such large distances adds a new dimension to our understanding of how Gravettian populations were connected.",
+  "The researchers identified a similar genetic signature in another ancient individual whose remains had previously been studied at Ormesson France. Combined with archaeological discoveries the evidence strengthens the possibility that Isturitz Cave served as a gathering place where different groups of prehistoric people encountered one another.",
+  "While some ancient Europeans exchanged genes across considerable distances other populations appear to have maintained a continuous genetic presence in particular regions for thousands of years. Evidence from Chufín Cave in northern Spain suggests that ancestry associated with western European populations persisted in southwestern Europe over an extended period."
+ ],
+ "doesnt_show": "It does not yet show how often or in which direction gene flow moved between regions.",
+ "settle": "Ancient DNA from the same time span across eastern Europe would confirm the full extent of the network.",
+ "firm": "strong",
+ "related": [
+  "ice-age-signs",
+  "first-americans",
+  "drowned-coasts"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/10/261031221153.htm",
+  "title": "30,000-year-old DNA reveals Ice Age Europeans were far more connected than we thought",
+  "date": "2026-11-02"
+ },
+ "refs": [
+  {
+   "doi": "10.1126/sciadv.aeh6128",
+   "title": "Early Gravettian genomic data from Western Europe reveal population movements before the LGM",
+   "container": "Science Advances",
+   "year": 2026,
+   "authors": [
+    "Pere Gelabert",
+    "Susanna Sawyer",
+    "Vanessa Villalba-Mouco",
+    "Olivia Cheronet",
+    "Victoria Oberreiter",
+    "Diego Gárate",
+    "Christian Normand",
+    "Lawrence G. Straus"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Paysage_Dordogne_Domme.jpg/1280px-Paysage_Dordogne_Domme.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Paysage_Dordogne_Domme.jpg",
+  "licence": "CC0",
+  "title": "Paysage Dordogne Domme.jpg",
+  "credit": "Jebulon"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
