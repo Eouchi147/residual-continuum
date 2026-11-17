@@ -5,7 +5,7 @@
 | Piece | File | When |
 |---|---|---|
 | Site assistant ("Ask") | `api/ask.js` | on every question |
-| Daily discovery (the blog) | `api/draft.js` | every day at 07:00 UTC (Vercel Cron, `vercel.json`) |
+| Daily discovery (the blog) | `api/draft.js` | every day at 04:30 UTC; the calls at 05:30, 06:30, 10:30 and 14:30 UTC publish only while the day's post is still missing (Vercel Cron, `vercel.json`) |
 | Free-model picker | `api/_models.js` | used by both |
 
 **Models are free only.** Every 30 minutes the picker reads OpenRouter's public catalogue, keeps models priced at exactly zero, leaves out specialists (safety, code, finance, music) and tiny models, and ranks the rest by lab track record, size, recency and OpenRouter's own uptime figures, then adjusts by how fast and reliable each has actually been for this site. Requests are hedged across the top few, and `openrouter/free` is the last resort. Every request also carries a price cap of zero, so OpenRouter refuses rather than bills. Check the current ranking at `https://residualcontinuum.com/api/ask` (GET).
@@ -13,7 +13,7 @@
 ## How the daily discovery works
 
 1. Reads the newest stories from ScienceDaily (archaeology, ancient civilizations, early humans), HeritageDaily and Phys.org, plus new journal papers from CrossRef.
-2. The best free model picks the single most fascinating new find for this site.
+2. Every story already posted (the same link or the same title as a post in `blog/index.json`) is left out (`api/_seen.js`), then the best free model picks the single most fascinating new find for this site.
 3. The full story is read, any DOI in it is checked against CrossRef (a DOI that does not resolve is dropped).
 4. The model writes the article in the site's voice. It is checked automatically: no proof language, no em dashes, no email addresses, a minimum length, a real source link. A draft that breaks the rules is thrown away and another model writes it.
 5. An openly licensed Wikimedia Commons image is attached with its credit.
