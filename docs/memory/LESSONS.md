@@ -10,4 +10,4 @@ L2 · undated (AUDIT.md) · text-wrap: pretty means different things in each bro
 
 L3 · undated (AUDIT.md) · Removing old code with a non-greedy regex stopped at the first `});` and left a fragment that broke the whole script. Rule: remove code with brace-balanced edits, and run node --check after every scripted edit. Source: AUDIT.md.
 
-L4 · 17 Nov 2026 · The duplicate check read a field the writer never stored: index entries carry source as the outlet's name, the check reads source.url, so it never fired and 26 of 48 posts repeated a link. Rule: test a guard against the stored data, not against the shape the writer meant. Source: api/draft.js lines 339 and 374, blog/index.json.
+L4 · 17 Nov 2026 · The duplicate check read a field the writer never stored: index entries carry source as the outlet's name, the check reads source.url, so it never fired and 26 of 48 posts repeated a link. Rule: test a guard against the stored data, not against the shape the writer meant. Source: api/draft.js as it stood before PR #2 (lines 339 and 374), blog/index.json.
