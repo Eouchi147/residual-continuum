@@ -4,8 +4,9 @@
  * Runs once a day on Vercel Cron (see vercel.json). It:
  *   1. reads the latest discovery news from open science feeds (ScienceDaily,
  *      HeritageDaily, Phys.org) plus new journal papers from CrossRef;
- *   2. asks the best free model available right now (see _models.js) to pick
- *      the single most fascinating new find for this site;
+ *   2. leaves out every story already posted (the same link or the same title,
+ *      see _seen.js), then asks the best free model available right now (see
+ *      _models.js) to pick the single most fascinating new find for this site;
  *   3. reads the full news story, pulls any DOIs from it and checks each one
  *      against the CrossRef register (a DOI that does not resolve is dropped);
  *   4. has the model write the article in the site's voice, then checks it
@@ -32,6 +33,7 @@
  */
 
 import { chatFree, extractJSON } from "./_models.js";
+import { linkKey, seenKeys, isSeen, recoverSources } from "./_seen.js";
 import cases from "./cases.json" with { type: "json" };
 
 const GH = "https://api.github.com";
@@ -300,6 +302,12 @@ async function readIndex(repo) {
   } catch (_) { return { posts: [] }; }
 }
 
+async function readPost(repo, id) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(id))) throw new Error(`bad post id ${id}`);
+  const f = await gh(`/repos/${repo}/contents/blog/posts/${id}.json?ref=${BRANCH}`);
+  return JSON.parse(Buffer.from(f.content, "base64").toString("utf8"));
+}
+
 /* One commit with both files, via the Git data API (no size limits, no index.html). */
 async function commit(repo, files, message) {
   const ref = await gh(`/repos/${repo}/git/ref/heads/${BRANCH}`);
@@ -336,14 +344,21 @@ export default async function handler(req, res) {
     const posts = Array.isArray(index.posts) ? index.posts : [];
     if (posts.some((p) => p.date === today) && !url.searchParams.get("again"))
       return res.status(200).json({ skipped: "already published today" });
-    const seen = new Set(posts.flatMap((p) => [p.source?.url, p.title].filter(Boolean)));
+    const recovered = await recoverSources(posts, (id) => readPost(repo, id));   /* entries written before 17 Nov 2026 */
+    const seen = seenKeys(posts);
 
     const all = (await Promise.all([...FEEDS.map(readFeed), crossrefRecent()])).flat();
     const week = Date.now() - 8 * 864e5;
     const byLink = new Map();
-    for (const c of all) if (!byLink.has(c.link) && !seen.has(c.link) && !seen.has(c.title) && (!c.date || Date.parse(c.date) > week)) byLink.set(c.link, c);
+    let posted = 0;
+    for (const c of all) {
+      const k = linkKey(c.link);
+      if (byLink.has(k)) continue;
+      if (isSeen(c, seen)) { posted++; continue; }
+      if (!c.date || Date.parse(c.date) > week) byLink.set(k, c);
+    }
     let cands = [...byLink.values()].filter((c) => TOPICS.test(c.title + " " + c.summary));
-    if (!cands.length) return res.status(200).json({ skipped: "no new discoveries in the feeds", read: all.length });
+    if (!cands.length) return res.status(200).json({ skipped: "no new discoveries in the feeds", read: all.length, already_posted: posted, recovered });
     cands = cands.sort((a, b) => Date.parse(b.date || 0) - Date.parse(a.date || 0)).slice(0, 24);
 
     const item = cands[await pick(cands)];
@@ -371,14 +386,15 @@ export default async function handler(req, res) {
       source: { name: item.source, url: item.link, title: tidy(item.title), date: (item.date || "").slice(0, 10) },
       refs, image, drafted: "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note.",
     };
-    const entry = { id: post.id, date: post.date, title: post.title, kicker: post.kicker, dek: post.dek, firm, image: image ? { src: image.src, title: image.title } : null, source: post.source.name };
+    const entry = { id: post.id, date: post.date, title: post.title, kicker: post.kicker, dek: post.dek, firm, image: image ? { src: image.src, title: image.title } : null, source: post.source.name,
+      source_url: post.source.url, source_title: post.source.title };   /* the page reads source (the name); _seen.js reads the link and title */
     const next = { updated: new Date().toISOString(), posts: [entry, ...posts.filter((p) => p.id !== post.id)].slice(0, 400) };
 
     const sha = await commit(repo, [
       [`blog/posts/${post.id}.json`, JSON.stringify(post, null, 1) + "\n"],
       ["blog/index.json", JSON.stringify(next, null, 1) + "\n"],
     ], `Daily discovery ${today}: ${post.title}`);
-    return res.status(200).json({ ok: true, title: post.title, source: item.link, story_chars: story.text.length, refs: refs.length, image: !!image, commit: sha });
+    return res.status(200).json({ ok: true, title: post.title, source: item.link, story_chars: story.text.length, refs: refs.length, image: !!image, commit: sha, already_posted: posted, recovered });
   } catch (e) {
     console.error("draft: failed:", String(e.message || e).slice(0, 300));
     return res.status(500).json({ error: String(e.message || e).slice(0, 300) });
