@@ -1,0 +1,56 @@
+{
+ "id": "2026-11-19",
+ "date": "2026-11-19",
+ "title": "green arabia: hippos in the desert 125,000 years ago",
+ "kicker": "125,000 years",
+ "dek": "Ancient lakes once filled the Arabian Empty Quarter, and people lived beside them.",
+ "body": [
+  "In the Mundafan region of southern Saudi Arabia, researchers have uncovered an ancient lakeside site where hippos wallowed alongside early humans. The Saudi Heritage Commission, KAUST, and Griffith University announced the findings, published in Science. Thousands of stone tools and fossilized animal remains paint a picture of a dramatically greener landscape.",
+  "Using satellite terrain modeling, the team reconstructed a lake covering 340 square kilometers, up to 29 meters deep. Sediments and aquatic fossils confirm it was a stable freshwater body bordered by grasslands. Among the animals recovered were hippos, extinct long-horned buffaloes, camels, and Arabian oryx, suggesting a rich ecosystem that has long vanished.",
+  "More than 5,500 stone tools, mostly flint, were recovered from the main excavation area. The makers used Levallois techniques, carefully shaping stone to produce prepared flakes. Microscopic and chemical analysis of the tools revealed plant residues, including toxic compounds. Some plant material suggests tips were attached to shafts, possibly as hunting weapons.",
+  "Perhaps most striking, residues point to the use of poisonous plant compounds, a tentative interpretation that, if confirmed, would represent some of the earliest evidence of such practices in the region. Other residues indicate processing of tubers, bushes, and palm leaves. The people living here relied on vegetation for food, tools, and daily tasks.",
+  "The site's uniqueness lies in the preservation of animal fossils, stone tools, and plant remains within a single, dated context. This rare combination allows scientists to reconstruct not just what people ate, but how they hunted and worked with plant fibers. The ancient lake shore provided freshwater, game, raw material, and fuel in one place.",
+  "Professor Frans van Buchem of KAUST called the collaboration exciting, noting it allows a complete reconstruction of past life and behavior. Dr. Faisal Al-Jibreen of the Heritage Commission emphasized how the site explains how ancient environments shaped human and animal life. Professor Chris Clarkson of Griffith University highlighted the rarity of finding animal remains, tools, and plants together in one secure context.",
+  "The discoveries offer important clues about how early humans moved across the Arabian Peninsula, developed technology, and adapted to changing climates. They show populations were highly adaptable, making sophisticated use of available resources. Building heritage science capabilities in the Kingdom, researchers say, will turn even the smallest traces into major stories of the past."
+ ],
+ "doesnt_show": "The study does not confirm that poison was used on projectiles, only that toxic plant residues were found on tools.",
+ "settle": "Direct chemical analysis of tool tips to detect residues of specific poisonous compounds.",
+ "firm": "plausible",
+ "related": [
+  "ice-age-signs",
+  "first-americans",
+  "megafauna-extinction"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/11/261115085537.htm",
+  "title": "125,000 years ago, hippos roamed what is now the vast Arabian Desert",
+  "date": "2026-11-18"
+ },
+ "refs": [
+  {
+   "doi": "10.1126/science.aef9342",
+   "title": "Poisoned hunting weapons, megafauna, and plant use at a 125,000-year-old Arabian paleolakeshore",
+   "container": "Science",
+   "year": 2026,
+   "authors": [
+    "Chris Clarkson",
+    "Gilbert J. Price",
+    "Amir Kalifi",
+    "Giacomo Losi",
+    "Carney Matheson",
+    "Faisal Al-Jibreen",
+    "Abdullah M. Alsharekh",
+    "Simon J. Armitage"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d6/Figure_4._Regional_archaeology_and_palaeohydrology_of_the_Mundafan_area.png/1280px-Figure_4._Regional_archaeology_and_palaeohydrology_of_the_Mundafan_area.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Figure_4._Regional_archaeology_and_palaeohydrology_of_the_Mundafan_area.png",
+  "licence": "CC BY 4.0",
+  "title": "Figure 4. Regional archaeology and palaeohydrology of the Mundafan area.png",
+  "credit": "Rémy Crassard , Michael D. Petraglia, Nick A. Drake, Paul Breeze, Bernard Gratuze, Abdullah Alsharekh, Mounir Arbach, Hu"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
