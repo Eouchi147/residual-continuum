@@ -1,0 +1,56 @@
+{
+ "id": "2026-11-20",
+ "date": "2026-11-20",
+ "title": "The six-ton Stonehenge slab that refuses to go home",
+ "kicker": "Altar Stone",
+ "dek": "Geologists have ruled out more possible birthplaces for Stonehenge's Altar Stone, tightening the search on northeastern Scotland without yet finding a match.",
+ "body": [
+  "The Altar Stone is not the biggest stone at Stonehenge, but it may be the most travelled. The slab is 4.9 metres long and weighs about six tons, and it lies at the heart of the monument on Salisbury Plain. For most of a century the textbooks said it came from west Wales. Recent work pointed instead to northeastern Scotland. Now a new study has narrowed the hunt again, and still come up empty.",
+  "The investigation, published in the Journal of the Geological Society, is described as the most comprehensive geological study of the Altar Stone yet. The team combined fresh observations at the monument with detailed work on stone fragments held in museum collections. They examined the sandstone's physical structure, its minerals, its chemistry and its isotopic signatures. Together those form a fingerprint that can be held up against rock formations across Britain.",
+  "The researchers looked hard at the Orcadian Basin in northeastern Scotland, an area earlier work had flagged as promising. None of the locations examined so far produced rock matching the Altar Stone's full set of characteristics. That is the finding, and it is a strange kind of progress: the stone's birthplace is still unknown, but several candidates are now off the table.",
+  "Professor Duncan Pirrie of the University of South Wales, who led the study, put it plainly. None of the places examined share the stone's characteristics, he said, which tells the team the search is not over but that they are far better equipped to focus on the likeliest ground. Professor Nick Pearce of Aberystwyth University made the same point from the other side: in a geological detective story, ruling out a source matters as much as finding one.",
+  "The Welsh origin story did not fall by itself. Professor Richard Bevins, also at Aberystwyth, noted that for almost a century the prevailing view placed the stone in west Wales, and that earlier research overturned that assumption and pointed north to Scotland. This latest paper does not reverse that turn. It sharpens it, setting out the specific geological criteria a future match would have to meet.",
+  "Why chase one rock so hard? Stonehenge was built in stages between roughly 3000 and 1600 BC, and its builders already moved the smaller bluestones about 225 kilometres from western Wales. If the Altar Stone really came from northeastern Scotland, its journey to Salisbury Plain would have been far longer. Finding the exact source would speak to transport, organisation and the engineering reach of prehistoric communities.",
+  "The team was international, drawing geologists and archaeologists from the United Kingdom, Canada, Italy and Sweden, with several universities and industry partners involved. The geological fingerprint they built is meant to guide the next round of fieldwork. Somewhere in Britain is a rock formation that matches. The search has a better map now, and no answer yet."
+ ],
+ "doesnt_show": "The study does not identify the Altar Stone's source, and it does not show how or when the stone reached Salisbury Plain. Scotland remains the leading candidate region rather than a confirmed origin.",
+ "settle": "Finding a rock formation whose structure, minerals, chemistry and isotopic signature match the Altar Stone on every measure would settle the source.",
+ "firm": "plausible",
+ "related": [
+  "sacred-metrology",
+  "malta-temples",
+  "lost-civilization"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/11/261117033914.htm",
+  "title": "Stonehenge’s six-ton mystery deepens as scientists narrow their search",
+  "date": "2026-11-19"
+ },
+ "refs": [
+  {
+   "doi": "10.1144/jgs2026-090",
+   "title": "Searching for the origin of the Stonehenge Altar Stone: new sedimentological, petrographical, mineralogical, geochemical and isotopic constraints",
+   "container": "Journal of the Geological Society",
+   "year": 2026,
+   "authors": [
+    "Duncan Pirrie",
+    "Richard E. Bevins",
+    "Rob A. Ixer",
+    "Nick J. G. Pearce",
+    "Peter Turner",
+    "Matthew R. Power",
+    "Stephen Hillier",
+    "Andrew C. Morton"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Chlorops_serenus_female%2C_Salisbury_Plain%2C_Nine-mile_River.jpg/1280px-Chlorops_serenus_female%2C_Salisbury_Plain%2C_Nine-mile_River.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Chlorops_serenus_female,_Salisbury_Plain,_Nine-mile_River.jpg",
+  "licence": "CC BY 2.0",
+  "title": "Chlorops serenus female, Salisbury Plain, Nine-mile River.jpg",
+  "credit": "Sam Thomas"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
