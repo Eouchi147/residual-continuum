@@ -1,0 +1,53 @@
+{
+ "id": "2026-11-22",
+ "date": "2026-11-22",
+ "title": "The Taung Child still rewrites the human story a century later",
+ "kicker": "Human origins",
+ "dek": "A new study dates the iconic fossil to nearly three million years ago and finds it may be the only certain member of its species, turning a tidy lineage into a tangled bush.",
+ "body": [
+  "The Taung Child, a small skull found in a South African quarry in 1924, gave science its first hard evidence that humans originated in Africa. It became the type specimen for Australopithecus africanus, the benchmark against which every similar fossil was measured. A century later, an international team led by Professor Gabriele Macho at Vrije Universiteit Brussel has re-dated the specimen to between 2.96 and 3.03 million years ago and found that the child may stand alone.",
+  "The study, published in npj Palaeoecosystems, compared the Taung Child's tooth structure and patterns of brain and dental development with adult fossils from the Sterkfontein region long classified as the same species. The adults followed different developmental trajectories. That difference suggests the Taung Child and those adults may not belong to a single species at all, but to several distinct hominin lineages that lived in southern Africa at the same time or in succession.",
+  "For a hundred years the prevailing view treated these fossils as variations within one species. The new analysis argues the human family tree in this region was not a straight trunk but a chaotic, tangled bush. Climate shifts appear to have driven the branching. Southern Africa sat on the boundary between tropical and temperate zones, and repeated swings between wetter and drier conditions repeatedly expanded and contracted habitable landscapes.",
+  "As habitats shifted, hominin populations moved with them. Some groups became isolated and evolved separately. Others came back into contact and interbred. Changing predators and pathogens added further pressure. The result was a shifting network of populations that separated, adapted, reunited, and sometimes hybridized as the environment changed around them.",
+  "Fossilized pollen preserved alongside the Taung Child reveals the world it lived in. The region was considerably wetter and more heavily forested than today. Tree species now found hundreds of kilometers to the northeast once grew around the site. The landscape that shaped this child's life has vanished, replaced by the modern South African veld.",
+  "The findings raise a pointed question: if the Taung Child is the only fossil that can be identified with certainty as Australopithecus africanus, then many celebrated specimens assigned to that species may belong to other, unnamed branches. The emergence of our own genus, Homo, was preceded by a far more diverse and interconnected world of ancient relatives than textbooks have shown."
+ ],
+ "doesnt_show": "The study does not name or define the new species implied by the developmental differences, nor does it supports interbreeding occurred between the proposed lineages.",
+ "settle": "Detailed morphological descriptions and formal taxonomic proposals for the adult Sterkfontein fossils, combined with ancient protein or DNA analysis where preservation allows, would clarify how many species are represented.",
+ "firm": "strong",
+ "related": [
+  "other-humans"
+ ],
+ "source": {
+  "name": "ScienceDaily",
+  "url": "https://www.sciencedaily.com/releases/2026/11/261118065531.htm",
+  "title": "A 3-million-year-old child just made human evolution far more complicated",
+  "date": "2026-11-20"
+ },
+ "refs": [
+  {
+   "doi": "10.1038/s44513-026-00008-2",
+   "title": "The Taung child and the biogeographic and palaeoclimatic drivers of southern African hominin diversity",
+   "container": "npj Palaeoecosystems",
+   "year": 2026,
+   "authors": [
+    "Gabriele A. Macho",
+    "Simon Neubauer",
+    "Clement Zanolli",
+    "Pieter Vermeesch",
+    "Kevin L. Kuykendall",
+    "Andreas Koutsodendris",
+    "Laurin S. Kolb",
+    "Thibaut Caley"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Australopithecus_africanus_fossil_hominid_%28Taung_skull%29_%28Upper_Pliocene%2C_2.8_Ma%3B_quarry_near_Taung%2C_North_West_Province%2C_South_Africa%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+  "page": "https://commons.wikimedia.org/wiki/File:Australopithecus_africanus_fossil_hominid_(Taung_skull)_(Upper_Pliocene,_2.8_Ma;_quarry_near_Taung,_North_West_Province,_South_Africa).jpg",
+  "licence": "CC BY 2.0",
+  "title": "Australopithecus africanus fossil hominid (Taung skull) (Upper Pliocene, 2.8 Ma; quarry near Taung, North West Province, South Africa).jpg",
+  "credit": "James St. John"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}

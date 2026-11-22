@@ -1,6 +1,21 @@
 {
- "updated": "2026-11-21T04:30:42.461Z",
+ "updated": "2026-11-22T04:30:41.718Z",
  "posts": [
+  {
+   "id": "2026-11-22",
+   "date": "2026-11-22",
+   "title": "The Taung Child still rewrites the human story a century later",
+   "kicker": "Human origins",
+   "dek": "A new study dates the iconic fossil to nearly three million years ago and finds it may be the only certain member of its species, turning a tidy lineage into a tangled bush.",
+   "firm": "strong",
+   "image": {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Australopithecus_africanus_fossil_hominid_%28Taung_skull%29_%28Upper_Pliocene%2C_2.8_Ma%3B_quarry_near_Taung%2C_North_West_Province%2C_South_Africa%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "title": "Australopithecus africanus fossil hominid (Taung skull) (Upper Pliocene, 2.8 Ma; quarry near Taung, North West Province, South Africa).jpg"
+   },
+   "source": "ScienceDaily",
+   "source_url": "https://www.sciencedaily.com/releases/2026/11/261118065531.htm",
+   "source_title": "A 3-million-year-old child just made human evolution far more complicated"
+  },
   {
    "id": "2026-11-21",
    "date": "2026-11-21",
