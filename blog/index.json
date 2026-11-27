@@ -1,6 +1,21 @@
 {
- "updated": "2026-11-26T04:30:53.490Z",
+ "updated": "2026-11-27T04:30:46.433Z",
  "posts": [
+  {
+   "id": "2026-11-27",
+   "date": "2026-11-27",
+   "title": "Ancient fire cleared a hill above Edinburgh",
+   "kicker": "Holyrood Park",
+   "dek": "Sediment from a small basin on an upland massif in Holyrood Park records woodland clearance starting around 2500 BC, followed by centuries of burning and a fully open farmed landscape by about 1800 BC.",
+   "firm": "plausible",
+   "image": {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Edinburgh_from_Salisbury_Crags_panosphere_20211019.jpg/1280px-Edinburgh_from_Salisbury_Crags_panosphere_20211019.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "title": "Edinburgh from Salisbury Crags panosphere 20211019.jpg"
+   },
+   "source": "The Holocene",
+   "source_url": "https://doi.org/10.1177/09596836261506992",
+   "source_title": "Multi-proxy evidence for human activities within a later prehistoric power centre at Holyrood Park, Edinburgh, Scotland"
+  },
   {
    "id": "2026-11-26",
    "date": "2026-11-26",

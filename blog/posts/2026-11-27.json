@@ -1,0 +1,53 @@
+{
+ "id": "2026-11-27",
+ "date": "2026-11-27",
+ "title": "Ancient fire cleared a hill above Edinburgh",
+ "kicker": "Holyrood Park",
+ "dek": "Sediment from a small basin on an upland massif in Holyrood Park records woodland clearance starting around 2500 BC, followed by centuries of burning and a fully open farmed landscape by about 1800 BC.",
+ "body": [
+  "You are standing on an upland massif inside Holyrood Park in Edinburgh. Beneath your feet, a small basin holds sediment that reaches back to about 6150 BC. A team studied pollen, fungal spores, microscopic charcoal, sediment chemistry and geology from that basin, using AMS radiocarbon dates to build a timeline.",
+  "The record shows initial woodland clearance around 2500 BC. That clearance came with a burning phase lasting roughly 600 years. The authors say this kind of sustained fire has very few parallels across northern England and Scotland.",
+  "By about 1800 BC, the pollen indicates a landscape cleared entirely of woodland and given over to agriculture. That timing is described as exceptionally early for the region. The basin sits within an area already known for rich later prehistoric archaeology, dated roughly 2000 BC to 0 BC.",
+  "The study uses multiple lines of evidence together rather than relying on one kind of signal. Pollen tracks vegetation change. Charcoal tracks fire. Fungal spores and geochemistry help interpret grazing and soil disturbance. Sediment layers anchor the sequence in time.",
+  "The authors connect the environmental record to the idea of a later prehistoric power centre on the massif. They argue that human activity shaped this upland landscape long before the historic period.",
+  "This does not yet identify who lit the fires, why they cleared the trees, or what kind of power centre stood there. The environmental data show change, but they do not name the people or explain their motives.",
+  "More targeted archaeology on the massif could settle the question. Excavation, survey and dating of monuments or settlements would link the pollen and charcoal record to actual structures and human occupation."
+ ],
+ "doesnt_show": "It does not show who cleared the woodland, why they burned the hill for centuries, or what a later prehistoric power centre at Holyrood looked like.",
+ "settle": "Targeted excavation and survey of the massif would connect the environmental record to dated structures and human occupation.",
+ "firm": "plausible",
+ "related": [
+  "malta-temples",
+  "serpent-mound",
+  "troy"
+ ],
+ "source": {
+  "name": "The Holocene",
+  "url": "https://doi.org/10.1177/09596836261506992",
+  "title": "Multi-proxy evidence for human activities within a later prehistoric power centre at Holyrood Park, Edinburgh, Scotland",
+  "date": "2026-11-26"
+ },
+ "refs": [
+  {
+   "doi": "10.1177/09596836261506992",
+   "title": "Multi-proxy evidence for human activities within a later prehistoric power centre at Holyrood Park, Edinburgh, Scotland",
+   "container": "The Holocene",
+   "year": 2026,
+   "authors": [
+    "Carla Ferreira",
+    "Richard Tipping",
+    "Robert D. McCulloch",
+    "Eileen Tisdall",
+    "Sarah J. Davies"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/05/Edinburgh_from_Salisbury_Crags_panosphere_20211019.jpg/1280px-Edinburgh_from_Salisbury_Crags_panosphere_20211019.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Edinburgh_from_Salisbury_Crags_panosphere_20211019.jpg",
+  "licence": "CC BY-SA 3.0",
+  "title": "Edinburgh from Salisbury Crags panosphere 20211019.jpg",
+  "credit": "Daniel Kraft"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
