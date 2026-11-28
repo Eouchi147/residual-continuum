@@ -1,0 +1,50 @@
+{
+ "id": "2026-11-28",
+ "date": "2026-11-28",
+ "title": "Shells and ash reveal Kushite royal faience workshop",
+ "kicker": "Napatan Craft",
+ "dek": "Archaeologists have identified a 2,700-year-old faience workshop outside Sanam Temple in Sudan. The site produced funerary figures for rulers of the Kingdom of Kush using locally sourced materials.",
+ "body": [
+  "Three firing pits and two mudbrick basins sit immediately outside Sanam Temple at Napata in Sudan. Layers around them hold hundreds of blue, green and white faience beads, vessel fragments and production waste. Researchers writing in Antiquity call it the first securely identified faience-production workshop from Middle Napatan Nubia. Pottery places the activity in the Early to Middle Napatan period, centred on the 7th century BC.",
+  "Sanam Temple was built by the Kushite king Taharqo, who ruled around 690 to 664 BC and belonged to Egypt's 25th Dynasty. Dedicated to Amun-Bull-of-Nubia of Sanam, the temple stood within a wider administrative landscape connected to the Kushite state. The three roughly circular or oval firing pits were ringed by compacted ashy deposits from repeated firing. Nearby mudbrick remains may have formed kiln superstructures, though the researchers caution that simple covered firing pits could have reached the temperatures needed.",
+  "Beneath the workshop lay a floor deliberately compacted from fragments of storage jars. This broken pottery gave workers a stable surface. Thousands of small shells and several grindstones were also recovered from the deposits. The team reports that grinding traces suggest shells were crushed in the mudbrick basins and mixed into the faience paste as a source of lime.",
+  "Faience begins as a silica-rich paste containing alkali and lime. Firing gives it a glossy surface, commonly blue, green or white. Suitable geological sources of lime were scarce around Sanam, unlike in Egypt where limestone was readily available. The archaeologists found large quantities of shells, including marine bivalves probably originating from the Red Sea. The team argues this shows Kushite craftspeople adapted the technology to local conditions rather than simply copying Egyptian practice.",
+  "Some of the strongest evidence comes from shabtis, funerary figures placed in tombs. A clay shabti mould found inside Sanam Temple precisely matches part of a green faience figure recovered from the workshop. Earlier moulds from Sanam also correspond with faience shabtis found at the royal cemetery of Nuri, where Kushite kings were buried. The researchers argue this provides a direct connection between production at Sanam and objects destined for royal tombs.",
+  "Shabtis were particularly exclusive in Napatan Nubia, where their use was restricted to royalty. The location beside a major temple, the production of royal funerary objects and the procurement of materials from distant regions led the researchers to argue that faience manufacture at Sanam was closely connected with the Kushite state. Control over production would have allowed royal institutions to regulate materials entering the workshop and access to some objects leaving it.",
+  "The researchers caution against assuming all faience production in Kush was centrally controlled. Household or independent workshops may have produced more widely available objects such as beads and pendants. The Sanam evidence nevertheless offers a rare view inside an industry operating at the intersection of temple activity, skilled craftsmanship and royal authority."
+ ],
+ "doesnt_show": "It does not show that every faience object from Kush came from royal workshops or that the Red Sea shells were clearly traded rather than collected locally.",
+ "settle": "Chemical sourcing of the shells and comparative analysis of faience from independent household workshops would clarify the scale of state control.",
+ "firm": "strong",
+ "related": [
+  "granite-drill-cores"
+ ],
+ "source": {
+  "name": "HeritageDaily",
+  "url": "https://www.heritagedaily.com/2026/11/ancient-faience-workshop-reveals-royal-production-in-the-kingdom-of-kush/160165",
+  "title": "Ancient faience workshop reveals royal production in the Kingdom of Kush",
+  "date": "2026-11-25"
+ },
+ "refs": [
+  {
+   "doi": "10.15184/aqy.2026.10434",
+   "title": "Crafting power in Kush: faience production and state control in the Napatan region",
+   "container": "Antiquity",
+   "year": 2026,
+   "authors": [
+    "Rennan Lemos",
+    "Kathryn Howley",
+    "Siobhan Shinn",
+    "Shadia Abdu Rabo"
+   ]
+  }
+ ],
+ "image": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Sanam%2CSudan_SE.jpg/1280px-Sanam%2CSudan_SE.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "page": "https://commons.wikimedia.org/wiki/File:Sanam,Sudan_SE.jpg",
+  "licence": "CC BY-SA 3.0",
+  "title": "Sanam,Sudan SE.jpg",
+  "credit": "Bertramz"
+ },
+ "drafted": "Written with a free AI model from the source above, checked automatically for the site's rules. Report an error and it will be corrected in place, with a note."
+}
